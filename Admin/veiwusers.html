@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users - Admin Dashboard</title>
+    <link rel="stylesheet" href="/CSS/veiwusers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3>My Dashboard</h3>
+            
+            <div class="theme-container">
+                <span class="theme-label">Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+
+            <a href="admindash.html"><i class="fas fa-home"></i> <span>Home</span></a>
+            <a href="./fundwallet2.html"><i class="fas fa-wallet"></i> <span>Fund Wallet</span></a>
+            <a href="./kycapprove.html"><i class="fas fa-id-card"></i> <span>KYC approval</span></a>
+            <a href="./message.html"><i class="fas fa-envelope"></i> <span>Messages</span></a>
+            <a href="./viewusers.html" class="active"><i class="fas fa-users"></i> <span>View Users</span></a>
+            <a href="profilesetting.html"><i class="fas fa-cog"></i> <span>Settings</span></a>
+            <a href="../includes/logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </div>
+
+        <!-- Main Content - View Users Page -->
+        <div class="main">
+            <h1 class="page-title"><i class="fas fa-users"></i> View Users</h1>
+            
+            <!-- Stats Cards -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h2>156</h2>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-card">
+                    <h2>124</h2>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-card">
+                    <h2>32</h2>
+                    <p>Pending KYC</p>
+                </div>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="users-container">
+                <div class="table-header">
+                    <h2 class="table-title">All Users</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search users...">
+                    </div>
+                </div>
+                
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Wallet ID</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">JD</div>
+                                    <div class="user-info">
+                                        <h4>John Doe</h4>
+                                        <p>+1 (555) 123-4567</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>john.doe@example.com</td>
+                            <td>23536687</td>
+                            <td>Feb 13, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$1,250.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">SS</div>
+                                    <div class="user-info">
+                                        <h4>Sarah Smith</h4>
+                                        <p>+1 (555) 234-5678</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>sarah.smith@example.com</td>
+                            <td>23536688</td>
+                            <td>Feb 12, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$500.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">MJ</div>
+                                    <div class="user-info">
+                                        <h4>Michael Johnson</h4>
+                                        <p>+1 (555) 345-6789</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>michael.j@example.com</td>
+                            <td>23536689</td>
+                            <td>Feb 12, 2026</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$2,000.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">AL</div>
+                                    <div class="user-info">
+                                        <h4>Alex Lee</h4>
+                                        <p>+1 (555) 456-7890</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>alex.lee@example.com</td>
+                            <td>23536690</td>
+                            <td>Feb 11, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge role-admin">Admin</span></td>
+                            <td>$750.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">EP</div>
+                                    <div class="user-info">
+                                        <h4>Emma Peterson</h4>
+                                        <p>+1 (555) 567-8901</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>emma.p@example.com</td>
+                            <td>23536691</td>
+                            <td>Feb 10, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$1,850.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">RK</div>
+                                    <div class="user-info">
+                                        <h4>Robert Kim</h4>
+                                        <p>+1 (555) 678-9012</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>robert.k@example.com</td>
+                            <td>23536692</td>
+                            <td>Feb 9, 2026</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$320.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">TG</div>
+                                    <div class="user-info">
+                                        <h4>Tina Garcia</h4>
+                                        <p>+1 (555) 789-0123</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>tina.g@example.com</td>
+                            <td>23536693</td>
+                            <td>Feb 8, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$950.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">DW</div>
+                                    <div class="user-info">
+                                        <h4>David Wilson</h4>
+                                        <p>+1 (555) 890-1234</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>david.w@example.com</td>
+                            <td>23536694</td>
+                            <td>Feb 7, 2026</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$1,420.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">OP</div>
+                                    <div class="user-info">
+                                        <h4>Olivia Parker</h4>
+                                        <p>+1 (555) 901-2345</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>olivia.p@example.com</td>
+                            <td>23536695</td>
+                            <td>Feb 6, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$675.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-avatar">
+                                    <div class="avatar">JM</div>
+                                    <div class="user-info">
+                                        <h4>James Miller</h4>
+                                        <p>+1 (555) 012-3456</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>james.m@example.com</td>
+                            <td>23536696</td>
+                            <td>Feb 5, 2026</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="role-badge">User</span></td>
+                            <td>$2,150.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality with localStorage persistence
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.checked = true;
+            }
+            
+            // Theme toggle event listener
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Sidebar active link functionality
+            const sidebarLinks = document.querySelectorAll('.sidebar a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-box input');
+            const tableRows = document.querySelectorAll('.users-table tbody tr');
+            
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                tableRows.forEach(row => {
+                    const userName = row.querySelector('.user-info h4').textContent.toLowerCase();
+                    const email = row.cells[1].textContent.toLowerCase();
+                    const walletId = row.cells[2].textContent.toLowerCase();
+                    
+                    if (userName.includes(searchTerm) || 
+                        email.includes(searchTerm) || 
+                        walletId.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Responsive table handling
+            function checkTableResponsiveness() {
+                const table = document.querySelector('.users-table');
+                const container = document.querySelector('.users-container');
+                
+                if (window.innerWidth < 768) {
+                    // Ensure container has horizontal scrolling on mobile
+                    container.style.overflowX = 'auto';
+                } else {
+                    container.style.overflowX = 'visible';
+                }
+            }
+            
+            // Initial check and on resize
+            checkTableResponsiveness();
+            window.addEventListener('resize', checkTableResponsiveness);
+        });
+    </script>
+</body>
+</html>

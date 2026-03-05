@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0b0f29, #1a1f47);
+      color: #fff;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 {
+      color: #00ffcc;
+    }
+    .nav a {
+      display: block;
+      color: #ccc;
+      margin: 15px 0;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      color: #00ffcc;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    /* Analytics Card */
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .balance {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    /* Exchange form */
+    .exchange input, .exchange select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    .exchange button {
+      width: 100%;
+      padding: 10px;
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    canvas {
+      width: 100%;
+      height: 250px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div>
+      <h2>CRYCO</h2>
+      <div class="nav">
+        <a href="#">Dashboard</a>
+        <a href="#">Portfolio</a>
+        <a href="#">Exchange</a>
+        <a href="#">Settings</a>
+      </div>
+    </div>
+    <button style="background:#00ffcc; border:none; padding:10px; border-radius:10px; cursor:pointer;">Upgrade</button>
+  </div>
+
+  <div class="main">
+    <div class="card">
+      <h3>Analytics</h3>
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Total Balance</h3>
+      <div class="balance">$338,086.20</div>
+      <div class="exchange">
+        <select>
+          <option>BTC</option>
+          <option>ETH</option>
+        </select>
+        <input type="number" placeholder="Amount">
+        <button>Exchange</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Revenue',
+          data: [120, 190, 300, 250, 200, 300, 400],
+          backgroundColor: '#00ffcc'
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

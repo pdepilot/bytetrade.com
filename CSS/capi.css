@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #030b2a;
+    color: #fff;
+}
+
+/* GENERAL FADE CLASSES */
+.fade-left, .fade-right, .fade-up, .fade-bottom {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 1s ease;
+}
+.fade-left { transform: translateX(-60px); }
+.fade-right { transform: translateX(60px); }
+.fade-up { transform: translateY(-60px); }
+.fade-bottom { transform: translateY(60px); }
+
+.show {
+    opacity: 1 !important;
+    transform: translate(0,0) !important;
+}
+
+/* HERO SECTION */
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 90px 8%;
+    gap: 40px;
+}
+
+.crypto-text { color: #4dc7ff; }
+
+.hero-left { max-width: 480px; }
+.hero-right img {
+    width: 360px;
+}
+
+/* HERO BUTTONS */
+.btn-primary {
+    padding: 12px 25px;
+    background: #0d75ff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.btn-secondary {
+    padding: 12px 25px;
+    background: transparent;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+}
+
+/* STATS SECTION */
+.stats-section {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.stat-box {
+    background: #06215b;
+    padding: 20px;
+    border-radius: 10px;
+    width: 180px;
+    text-align: center;
+}
+
+/* ABOUT SECTION */
+.about-section {
+    display: flex;
+    gap: 40px;
+    padding: 80px 8%;
+}
+
+.about-left img {
+    width: 350px;
+}
+
+.about-list li {
+    margin-bottom: 10px;
+}
+
+/* RATING SECTION */
+.ratings-section {
+    padding: 80px 8%;
+}
+
+.rating-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.rating-box {
+    background: #06215b;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.rating-box img {
+    width: 80px;
+    margin-bottom: 10px;
+}

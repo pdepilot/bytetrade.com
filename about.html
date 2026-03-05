@@ -1,0 +1,3020 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - Bytetrade | World-Class Trading Platform</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+
+      body {
+        overflow-x: hidden;
+        background: #f8fafc;
+      }
+
+      /* TOP BAR STYLES */
+      .top-bar {
+        background: #0f2b46;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 5%;
+        align-items: center;
+        font-size: 14px;
+        position: relative;
+        overflow: hidden;
+        z-index: 1001;
+      }
+
+      .top-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        animation: shimmer 8s infinite;
+        pointer-events: none;
+      }
+
+      @keyframes shimmer {
+        0% {
+          left: -100%;
+        }
+        20% {
+          left: 200%;
+        }
+        100% {
+          left: 200%;
+        }
+      }
+
+      .top-bar i {
+        margin-right: 8px;
+        color: #ffd700;
+      }
+
+      .top-bar .fa-phone {
+        animation: softPulse 2s infinite;
+      }
+
+      @keyframes softPulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.05);
+        }
+      }
+
+      .top-bar select {
+        padding: 8px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        backdrop-filter: blur(5px);
+        min-width: 140px;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+      }
+
+      .top-bar select:hover {
+        background: rgba(255, 215, 0, 0.15);
+        border-color: #ffd700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .top-bar select:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+      }
+
+      .top-bar select option {
+        background: #0f2b46;
+        color: #fff;
+        padding: 12px;
+      }
+
+      /* NAVBAR STYLES - same as fixed index navbar (slide down) */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        background: #ffffff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        position: relative;
+      }
+
+      .navbar.scrolled {
+        background: rgba(10, 25, 45, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      }
+
+      .navbar.scrolled nav a {
+        color: #ffffff;
+      }
+
+      .navbar.scrolled .logo img {
+        filter: brightness(0) invert(1);
+        transition: filter 0.3s ease;
+      }
+
+      .navbar.sticky {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar nav {
+        display: flex;
+        gap: 30px;
+      }
+
+      .navbar nav a {
+        text-decoration: none;
+        color: #1e293b;
+        font-weight: 500;
+        font-size: 14px;
+        transition: 0.3s;
+        position: relative;
+      }
+
+      .navbar nav a:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #ffd700;
+        transition: 0.3s;
+      }
+
+      .navbar.scrolled nav a:after {
+        background: #ffd700;
+      }
+
+      .navbar nav a:hover:after,
+      .navbar nav a.active:after {
+        width: 100%;
+      }
+
+      .navbar nav a.active {
+        color: #0f2b46;
+        font-weight: 600;
+      }
+
+      .navbar.scrolled nav a.active {
+        color: #ffd700;
+      }
+
+      .logo img {
+        height: 80px;
+        transition: all 0.3s ease;
+      }
+
+      .menu-toggle {
+        display: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #0f2b46;
+        z-index: 1002;
+        transition: transform 0.3s ease;
+      }
+
+      .navbar.scrolled .menu-toggle {
+        color: #ffd700;
+      }
+
+      .menu-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      /* MOBILE MENU - SLIDE DOWN FROM TOP (same as fixed index) */
+      @media (max-width: 992px) {
+        .navbar {
+          flex-wrap: wrap;
+          position: relative;
+        }
+
+        .navbar nav {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: #0a1a2f;
+          flex-direction: column;
+          padding: 0 20px;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+          z-index: 998;
+          transition: max-height 0.4s ease, padding 0.3s ease;
+          max-height: 0;
+          overflow: hidden;
+          gap: 0;
+          display: flex !important;
+          pointer-events: auto;
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+
+        .navbar nav.active {
+          max-height: 550px;
+          padding: 15px 20px 25px;
+          border-top: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .navbar nav a {
+          color: #ffffff;
+          font-size: 16px;
+          font-weight: 500;
+          padding: 14px 15px;
+          width: 100%;
+          text-align: left;
+          border-radius: 8px;
+          opacity: 1;
+          transform: none;
+          transition: background 0.2s, color 0.2s, transform 0.2s;
+          background: transparent;
+          border: 1px solid transparent;
+          letter-spacing: 0.5px;
+          pointer-events: auto;
+          margin: 2px 0;
+        }
+
+        .navbar nav a:hover {
+          background: #ffd700;
+          color: #0a1a2f;
+          border-color: #ffd700;
+          transform: translateX(5px);
+        }
+
+        .navbar nav a.active {
+          background: #ffd700;
+          color: #0a1a2f;
+          font-weight: 600;
+          border-color: #ffd700;
+        }
+
+        .navbar nav a:after {
+          display: none;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .menu-toggle.active i {
+          transform: rotate(90deg);
+        }
+
+        .menu-toggle i {
+          transition: transform 0.3s ease;
+        }
+
+        .menu-toggle.active i::before {
+          content: "\f00d";
+        }
+
+        /* Overlay not used, but kept for compatibility */
+        .nav-overlay {
+          display: none;
+        }
+
+        body.menu-open {
+          overflow: hidden;
+        }
+      }
+
+      /* PAGE HEADER */
+      .page-header {
+        background: linear-gradient(135deg, #0f2b46 0%, #1a3f62 100%);
+        padding: 60px 5%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 50%;
+        animation: floatHeader 20s infinite ease-in-out;
+      }
+
+      .page-header::after {
+        content: "";
+        position: absolute;
+        bottom: -50%;
+        left: -20%;
+        width: 500px;
+        height: 500px;
+        background: rgba(0, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: floatHeaderReverse 25s infinite ease-in-out;
+      }
+
+      @keyframes floatHeader {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-50px, 30px) scale(1.1);
+        }
+      }
+
+      @keyframes floatHeaderReverse {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(50px, -30px) scale(1.1);
+        }
+      }
+
+      .page-header h1 {
+        color: #fff;
+        font-size: 56px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 20px;
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* BREADCRUMB */
+      .breadcrumb {
+        padding: 15px 5%;
+        background: #f1f5f9;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .breadcrumb a {
+        color: #0f2b46;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .breadcrumb a:hover {
+        color: #ffd700;
+      }
+
+      .breadcrumb span {
+        color: #64748b;
+        margin: 0 10px;
+      }
+
+      .breadcrumb .current {
+        color: #ffd700;
+        font-weight: 600;
+      }
+
+      /* HERO ABOUT SECTION - WITH BACKGROUND IMAGE */
+      .about-hero {
+        padding: 100px 5%;
+        background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .about-hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(15, 43, 70, 0.9), rgba(26, 63, 98, 0.85));
+        z-index: 0;
+      }
+
+      .about-hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 215, 0, 0.15),
+          rgba(0, 255, 255, 0.15)
+        );
+        border-radius: 50%;
+        transform: translate(200px, -200px);
+        z-index: 0;
+      }
+
+      .about-hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .about-hero-content h2 {
+        font-size: 48px;
+        color: #ffffff;
+        margin-bottom: 30px;
+        line-height: 1.2;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .about-hero-content h2 span {
+        color: #ffd700;
+        position: relative;
+        display: inline-block;
+      }
+
+      .about-hero-content h2 span::after {
+        content: "";
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 215, 0, 0.3);
+        z-index: -1;
+      }
+
+      .about-hero-content p {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .about-hero-stats {
+        display: flex;
+        gap: 40px;
+        margin-top: 40px;
+      }
+
+      .hero-stat {
+        text-align: center;
+      }
+
+      .hero-stat .number {
+        font-size: 42px;
+        font-weight: 800;
+        color: #ffd700;
+        margin-bottom: 5px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero-stat .label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .about-hero-image {
+        position: relative;
+      }
+
+      .about-hero-image img {
+        width: 100%;
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s ease;
+      }
+
+      .about-hero-image:hover img {
+        transform: scale(1.02);
+      }
+
+      .about-hero-image::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        width: 100%;
+        height: 100%;
+        border: 4px solid #ffd700;
+        border-radius: 30px;
+        z-index: -1;
+        animation: borderMove 3s infinite ease-in-out;
+      }
+
+      @keyframes borderMove {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(10px, 10px);
+        }
+      }
+
+      .experience-badge {
+        position: absolute;
+        bottom: -30px;
+        right: -30px;
+        background: #ffd700;
+        color: #0f2b46;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
+        animation: badgePulse 2s infinite;
+      }
+
+      @keyframes badgePulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .experience-badge .years {
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .experience-badge .text {
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      /* MISSION VISION SECTION */
+      .mission-vision {
+        padding: 80px 5%;
+        background: linear-gradient(135deg, #f8fafc, #eef2f6);
+      }
+
+      .mv-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      .mv-card {
+        background: #ffffff;
+        padding: 50px 40px;
+        border-radius: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      }
+
+      .mv-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #ffd700, #00ffff);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+      }
+
+      .mv-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .mv-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+      }
+
+      .mv-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #0f2b46, #1a3f62);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        position: relative;
+      }
+
+      .mv-icon::after {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: 110px;
+        height: 110px;
+        border: 2px dashed #ffd700;
+        border-radius: 50%;
+        animation: rotate 20s linear infinite;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .mv-icon i {
+        font-size: 48px;
+        color: #ffd700;
+      }
+
+      .mv-card h3 {
+        font-size: 32px;
+        color: #0f2b46;
+        margin-bottom: 20px;
+      }
+
+      .mv-card p {
+        color: #64748b;
+        font-size: 18px;
+        line-height: 1.8;
+      }
+
+      /* VALUES SECTION */
+      .values-section {
+        padding: 100px 5%;
+        background: #ffffff;
+      }
+
+      .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 60px;
+      }
+
+      .section-subtitle {
+        color: #ffd700;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 14px;
+        margin-bottom: 15px;
+      }
+
+      .section-header h2 {
+        font-size: 42px;
+        color: #0f2b46;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .section-header p {
+        color: #64748b;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .value-card {
+        text-align: center;
+        padding: 40px 30px;
+        background: #f8fafc;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .value-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 215, 0, 0.1),
+          transparent
+        );
+        transition: height 0.5s ease;
+      }
+
+      .value-card:hover::before {
+        height: 100%;
+      }
+
+      .value-card:hover {
+        transform: translateY(-10px);
+        border-color: #ffd700;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .value-icon {
+        width: 80px;
+        height: 80px;
+        background: #0f2b46;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+      }
+
+      .value-card:hover .value-icon {
+        transform: rotateY(360deg);
+        background: #ffd700;
+      }
+
+      .value-card:hover .value-icon i {
+        color: #0f2b46;
+      }
+
+      .value-icon i {
+        font-size: 36px;
+        color: #ffd700;
+        transition: all 0.3s ease;
+      }
+
+      .value-card h3 {
+        font-size: 22px;
+        color: #0f2b46;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .value-card p {
+        color: #64748b;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* TEAM SECTION */
+      .team-section {
+        padding: 100px 5%;
+        background: linear-gradient(135deg, #f8fafc, #eef2f6);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .team-section::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 50%;
+      }
+
+      .team-section::after {
+        content: "";
+        position: absolute;
+        bottom: -100px;
+        left: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(0, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .team-card {
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+      }
+
+      .team-image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+      }
+
+      .team-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .team-card:hover .team-image img {
+        transform: scale(1.1);
+      }
+
+      .team-social {
+        position: absolute;
+        bottom: -50px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding: 20px;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        transition: bottom 0.3s ease;
+      }
+
+      .team-card:hover .team-social {
+        bottom: 0;
+      }
+
+      .team-social a {
+        width: 40px;
+        height: 40px;
+        background: #ffd700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0f2b46;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      .team-card:hover .team-social a {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .team-social a:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .team-social a:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      .team-social a:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+
+      .team-social a:hover {
+        background: #ffffff;
+        transform: translateY(-3px) !important;
+      }
+
+      .team-info {
+        padding: 25px;
+        text-align: center;
+      }
+
+      .team-info h3 {
+        font-size: 20px;
+        color: #0f2b46;
+        margin-bottom: 5px;
+      }
+
+      .team-info .position {
+        color: #ffd700;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .team-info .bio {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* TIMELINE SECTION */
+      .timeline-section {
+        padding: 100px 5%;
+        background: #ffffff;
+      }
+
+      .timeline {
+        max-width: 1000px;
+        margin: 50px auto 0;
+        position: relative;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #ffd700, #00ffff, #ffd700);
+        border-radius: 2px;
+      }
+
+      .timeline-item {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 30px;
+        position: relative;
+        margin-bottom: 50px;
+        width: 50%;
+      }
+
+      .timeline-item:nth-child(even) {
+        align-self: flex-end;
+        justify-content: flex-start;
+        padding-left: 30px;
+        padding-right: 0;
+        margin-left: 50%;
+      }
+
+      .timeline-dot {
+        position: absolute;
+        top: 0;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        background: #ffd700;
+        border: 4px solid #0f2b46;
+        border-radius: 50%;
+        z-index: 2;
+        animation: pulseDot 2s infinite;
+      }
+
+      @keyframes pulseDot {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+        }
+        50% {
+          transform: scale(1.2);
+          box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.3);
+        }
+      }
+
+      .timeline-item:nth-child(even) .timeline-dot {
+        right: auto;
+        left: -8px;
+      }
+
+      .timeline-content {
+        background: #f8fafc;
+        padding: 30px;
+        border-radius: 20px;
+        width: 100%;
+        position: relative;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .timeline-content:hover {
+        transform: translateY(-5px);
+        border-color: #ffd700;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-year {
+        font-size: 24px;
+        font-weight: 800;
+        color: #ffd700;
+        margin-bottom: 10px;
+      }
+
+      .timeline-content h3 {
+        font-size: 22px;
+        color: #0f2b46;
+        margin-bottom: 10px;
+      }
+
+      .timeline-content p {
+        color: #64748b;
+        line-height: 1.6;
+      }
+
+      /* ACHIEVEMENTS SECTION - WITH BACKGROUND IMAGE */
+      .achievements-section {
+        padding: 80px 5%;
+        background-image: url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .achievements-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(15, 43, 70, 0.95), rgba(26, 63, 98, 0.9));
+        z-index: 1;
+      }
+
+      .achievements-section::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M20 20 L80 20 L50 80 Z" fill="%23ffd700"/><circle cx="30" cy="30" r="10" fill="%2300ffff"/><circle cx="70" cy="70" r="15" fill="%23ffd700"/></svg>');
+        background-size: 200px;
+        opacity: 0.1;
+        z-index: 1;
+      }
+
+      .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .achievement-card {
+        text-align: center;
+        padding: 40px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .achievement-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .achievement-card:hover::before {
+        left: 100%;
+      }
+
+      .achievement-card:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 215, 0, 0.15);
+        border-color: #ffd700;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .achievement-icon {
+        font-size: 48px;
+        color: #ffd700;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+      }
+
+      .achievement-number {
+        font-size: 48px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .achievement-label {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      /* PARTNERS SECTION */
+      .partners-section {
+        padding: 80px 5%;
+        background: #ffffff;
+      }
+
+      .partners-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 50px;
+        max-width: 1200px;
+        margin: 40px auto 0;
+      }
+
+      .partner-item {
+        padding: 20px 30px;
+        background: #f8fafc;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .partner-item:hover {
+        transform: translateY(-5px);
+        border-color: #ffd700;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .partner-item i {
+        font-size: 60px;
+        color: #0f2b46;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+      }
+
+      .partner-item:hover i {
+        color: #ffd700;
+        opacity: 1;
+      }
+
+      /* TESTIMONIALS SECTION */
+      .testimonials-section {
+        padding: 100px 5%;
+        background: linear-gradient(135deg, #f8fafc, #eef2f6);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .testimonials-slider {
+        max-width: 800px;
+        margin: 40px auto 0;
+        position: relative;
+      }
+
+      .testimonial-slide {
+        background: #ffffff;
+        padding: 50px;
+        border-radius: 30px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        position: relative;
+        border: 1px solid #e2e8f0;
+      }
+
+      .testimonial-slide::before {
+        content: '"';
+        position: absolute;
+        top: 20px;
+        left: 30px;
+        font-size: 120px;
+        font-family: serif;
+        color: rgba(255, 215, 0, 0.2);
+        line-height: 1;
+      }
+
+      .testimonial-slide i.fa-quote-right {
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        font-size: 40px;
+        color: rgba(255, 215, 0, 0.2);
+      }
+
+      .testimonial-text {
+        font-size: 20px;
+        line-height: 1.8;
+        color: #334155;
+        margin-bottom: 30px;
+        font-style: italic;
+        position: relative;
+        z-index: 1;
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .author-avatar {
+        width: 70px;
+        height: 70px;
+        background: #0f2b46;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffd700;
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      .author-info h4 {
+        font-size: 18px;
+        color: #0f2b46;
+        margin-bottom: 5px;
+      }
+
+      .author-info p {
+        color: #ffd700;
+        font-weight: 500;
+      }
+
+      .slider-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        background: #cbd5e1;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .dot.active {
+        background: #ffd700;
+        transform: scale(1.3);
+      }
+
+      /* CTA SECTION */
+      .cta-section {
+        padding: 80px 5%;
+        background: linear-gradient(135deg, #ffd700, #ffaa00);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        width: 600px;
+        height: 600px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: floatCta 20s infinite ease-in-out;
+      }
+
+      .cta-section::after {
+        content: "";
+        position: absolute;
+        bottom: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: floatCtaReverse 20s infinite ease-in-out;
+      }
+
+      @keyframes floatCta {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(50px, 50px) scale(1.1);
+        }
+      }
+
+      @keyframes floatCtaReverse {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-50px, -50px) scale(1.1);
+        }
+      }
+
+      .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .cta-content h2 {
+        font-size: 48px;
+        color: #0f2b46;
+        margin-bottom: 20px;
+        font-weight: 800;
+      }
+
+      .cta-content p {
+        font-size: 20px;
+        color: #0f2b46;
+        margin-bottom: 40px;
+        opacity: 0.9;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 18px 50px;
+        background: #0f2b46;
+        color: #ffd700;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        background: #ffffff;
+        color: #0f2b46;
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      /* FOOTER */
+      .footer {
+        background: #0a1a2f;
+        color: #ffffff;
+        padding: 80px 5% 30px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto 60px;
+      }
+
+      .footer-logo img {
+        height: 60px;
+        margin-bottom: 20px;
+        filter: brightness(0) invert(1);
+      }
+
+      .footer-about p {
+        color: #94a3b8;
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .social-links a {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        transition: 0.3s;
+      }
+
+      .social-links a:hover {
+        background: #ffd700;
+        color: #0a1a2f;
+        transform: translateY(-3px);
+      }
+
+      .footer h4 {
+        font-size: 18px;
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .footer h4:after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background: #ffd700;
+      }
+
+      .footer-links {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 12px;
+      }
+
+      .footer-links a {
+        color: #94a3b8;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: #ffd700;
+        padding-left: 5px;
+      }
+
+      .newsletter p {
+        color: #94a3b8;
+        margin-bottom: 20px;
+      }
+
+      .newsletter-form {
+        display: flex;
+        gap: 10px;
+      }
+
+      .newsletter-form input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .newsletter-form button {
+        width: 50px;
+        height: 50px;
+        background: #ffd700;
+        border: none;
+        border-radius: 50%;
+        color: #0a1a2f;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .newsletter-form button:hover {
+        background: #ffffff;
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      .risk-disclaimer {
+        max-width: 1200px;
+        margin: 30px auto 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        font-size: 12px;
+        color: #94a3b8;
+        line-height: 1.8;
+      }
+
+      /* CHATBOT */
+      .chatbot-container {
+        position: fixed;
+        bottom: 40px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .chatbot-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f2b46, #1a3f62);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 3px solid #ffd700;
+        transition: all 0.3s ease;
+        animation: avatarPulse 2s infinite;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .chatbot-avatar i {
+        font-size: 35px;
+        color: #ffd700;
+      }
+
+      .chatbot-avatar:hover {
+        transform: scale(1.1) rotate(5deg);
+        border-color: #00ffff;
+        box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+      }
+
+      @keyframes avatarPulse {
+        0%,
+        100% {
+          box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+        50% {
+          box-shadow:
+            0 5px 30px rgba(255, 215, 0, 0.6),
+            0 0 20px #00ffff;
+        }
+      }
+
+      .chatbot-window {
+        position: absolute;
+        bottom: 60px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: rgba(15, 43, 70, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1001;
+        transform-origin: bottom right;
+        animation: chatOpen 0.3s ease;
+      }
+
+      @keyframes chatOpen {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .chatbot-window.active {
+        display: flex;
+      }
+
+      .chatbot-header {
+        background: linear-gradient(135deg, #ffd700, #ffaa00);
+        padding: 20px;
+        color: #0f2b46;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .chatbot-header h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+      }
+
+      .chatbot-header i {
+        font-size: 20px;
+      }
+
+      .close-chat {
+        background: none;
+        border: none;
+        color: #0f2b46;
+        font-size: 20px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .close-chat:hover {
+        transform: rotate(90deg);
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .message {
+        max-width: 80%;
+        padding: 12px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        line-height: 1.5;
+        animation: messageSlide 0.3s ease;
+      }
+
+      @keyframes messageSlide {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message.bot {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+      }
+
+      .message.user {
+        background: #ffd700;
+        color: #0f2b46;
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+      }
+
+      .typing-indicator {
+        display: flex;
+        gap: 5px;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        width: fit-content;
+        border-bottom-left-radius: 5px;
+      }
+
+      .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: #ffd700;
+        border-radius: 50%;
+        animation: typing 1.4s infinite;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.5;
+        }
+        30% {
+          transform: translateY(-10px);
+          opacity: 1;
+        }
+      }
+
+      .chat-input-area {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .chat-input-area input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .chat-input-area input:focus {
+        outline: none;
+        border-color: #ffd700;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .chat-input-area input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .chat-input-area button {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #ffd700;
+        border: none;
+        color: #0f2b46;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .chat-input-area button:hover {
+        transform: scale(1.1) rotate(5deg);
+        background: #fff;
+      }
+
+      /* SCROLL TO TOP */
+      .scroll-to-top {
+        position: fixed;
+        bottom: 115px;
+        right: 23px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #0f2b46;
+        color: #ffd700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .scroll-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .scroll-to-top:hover {
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        background: #ffd700;
+        color: #0f2b46;
+      }
+
+      .scroll-to-top .progress-ring {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .scroll-to-top svg {
+        transform: rotate(-90deg);
+        width: 100%;
+        height: 100%;
+      }
+
+      .scroll-to-top circle {
+        fill: none;
+        stroke: #ffd700;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 176;
+        stroke-dashoffset: 176;
+        transition: stroke-dashoffset 0.3s ease;
+      }
+
+      .scroll-to-top:hover circle {
+        stroke: #0f2b46;
+      }
+
+      .scroll-to-top .percentage {
+        position: relative;
+        z-index: 1;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      /* TYPING TEXT */
+
+      .typing-brand {
+        color: #00f7ff;
+        font-weight: bold;
+        font-size: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* NEON GLOW */
+
+      .glow {
+        animation: neonGlow 1.6s ease-in-out infinite alternate;
+      }
+
+      @keyframes neonGlow {
+        from {
+          text-shadow:
+            0 0 5px #00f7ff,
+            0 0 10px #00f7ff,
+            0 0 20px #00f7ff;
+        }
+
+        to {
+          text-shadow:
+            0 0 10px #00f7ff,
+            0 0 20px #00f7ff,
+            0 0 35px #00f7ff;
+        }
+      }
+
+      /* BITCOIN FLOAT */
+
+      .btc-icon {
+        font-size: 26px;
+        color: #f7931a;
+        animation: floatBTC 3s ease-in-out infinite;
+      }
+
+      @keyframes floatBTC {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      /* BUTTON */
+
+      .read-btn {
+        margin-top: 30px;
+        display: inline-block;
+        padding: 12px 28px;
+        border: 1px solid #00f7ff;
+        color: #00f7ff;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: 0.3s;
+      }
+
+      .read-btn:hover {
+        background: #00f7ff;
+        color: black;
+      }
+
+      /* CHART SIDE */
+
+      .chart-box {
+        flex: 1;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 600px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+      }
+
+      /* RESPONSIVE */
+
+      @media (max-width: 900px) {
+        .about-container {
+          flex-direction: column;
+        }
+
+        .chart-box {
+          width: 100%;
+          height: 1000px;
+          margin-top: 30px;
+        }
+      }
+
+      /* RIPPLE EFFECT */
+      .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple-animation 0.6s ease-out;
+        pointer-events: none;
+      }
+
+      @keyframes ripple-animation {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1200px) {
+        .values-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .team-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .achievements-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .footer-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 992px) {
+        .page-header h1 {
+          font-size: 42px;
+        }
+        .about-hero-container {
+          grid-template-columns: 1fr;
+        }
+        .mv-container {
+          grid-template-columns: 1fr;
+        }
+        .timeline::before {
+          left: 30px;
+        }
+        .timeline-item,
+        .timeline-item:nth-child(even) {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 20px;
+          margin-left: 0;
+        }
+        .timeline-dot {
+          left: 22px !important;
+          right: auto;
+        }
+        
+        .about-hero-stats {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .page-header h1 {
+          font-size: 32px;
+        }
+        .section-header h2 {
+          font-size: 32px;
+        }
+        .values-grid {
+          grid-template-columns: 1fr;
+        }
+        .team-grid {
+          grid-template-columns: 1fr;
+        }
+        .achievements-grid {
+          grid-template-columns: 1fr;
+        }
+        .partners-grid {
+          gap: 20px;
+        }
+        .testimonial-slide {
+          padding: 30px;
+        }
+        .testimonial-text {
+          font-size: 16px;
+        }
+
+        .scroll-to-top {
+          bottom: 90px;
+          width: 50px;
+          height: 50px;
+        }
+
+        .chatbot-window {
+          width: 280px;
+          height: 400px;
+          right: 0;
+        }
+        
+        .about-hero-stats {
+          flex-direction: column;
+          gap: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-stat .number {
+          font-size: 32px;
+        }
+        .experience-badge {
+          width: 100px;
+          height: 100px;
+          bottom: -20px;
+          right: -20px;
+        }
+        .experience-badge .years {
+          font-size: 32px;
+        }
+        .experience-badge .text {
+          font-size: 12px;
+        }
+      }
+    </style>
+    <!-- Add TradingView Library -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+  </head>
+  <body>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-left">
+        <i class="fa-solid fa-phone"></i> +2348031901791
+        <i class="fa-solid fa-envelope" style="margin-left: 20px"></i>
+        support@globalextrade.com
+      </div>
+      <div class="top-right">
+        <select id="languageSelect">
+          <option value="en">🌐 English</option>
+          <option value="fr">🇫🇷 French</option>
+          <option value="es">🇪🇸 Spanish</option>
+          <option value="de">🇩🇪 German</option>
+          <option value="pt">🇵🇹 Portuguese</option>
+          <option value="it">🇮🇹 Italian</option>
+          <option value="ar">🇸🇦 Arabic</option>
+          <option value="zh">🇨🇳 Chinese</option>
+          <option value="ja">🇯🇵 Japanese</option>
+          <option value="hi">🇮🇳 Hindi</option>
+          <option value="ru">🇷🇺 Russian</option>
+          <option value="tr">🇹🇷 Turkish</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- NAVBAR (same pattern as fixed index) -->
+    <header class="navbar" id="navbar">
+      <div class="logo">
+        <img
+          src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png"
+          alt="Globalextrade Logo"
+        />
+      </div>
+
+      <nav id="nav-menu">
+        <a href="index.html">HOME</a>
+        <a href="broker.html">BROKER</a>
+        <a href="about.html" class="active">ABOUT US</a>
+        <a href="faqs.html">FAQS</a>
+        <a href="contact.html">CONTACTS</a>
+        <a href="login.html">LOGIN</a>
+        <a href="register.html">REGISTER</a>
+        <a href="download-app.html">DOWNLOAD APP</a>
+      </nav>
+
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </header>
+
+    <!-- Mobile overlay (kept for compatibility, not used) -->
+    <div class="nav-overlay" id="nav-overlay" style="display: none;"></div>
+
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+      <h1 data-aos="fade-up">About Bytetrade</h1>
+      <p data-aos="fade-up" data-aos-delay="100">
+        Your trusted partner in global financial markets since 2015
+      </p>
+    </section>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>></span>
+      <span class="current">About Us</span>
+    </div>
+
+    <!-- ABOUT HERO SECTION - WITH FIXED BACKGROUND -->
+    <section class="about-hero">
+      <div class="about-hero-container">
+        <div class="about-hero-content" data-aos="fade-right">
+          <h2>We're <span>redefining</span> online trading</h2>
+          <div class="typing-brand">
+            <span id="brand"></span>
+            <span class="btc-icon">₿</span>
+          </div>
+          <p>
+            Bytetrade has emerged as a powerhouse in the online trading
+            industry, combining cutting-edge technology with personalized
+            service to create an unparalleled trading experience. Our journey
+            began with a simple mission: to democratize access to global
+            financial markets.
+          </p>
+          <p>
+            Today, we serve over 250,000 active traders across 120+ countries,
+            providing them with institutional-grade trading tools, competitive
+            pricing, and dedicated support. Our commitment to innovation and
+            excellence has made us one of the fastest-growing brokers in the
+            industry.
+          </p>
+
+          <div class="about-hero-stats">
+            <div class="hero-stat">
+              <div class="number">250K+</div>
+              <div class="label">Active Traders</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number">120+</div>
+              <div class="label">Countries</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number">$50B+</div>
+              <div class="label">Trading Volume</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHART SIDE -->
+        <div class="chart-box">
+          <div id="tradingview_chart" style="height: 100%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSION & VISION -->
+    <section class="mission-vision">
+      <div class="mv-container">
+        <div class="mv-card" data-aos="flip-left" data-aos-delay="100">
+          <div class="mv-icon">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <h3>Our Mission</h3>
+          <p>
+            To empower traders worldwide with innovative technology, transparent
+            pricing, and exceptional support, enabling them to achieve their
+            financial goals in the global markets.
+          </p>
+        </div>
+
+        <div class="mv-card" data-aos="flip-right" data-aos-delay="200">
+          <div class="mv-icon">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <h3>Our Vision</h3>
+          <p>
+            To become the world's most trusted and innovative online trading
+            platform, setting new standards for excellence in the financial
+            services industry.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VALUES SECTION -->
+    <section class="values-section">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-subtitle">What We Stand For</div>
+        <h2>Our Core Values</h2>
+        <p>The principles that guide everything we do</p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card" data-aos="zoom-in" data-aos-delay="100">
+          <div class="value-icon">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <h3>Integrity</h3>
+          <p>
+            We operate with complete transparency and honesty, putting our
+            clients' interests first in every decision.
+          </p>
+        </div>
+
+        <div class="value-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="value-icon">
+            <i class="fa-solid fa-rocket"></i>
+          </div>
+          <h3>Innovation</h3>
+          <p>
+            Constantly pushing boundaries to deliver cutting-edge trading
+            technology and solutions.
+          </p>
+        </div>
+
+        <div class="value-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="value-icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <h3>Excellence</h3>
+          <p>
+            Striving for perfection in every aspect of our service, from
+            platform performance to customer support.
+          </p>
+        </div>
+
+        <div class="value-card" data-aos="zoom-in" data-aos-delay="400">
+          <div class="value-icon">
+            <i class="fa-solid fa-shield-heart"></i>
+          </div>
+          <h3>Security</h3>
+          <p>
+            Protecting our clients' funds and data with bank-grade security
+            measures and protocols.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM SECTION -->
+    <section class="team-section">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-subtitle">Leadership</div>
+        <h2>Meet Our Team</h2>
+        <p>Experienced professionals dedicated to your success</p>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="team-image">
+            <img
+              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000"
+              alt="John Smith"
+            />
+            <div class="team-social">
+              <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>John Smith</h3>
+            <div class="position">CEO & Founder</div>
+            <p class="bio">
+              20+ years in financial markets, former investment banker
+            </p>
+          </div>
+        </div>
+
+        <div class="team-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="team-image">
+            <img
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000"
+              alt="Sarah Johnson"
+            />
+            <div class="team-social">
+              <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Sarah Johnson</h3>
+            <div class="position">Chief Trading Officer</div>
+            <p class="bio">15 years experience in institutional trading</p>
+          </div>
+        </div>
+
+        <div class="team-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="team-image">
+            <img
+              src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000"
+              alt="Michael Chen"
+            />
+            <div class="team-social">
+              <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Michael Chen</h3>
+            <div class="position">Head of Technology</div>
+            <p class="bio">Former tech lead at major fintech companies</p>
+          </div>
+        </div>
+
+        <div class="team-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="team-image">
+            <img
+              src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000"
+              alt="Emily Davis"
+            />
+            <div class="team-social">
+              <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Emily Davis</h3>
+            <div class="position">Client Relations Director</div>
+            <p class="bio">Dedicated to exceptional customer experience</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE SECTION -->
+    <section class="timeline-section">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-subtitle">Our Journey</div>
+        <h2>The Bytetrade Story</h2>
+        <p>Milestones that shaped our success</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item" data-aos="fade-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2015</div>
+            <h3>Foundation</h3>
+            <p>
+              Bytetrade was founded with a vision to revolutionize online
+              trading.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-aos="fade-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2017</div>
+            <h3>International Expansion</h3>
+            <p>
+              Expanded operations to Europe and Asia, serving clients in 50+
+              countries.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-aos="fade-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2019</div>
+            <h3>Regulatory Milestone</h3>
+            <p>
+              Obtained licenses from top-tier regulators, enhancing client
+              security.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-aos="fade-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2021</div>
+            <h3>Platform Innovation</h3>
+            <p>
+              Launched next-generation trading platform with advanced features.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-aos="fade-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2024</div>
+            <h3>Global Recognition</h3>
+            <p>
+              Awarded "Best Trading Experience" by multiple financial
+              publications.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACHIEVEMENTS SECTION - WITH FIXED BACKGROUND -->
+    <section class="achievements-section">
+      <div class="achievements-grid">
+        <div class="achievement-card" data-aos="zoom-in" data-aos-delay="100">
+          <div class="achievement-icon">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div class="achievement-number">25+</div>
+          <div class="achievement-label">Industry Awards</div>
+        </div>
+
+        <div class="achievement-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="achievement-icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="achievement-number">250K+</div>
+          <div class="achievement-label">Happy Clients</div>
+        </div>
+
+        <div class="achievement-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="achievement-icon">
+            <i class="fa-solid fa-globe"></i>
+          </div>
+          <div class="achievement-number">120+</div>
+          <div class="achievement-label">Countries Served</div>
+        </div>
+
+        <div class="achievement-card" data-aos="zoom-in" data-aos-delay="400">
+          <div class="achievement-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="achievement-number">99.9%</div>
+          <div class="achievement-label">Platform Uptime</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTNERS SECTION -->
+    <section class="partners-section">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-subtitle">Trusted By</div>
+        <h2>Our Partners</h2>
+        <p>We collaborate with industry leaders</p>
+      </div>
+
+      <div class="partners-grid">
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="100">
+          <i class="fa-brands fa-microsoft"></i>
+        </div>
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="150">
+          <i class="fa-brands fa-google"></i>
+        </div>
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="200">
+          <i class="fa-brands fa-amazon"></i>
+        </div>
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="250">
+          <i class="fa-brands fa-apple"></i>
+        </div>
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="300">
+          <i class="fa-brands fa-ibm"></i>
+        </div>
+        <div class="partner-item" data-aos="fade-up" data-aos-delay="350">
+          <i class="fa-brands fa-oracle"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-subtitle">Testimonials</div>
+        <h2>What People Say About Us</h2>
+        <p>Real experiences from our valued clients</p>
+      </div>
+
+      <div class="testimonials-slider" data-aos="fade-up">
+        <div class="testimonial-slide">
+          <i class="fa-solid fa-quote-right"></i>
+          <p class="testimonial-text">
+            "Bytetrade has transformed my trading experience. The platform
+            is intuitive, execution is lightning fast, and their support team is
+            always there when I need them."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JD</div>
+            <div class="author-info">
+              <h4>James Davidson</h4>
+              <p>Professional Trader</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+      <div class="cta-content" data-aos="zoom-in">
+        <h2>Ready to Start Your Trading Journey?</h2>
+        <p>
+          Join thousands of successful traders on the Bytetrade platform
+        </p>
+        <a href="#" class="cta-button">Open Account Today</a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <div class="footer-logo">
+            <img
+              src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png"
+              alt="Globalextrade"
+            />
+          </div>
+          <p>
+            Bytetrade is a leading online broker providing access to global
+            financial markets with cutting-edge technology and exceptional
+            support.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#">Account Types</a></li>
+            <li><a href="#">Trading Instruments</a></li>
+            <li><a href="#">Platforms</a></li>
+            <li><a href="#">Education</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Funding Options</a></li>
+            <li><a href="#">Withdrawal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Risk Disclosure</a></li>
+            <li><a href="#">AML Policy</a></li>
+            <li><a href="#">Cookies Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="newsletter">
+          <h4>Market Insights</h4>
+          <p>Subscribe for daily market analysis and trading ideas</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" />
+            <button type="submit">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2024 Bytetrade. All rights reserved.</p>
+      </div>
+
+      <div class="risk-disclaimer">
+        <p>
+          Risk Warning: Trading Forex and CFDs carries a high level of risk to
+          your capital and may not be suitable for all investors. Please ensure
+          you fully understand the risks involved and seek independent advice if
+          necessary. Read our full risk disclosure.
+        </p>
+      </div>
+    </footer>
+
+    <!-- CHATBOT SYSTEM -->
+    <div class="chatbot-container">
+      <div class="chatbot-avatar" onclick="toggleChat()">
+        <i class="fa-solid fa-robot"></i>
+      </div>
+
+      <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h3><i class="fa-solid fa-robot"></i> Trading Assistant</h3>
+          <button class="close-chat" onclick="toggleChat()">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="message bot">
+            Hello! I'm your trading assistant. How can I help you today?
+          </div>
+        </div>
+
+        <div
+          class="typing-indicator"
+          id="typingIndicator"
+          style="display: none"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            id="chatInput"
+            placeholder="Type your message..."
+            onkeypress="handleKeyPress(event)"
+          />
+          <button onclick="sendMessage()">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <div class="scroll-to-top" id="scrollToTop">
+      <svg class="progress-ring" width="60" height="60">
+        <circle
+          cx="30"
+          cy="30"
+          r="28"
+          stroke="#ffd700"
+          stroke-width="4"
+          fill="none"
+        />
+      </svg>
+      <span class="percentage" id="scrollPercentage">0%</span>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100,
+        easing: "ease-in-out",
+      });
+
+      // MOBILE MENU - slide down (same as fixed index)
+      const toggle = document.getElementById("menu-toggle");
+      const nav = document.getElementById("nav-menu");
+      // Overlay not used, kept for compatibility
+      // const overlay = document.getElementById("nav-overlay");
+
+      function closeMenu() {
+        nav.classList.remove("active");
+        toggle.classList.remove("active");
+        document.body.classList.remove("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        nav.classList.toggle("active");
+        toggle.classList.toggle("active");
+
+        if (nav.classList.contains("active")) {
+          document.body.classList.add("menu-open");
+          toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
+        } else {
+          document.body.classList.remove("menu-open");
+          toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+      });
+
+      // Close menu when a link is clicked
+      document.querySelectorAll("#nav-menu a").forEach((link) => {
+        link.addEventListener("click", closeMenu);
+      });
+
+      // Close menu on window resize above mobile breakpoint
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 992) {
+          nav.classList.remove("active");
+          toggle.classList.remove("active");
+          document.body.classList.remove("menu-open");
+          toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+      });
+
+      // STICKY NAVBAR
+      const navbar = document.getElementById("navbar");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          navbar.classList.add("sticky");
+          navbar.classList.add("scrolled");
+          document.body.style.paddingTop = navbar.offsetHeight + "px";
+        } else {
+          navbar.classList.remove("sticky");
+          navbar.classList.remove("scrolled");
+          document.body.style.paddingTop = "0";
+        }
+      });
+
+      // CHATBOT
+      const chatbotWindow = document.getElementById("chatbotWindow");
+      const chatMessages = document.getElementById("chatMessages");
+      const chatInput = document.getElementById("chatInput");
+      const typingIndicator = document.getElementById("typingIndicator");
+
+      function toggleChat() {
+        chatbotWindow.classList.toggle("active");
+        if (chatbotWindow.classList.contains("active")) {
+          chatInput.focus();
+        }
+      }
+
+      function handleKeyPress(e) {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      }
+
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, "user");
+        chatInput.value = "";
+
+        typingIndicator.style.display = "flex";
+
+        setTimeout(() => {
+          typingIndicator.style.display = "none";
+          const response = getBotResponse(message);
+          addMessage(response, "bot");
+        }, 1500);
+      }
+
+      function addMessage(text, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}`;
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getBotResponse(message) {
+        const lowerMsg = message.toLowerCase();
+
+        if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) {
+          return "Hello! How can I help you today?";
+        } else if (lowerMsg.includes("about") || lowerMsg.includes("company")) {
+          return "Bytetrade is a leading online broker founded in 2015. We serve over 250,000 traders in 120+ countries with cutting-edge trading technology and exceptional support.";
+        } else if (
+          lowerMsg.includes("team") ||
+          lowerMsg.includes("leadership")
+        ) {
+          return "Our leadership team consists of experienced professionals from top financial institutions and technology companies, dedicated to your trading success.";
+        } else if (lowerMsg.includes("mission")) {
+          return "Our mission is to empower traders worldwide with innovative technology, transparent pricing, and exceptional support.";
+        } else if (lowerMsg.includes("values")) {
+          return "Our core values are Integrity, Innovation, Excellence, and Security. These principles guide everything we do.";
+        } else {
+          return "Thank you for your interest in Bytetrade. One of our representatives will assist you shortly. For immediate help, please contact our 24/7 live chat support.";
+        }
+      }
+
+      // SCROLL TO TOP
+      const scrollBtn = document.getElementById("scrollToTop");
+      const circle = scrollBtn.querySelector("circle");
+      const percentageSpan = document.getElementById("scrollPercentage");
+      const radius = 28;
+      const circumference = 2 * Math.PI * radius;
+
+      circle.style.strokeDasharray = `${circumference}`;
+
+      function updateScrollProgress() {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+
+        percentageSpan.textContent = Math.round(scrolled) + "%";
+
+        const offset = circumference - (scrolled / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+
+        if (winScroll > 300) {
+          scrollBtn.classList.add("visible");
+        } else {
+          scrollBtn.classList.remove("visible");
+        }
+      }
+
+      window.addEventListener("scroll", updateScrollProgress);
+
+      scrollBtn.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+
+      updateScrollProgress();
+
+      // LANGUAGE SELECTOR
+      const languageSelect = document.getElementById("languageSelect");
+      if (languageSelect) {
+        languageSelect.addEventListener("change", function () {
+          const lang = this.value;
+          console.log(`Language changed to: ${lang}`);
+
+          this.style.backgroundColor = "rgba(255, 215, 0, 0.2)";
+          setTimeout(() => {
+            this.style.backgroundColor = "";
+          }, 300);
+        });
+      }
+
+      // RIPPLE EFFECT
+      function addRippleEffect() {
+        const buttons = document.querySelectorAll(
+          ".cta-button, .newsletter-form button, .team-social a",
+        );
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", function (e) {
+            const ripple = document.createElement("span");
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + "px";
+            ripple.style.left = x + "px";
+            ripple.style.top = y + "px";
+            ripple.className = "ripple-effect";
+
+            button.appendChild(ripple);
+
+            setTimeout(() => {
+              ripple.remove();
+            }, 600);
+          });
+        });
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", () => {
+        addRippleEffect();
+
+        window.addEventListener("resize", () => {
+          if (navbar.classList.contains("sticky")) {
+            document.body.style.paddingTop = navbar.offsetHeight + "px";
+          }
+        });
+
+        AOS.refresh();
+        
+        // Initialize TradingView widget after DOM is loaded
+        if (typeof TradingView !== 'undefined') {
+          new TradingView.widget({
+            "container_id": "tradingview_chart",
+            "width": "100%",
+            "height": "100%",
+            "symbol": "BITSTAMP:BTCUSD",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "light",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "hide_top_toolbar": false,
+            "withdateranges": true
+          });
+        } else {
+          console.error("TradingView library not loaded");
+        }
+      });
+
+      /* BRAND TYPING EFFECT */
+      const brand = "Bytetrade";
+      const element = document.getElementById("brand");
+
+      let i = 0;
+
+      function typeBrand() {
+        element.classList.remove("glow");
+
+        if (i < brand.length) {
+          element.textContent += brand.charAt(i);
+          i++;
+
+          setTimeout(typeBrand, 120);
+        } else {
+          element.classList.add("glow");
+
+          setTimeout(() => {
+            element.textContent = "";
+            i = 0;
+            typeBrand();
+          }, 2500);
+        }
+      }
+
+      typeBrand();
+    </script>
+  </body>
+</html>

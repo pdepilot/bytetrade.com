@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Wallet - Admin Dashboard</title>
+    <link rel="stylesheet" href="/CSS/fundwallet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3>My Dashboard</h3>
+            
+            <div class="theme-container">
+                <span class="theme-label">Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <a href="admindash.html"><i class="fas fa-home"></i> <span>Home</span></a>
+            <a href="./fundwallet2.html" class="active"><i class="fas fa-wallet"></i> <span>Fund Wallet</span></a>
+            <a href="./kycapprove.html"><i class="fas fa-id-card"></i> <span>KYC approval</span></a>
+            <a href="./message.html"><i class="fas fa-envelope"></i> <span>Messages</span></a>
+            <a href="./viewusers.html"><i class="fas fa-users"></i> <span>View Users</span></a>
+            <a href="profilesetting.html"><i class="fas fa-cog"></i> <span>Settings</span></a>
+            <a href="../includes/logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </div>
+
+        <!-- Main Content - Fund Wallet Page -->
+        <div class="main">
+            <h1 class="page-title"><i class="fas fa-wallet"></i> Fund Wallet</h1>
+            
+            <!-- Stats Cards -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h2>$24,500</h2>
+                    <p>Total Funded</p>
+                </div>
+                <div class="stat-card">
+                    <h2>156</h2>
+                    <p>Transactions</p>
+                </div>
+                <div class="stat-card">
+                    <h2>$5,200</h2>
+                    <p>Today's Funding</p>
+                </div>
+            </div>
+            
+            <!-- Fund Wallet Form -->
+            <div class="fund-wallet-container">
+                <div class="fund-wallet-header">
+                    <h2>Fund User Wallet</h2>
+                    <p>Enter user details and funding information below</p>
+                </div>
+                
+                <form class="fund-form" id="fundForm">
+                    <!-- User Email (Optional) -->
+                    <div class="form-group">
+                        <label for="userEmail">User Email <span class="optional-label">(Optional)</span></label>
+                        <input type="email" id="userEmail" class="form-control" placeholder="user@example.com">
+                    </div>
+                    
+                    <!-- User Wallet ID (Optional) -->
+                    <div class="form-group">
+                        <label for="walletId">User Wallet ID <span class="optional-label">(Optional)</span></label>
+                        <input type="text" id="walletId" class="form-control" placeholder="Enter wallet ID">
+                    </div>
+                    
+                    <!-- Asset Selection -->
+                    <div class="form-group">
+                        <label for="asset">Select Asset</label>
+                        <div class="asset-select-container">
+                            <select id="asset" class="form-control" required>
+                                <option value="">-- Select Asset --</option>
+                                <option value="usdt" data-icon="asset-usdt">USDT (Tether)</option>
+                                <option value="btc" data-icon="asset-btc">BTC (Bitcoin)</option>
+                                <option value="eth" data-icon="asset-eth">ETH (Ethereum)</option>
+                                <option value="usdc" data-icon="asset-usdc">USDC (USD Coin)</option>
+                                <option value="bnb" data-icon="asset-bnb">BNB (Binance Coin)</option>
+                                <option value="trx" data-icon="asset-trx">TRX (Tron)</option>
+                                <option value="xrp" data-icon="asset-xrp">XRP (Ripple)</option>
+                            </select>
+                            <div class="asset-icon asset-usdt" id="assetIcon">₮</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Network Selection -->
+                    <div class="form-group network-group">
+                        <label>Select Network</label>
+                        <div class="network-options">
+                            <div class="network-option">
+                                <input type="radio" id="erc20" name="network" value="erc20" checked>
+                                <label for="erc20">ERC-20 (Ethereum)</label>
+                            </div>
+                            <div class="network-option">
+                                <input type="radio" id="trc20" name="network" value="trc20">
+                                <label for="trc20">TRC-20 (Tron)</label>
+                            </div>
+                            <div class="network-option">
+                                <input type="radio" id="bep20" name="network" value="bep20">
+                                <label for="bep20">BEP-20 (Binance)</label>
+                            </div>
+                            <div class="network-option">
+                                <input type="radio" id="sol" name="network" value="sol">
+                                <label for="sol">SOL (Solana)</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Wallet Address -->
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label for="walletAddress">Wallet Address</label>
+                        <input type="text" id="walletAddress" class="form-control" placeholder="Enter recipient wallet address" required>
+                    </div>
+                    
+                    <!-- Amount Input -->
+                    <div class="form-group amount-group" style="grid-column: span 2;">
+                        <label for="amount">Amount to Fund</label>
+                        <span class="currency-symbol" id="currencySymbol">$</span>
+                        <input type="number" id="amount" class="form-control amount-input" placeholder="0.00" step="0.01" min="0" required>
+                        <button type="button" class="max-button" id="maxButton">MAX</button>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="submit-group">
+                        <button type="submit" class="fund-btn" id="fundButton">
+                            <i class="fas fa-paper-plane"></i> Fund Wallet
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Transaction History -->
+            <div class="fund-wallet-container">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Transactions</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="transaction-list">
+                    <!-- Transaction 1 -->
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <div class="transaction-id">#TXN98765432</div>
+                            <div class="transaction-amount">+$1,250.00</div>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>User:</strong>
+                            <span>John Doe</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Asset:</strong>
+                            <span>USDT (TRC-20)</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Date:</strong>
+                            <span>Feb 13, 2026</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Wallet ID:</strong>
+                            <span>23536687</span>
+                        </div>
+                        <div class="transaction-status status-completed">Completed</div>
+                    </div>
+                    
+                    <!-- Transaction 2 -->
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <div class="transaction-id">#TXN87654321</div>
+                            <div class="transaction-amount">+$500.00</div>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>User:</strong>
+                            <span>Sarah Smith</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Asset:</strong>
+                            <span>BTC</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Date:</strong>
+                            <span>Feb 12, 2026</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Wallet ID:</strong>
+                            <span>23536688</span>
+                        </div>
+                        <div class="transaction-status status-completed">Completed</div>
+                    </div>
+                    
+                    <!-- Transaction 3 -->
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <div class="transaction-id">#TXN76543210</div>
+                            <div class="transaction-amount">+$2,000.00</div>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>User:</strong>
+                            <span>Michael Johnson</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Asset:</strong>
+                            <span>ETH (ERC-20)</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Date:</strong>
+                            <span>Feb 12, 2026</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Wallet ID:</strong>
+                            <span>23536689</span>
+                        </div>
+                        <div class="transaction-status status-pending">Pending</div>
+                    </div>
+                    
+                    <!-- Transaction 4 -->
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <div class="transaction-id">#TXN65432109</div>
+                            <div class="transaction-amount">+$750.00</div>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>User:</strong>
+                            <span>Alex Lee</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Asset:</strong>
+                            <span>USDC (BEP-20)</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Date:</strong>
+                            <span>Feb 11, 2026</span>
+                        </div>
+                        <div class="transaction-detail">
+                            <strong>Wallet ID:</strong>
+                            <span>23536690</span>
+                        </div>
+                        <div class="transaction-status status-completed">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality with localStorage persistence
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.checked = true;
+            }
+            
+            // Theme toggle event listener
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Sidebar active link functionality
+            const sidebarLinks = document.querySelectorAll('.sidebar a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+            
+            // Asset selection icon update
+            const assetSelect = document.getElementById('asset');
+            const assetIcon = document.getElementById('assetIcon');
+            const currencySymbol = document.getElementById('currencySymbol');
+            
+            assetSelect.addEventListener('change', () => {
+                const selectedOption = assetSelect.options[assetSelect.selectedIndex];
+                const iconClass = selectedOption.getAttribute('data-icon') || 'asset-usdt';
+                
+                // Update icon
+                assetIcon.className = 'asset-icon ' + iconClass;
+                
+                // Update currency symbol based on asset
+                const assetValue = assetSelect.value;
+                switch(assetValue) {
+                    case 'btc':
+                        currencySymbol.textContent = '₿';
+                        break;
+                    case 'eth':
+                        currencySymbol.textContent = 'Ξ';
+                        break;
+                    case 'usdt':
+                    case 'usdc':
+                        currencySymbol.textContent = '$';
+                        break;
+                    case 'bnb':
+                        currencySymbol.textContent = 'BNB';
+                        break;
+                    case 'trx':
+                        currencySymbol.textContent = 'TRX';
+                        break;
+                    case 'xrp':
+                        currencySymbol.textContent = 'XRP';
+                        break;
+                    default:
+                        currencySymbol.textContent = '$';
+                }
+            });
+            
+            // MAX button functionality
+            const maxButton = document.getElementById('maxButton');
+            const amountInput = document.getElementById('amount');
+            
+            maxButton.addEventListener('click', () => {
+                // In a real app, this would get the maximum available balance
+                // For demo, we'll set a reasonable max amount
+                amountInput.value = '10000.00';
+            });
+            
+            // Form submission
+            const fundForm = document.getElementById('fundForm');
+            const fundButton = document.getElementById('fundButton');
+            
+            fundForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form values
+                const userEmail = document.getElementById('userEmail').value;
+                const walletId = document.getElementById('walletId').value;
+                const asset = document.getElementById('asset').value;
+                const network = document.querySelector('input[name="network"]:checked').value;
+                const walletAddress = document.getElementById('walletAddress').value;
+                const amount = document.getElementById('amount').value;
+                
+                // Basic validation
+                if (!asset) {
+                    alert('Please select an asset');
+                    return;
+                }
+                
+                if (!walletAddress) {
+                    alert('Please enter a wallet address');
+                    return;
+                }
+                
+                if (!amount || parseFloat(amount) <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                // Show loading state
+                const originalText = fundButton.innerHTML;
+                fundButton.disabled = true;
+                fundButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Success message
+                    alert(`Wallet funding successful!\n\nAsset: ${asset.toUpperCase()}\nNetwork: ${network.toUpperCase()}\nAmount: ${amount}\nWallet: ${walletAddress}`);
+                    
+                    // Reset form (optional)
+                    // fundForm.reset();
+                    
+                    // Restore button
+                    fundButton.disabled = false;
+                    fundButton.innerHTML = originalText;
+                    
+                    // Update stats (simulation)
+                    const totalFunded = document.querySelector('.stats .stat-card:first-child h2');
+                    const transactionsCount = document.querySelector('.stats .stat-card:nth-child(2) h2');
+                    const todayFunded = document.querySelector('.stats .stat-card:nth-child(3) h2');
+                    
+                    let total = parseFloat(totalFunded.textContent.replace(/[^0-9.]/g, ''));
+                    let today = parseFloat(todayFunded.textContent.replace(/[^0-9.]/g, ''));
+                    let count = parseInt(transactionsCount.textContent);
+                    
+                    totalFunded.textContent = '$' + (total + parseFloat(amount)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    todayFunded.textContent = '$' + (today + parseFloat(amount)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    transactionsCount.textContent = count + 1;
+                    
+                }, 1500);
+            });
+            
+            // Real-time validation for wallet address
+            const walletAddressInput = document.getElementById('walletAddress');
+            walletAddressInput.addEventListener('input', () => {
+                const value = walletAddressInput.value;
+                if (value.length > 0 && value.length < 26) {
+                    walletAddressInput.setCustomValidity('Wallet address must be at least 26 characters');
+                } else {
+                    walletAddressInput.setCustomValidity('');
+                }
+            });
+            
+            // Amount input formatting
+            amountInput.addEventListener('input', () => {
+                if (amountInput.value && !isNaN(amountInput.value)) {
+                    const num = parseFloat(amountInput.value);
+                    if (num > 1000000) {
+                        amountInput.value = '1000000.00';
+                        alert('Maximum funding amount is $1,000,000');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

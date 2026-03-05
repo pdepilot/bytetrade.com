@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Wallet</title>
+    <link rel="stylesheet" href="/CSS/connectwallet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body class="dark-theme">
+    <!-- Header -->
+       <header>
+        <div class="header-left">
+            <a href="dashboard.html" class="back-btn" title="Back to Home">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="header-center">
+            <h1 class="header-title">Connect Wallet</h1>
+        </div>
+        <div class="header-right">
+            <a href="./notification.html" class="icon-button">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notification-badge"></span>
+            </a>
+            <a href="./profilesetting.html" class="icon-button">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+            <div class="theme-toggle-container">
+                <!-- <div class="theme-icon sun-icon"><i class="fas fa-sun"></i></div> -->
+                <label class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <div class="theme-icon moon-icon"><i class="fas fa-moon"></i></div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <!-- <h1 class="page-title">Connect Your Wallet</h1> -->
+            <p class="page-subtitle">Securely connect your crypto wallet to access all features, manage assets, and start trading on our platform.</p>
+        </div>
+        
+        <!-- Connect Wallet Section -->
+        <div class="connect-section" id="connect-section">
+            <div class="connect-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h2 class="connect-title">Choose Your Wallet</h2>
+            <p class="connect-description">
+                Select your preferred wallet provider to connect. We support all major wallets with secure, non-custodial connections. 
+                Your private keys never leave your device.
+            </p>
+            
+            <div class="wallets-grid">
+                <div class="wallet-option" data-wallet="metamask">
+                    <div class="wallet-icon metamask">
+                        <i class="fab fa-metamask"></i>
+                    </div>
+                    <div class="wallet-name">MetaMask</div>
+                </div>
+                <div class="wallet-option" data-wallet="trustwallet">
+                    <div class="wallet-icon trustwallet">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="wallet-name">Trust Wallet</div>
+                </div>
+                <div class="wallet-option" data-wallet="brave">
+                    <div class="wallet-icon brave">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="wallet-name">Binance</div>
+                </div>
+                <div class="wallet-option" data-wallet="brave">
+                    <div class="wallet-icon brave">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="wallet-name">Bybit</div>
+                </div>
+                <div class="wallet-option" data-wallet="coinbase">
+                    <div class="wallet-icon coinbase">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="wallet-name">Coinbase</div>
+                </div>
+                <div class="wallet-option" data-wallet="walletconnect">
+                    <div class="wallet-icon walletconnect">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="wallet-name">WalletConnect</div>
+                </div>
+                <div class="wallet-option" data-wallet="ledger">
+                    <div class="wallet-icon ledger">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="wallet-name">Ledger</div>
+                </div>
+                <div class="wallet-option" data-wallet="trezor">
+                    <div class="wallet-icon trezor">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="wallet-name">Trezor</div>
+                </div>
+                <div class="wallet-option" data-wallet="phantom">
+                    <div class="wallet-icon phantom">
+                        <i class="fas fa-ghost"></i>
+                    </div>
+                    <div class="wallet-name">Phantom</div>
+                </div>
+                <div class="wallet-option" data-wallet="brave">
+                    <div class="wallet-icon brave">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="wallet-name">Brave</div>
+                </div>
+                
+            </div>
+            
+            <p style="margin-top: 25px; color: var(--text-muted); font-size: 15px;">
+                <i class="fas fa-lock"></i> Your wallet connection is secure and encrypted. We never store your private keys.
+            </p>
+        </div>
+        
+        <!-- Connected Wallet Section (Initially Hidden) -->
+        <div class="connected-section" id="connected-section">
+            <div class="connected-header">
+                <div class="connected-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="connected-title">Wallet Connected Successfully</h2>
+            </div>
+            
+            <p style="margin-bottom: 20px; color: var(--text-muted);">
+                Your wallet has been securely connected to MoneySync. You can now access all platform features.
+            </p>
+            
+            <div class="wallet-address-container">
+                <div class="wallet-address" id="wallet-address">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb</div>
+                <button class="copy-btn" id="copy-address-btn">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            
+            <div class="wallet-balance">
+                <i class="fas fa-balance-scale"></i>
+                <span>Available Balance: <strong>$1,245.67</strong></span>
+            </div>
+            
+            <div style="background: rgba(128, 128, 128, 0.08); border-radius: 12px; padding: 15px; margin: 20px 0; font-size: 15px; line-height: 1.6;">
+                <strong>Network:</strong> Ethereum Mainnet<br>
+                <strong>Wallet Type:</strong> MetaMask<br>
+                <strong>Connection:</strong> Secure & Encrypted
+            </div>
+            
+            <button class="disconnect-btn" id="disconnect-btn">
+                <i class="fas fa-plug"></i> Disconnect Wallet
+            </button>
+        </div>
+        
+        <!-- Instructions Section -->
+        <div class="instructions-section">
+            <h2 class="instructions-title">
+                <i class="fas fa-info-circle"></i> How to Connect Your Wallet
+            </h2>
+            <ol class="steps-list">
+                <li class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Select Your Wallet</div>
+                    <div class="step-description">Choose your preferred wallet from the options above. Make sure you have the wallet app installed or browser extension enabled.</div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Approve Connection</div>
+                    <div class="step-description">Your wallet will prompt you to approve the connection. Review the permissions and confirm to proceed.</div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Start Trading</div>
+                    <div class="step-description">Once connected, you'll have full access to all platform features including buying, selling, and managing your crypto assets.</div>
+                </li>
+            </ol>
+            
+            <div class="security-tips">
+                <div class="security-title">
+                    <i class="fas fa-shield-alt"></i> Security Tips
+                </div>
+                <ul class="security-list">
+                    <li>Only connect wallets from official sources</li>
+                    <li>Never share your private keys or seed phrases</li>
+                    <li>Always verify the website URL before connecting</li>
+                    <li>Use hardware wallets for maximum security</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <div class="nav-label">Home</div>
+        </a>
+        <a href="swap.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-exchange-alt"></i></div>
+            <div class="nav-label">Swap</div>
+        </a>
+        <a href="center.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-plus-circle"></i></div>
+            <div class="nav-label">Action</div>
+        </a>
+        <a href="buycrypto.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="nav-label">Buy</div>
+        </a>
+        <a href="notifications.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-bell"></i></div>
+            <div class="nav-label">Notifications</div>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark-theme');
+                themeToggle.checked = false;
+            } else {
+                body.classList.add('dark-theme');
+                themeToggle.checked = true;
+            }
+            
+            // Theme toggle event listener
+            themeToggle.addEventListener('change', () => {
+                body.classList.toggle('dark-theme');
+                
+                // Save theme preference
+                if (body.classList.contains('dark-theme')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Wallet connection simulation
+            const walletOptions = document.querySelectorAll('.wallet-option');
+            const connectSection = document.getElementById('connect-section');
+            const connectedSection = document.getElementById('connected-section');
+            const walletAddressElement = document.getElementById('wallet-address');
+            const copyAddressBtn = document.getElementById('copy-address-btn');
+            const disconnectBtn = document.getElementById('disconnect-btn');
+            
+            // Wallet address mapping (for demo purposes)
+            const walletAddresses = {
+                metamask: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+                trustwallet: '0x8912dF85C1278799D6b1868b855D0A1e1e8c7D3F',
+                coinbase: '0x3a1F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F',
+                walletconnect: '0x9B8e7d3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c',
+                ledger: '0x5F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c',
+                trezor: '0x2D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F',
+                phantom: '0xA1F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8',
+                brave: '0xC7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3'
+            };
+            
+            // Connect wallet handler
+            walletOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const walletType = option.getAttribute('data-wallet');
+                    
+                    // Show visual feedback
+                    walletOptions.forEach(opt => opt.style.opacity = '0.6');
+                    option.style.opacity = '1';
+                    option.style.transform = 'scale(0.95)';
+                    
+                    // Simulate connection delay
+                    setTimeout(() => {
+                        // Update wallet address
+                        walletAddressElement.textContent = walletAddresses[walletType];
+                        
+                        // Show connected section, hide connect section
+                        connectSection.style.display = 'none';
+                        connectedSection.style.display = 'block';
+                        
+                        // Scroll to connected section
+                        connectedSection.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Reset wallet options
+                        walletOptions.forEach(opt => {
+                            opt.style.opacity = '1';
+                            opt.style.transform = 'none';
+                        });
+                        
+                        // Show success notification
+                        alert(`✅ Successfully connected to ${option.querySelector('.wallet-name').textContent}!`);
+                    }, 800);
+                });
+            });
+            
+            // Copy wallet address functionality
+            copyAddressBtn.addEventListener('click', () => {
+                const walletAddress = walletAddressElement.textContent;
+                navigator.clipboard.writeText(walletAddress).then(() => {
+                    // Visual feedback
+                    const originalIcon = copyAddressBtn.innerHTML;
+                    copyAddressBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    copyAddressBtn.style.background = '#2ecc71';
+                    
+                    setTimeout(() => {
+                        copyAddressBtn.innerHTML = originalIcon;
+                        copyAddressBtn.style.background = '';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy wallet address: ', err);
+                });
+            });
+            
+            // Disconnect wallet handler
+            disconnectBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to disconnect your wallet?')) {
+                    // Hide connected section, show connect section
+                    connectedSection.style.display = 'none';
+                    connectSection.style.display = 'block';
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    // Show confirmation
+                    alert('✅ Wallet disconnected successfully!');
+                }
+            });
+            
+            // Add subtle animation to wallet options on page load
+            walletOptions.forEach((option, index) => {
+                option.style.opacity = '0';
+                option.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    option.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    option.style.opacity = '1';
+                    option.style.transform = 'translateY(0)';
+                }, 300 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>

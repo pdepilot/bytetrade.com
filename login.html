@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bytetrade • unified access</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ---------- TOP BAR (copied from index) ---------- */
+    .top-bar {
+      background: #0f2b46;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 5%;
+      align-items: center;
+      font-size: 14px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1001;
+    }
+
+    .top-bar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      20% { left: 200%; }
+      100% { left: 200%; }
+    }
+
+    .top-bar i {
+      margin-right: 8px;
+      color: #ffd700;
+    }
+
+    .top-bar .fa-phone {
+      animation: softPulse 2s infinite;
+    }
+
+    @keyframes softPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .top-bar select {
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      backdrop-filter: blur(5px);
+      min-width: 140px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .top-bar select:hover {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .top-bar select:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    }
+
+    .top-bar select option {
+      background: #0f2b46;
+      color: #fff;
+      padding: 12px;
+    }
+
+    /* ---------- NAVBAR (slide-down mobile pattern, same as fixed index) ---------- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      position: relative;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 25, 45, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .navbar.scrolled nav a {
+      color: #ffffff;
+    }
+
+    .navbar.scrolled .logo img {
+      filter: brightness(0) invert(1);
+    }
+
+    .navbar.sticky {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar nav {
+      display: flex;
+      gap: 30px;
+    }
+
+    .navbar nav a {
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 14px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .navbar nav a:after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ffd700;
+      transition: 0.3s;
+    }
+
+    .navbar.scrolled nav a:after {
+      background: #ffd700;
+    }
+
+    .navbar nav a:hover:after,
+    .navbar nav a.active:after {
+      width: 100%;
+    }
+
+    .navbar nav a.active {
+      color: #0f2b46;
+      font-weight: 600;
+    }
+
+    .navbar.scrolled nav a.active {
+      color: #ffd700;
+    }
+
+    .logo img {
+      height: 80px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #0f2b46;
+      z-index: 1002;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar.scrolled .menu-toggle {
+      color: #ffd700;
+    }
+
+    .menu-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    /* mobile menu – slide down (exact same as fixed index) */
+    @media (max-width: 992px) {
+      .navbar {
+        flex-wrap: wrap;
+        position: relative;
+      }
+
+      .navbar nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #0a1a2f;
+        flex-direction: column;
+        padding: 0 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        z-index: 998;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+        gap: 0;
+        display: flex !important;
+        pointer-events: auto;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+      }
+
+      .navbar nav.active {
+        max-height: 550px;
+        padding: 15px 20px 25px;
+        border-top: 1px solid rgba(255,215,0,0.3);
+      }
+
+      .navbar nav a {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 14px 15px;
+        width: 100%;
+        text-align: left;
+        border-radius: 8px;
+        opacity: 1;
+        transform: none;
+        transition: background 0.2s, color 0.2s, transform 0.2s;
+        background: transparent;
+        border: 1px solid transparent;
+        letter-spacing: 0.5px;
+        pointer-events: auto;
+        margin: 2px 0;
+      }
+
+      .navbar nav a:hover {
+        background: #ffd700;
+        color: #0a1a2f;
+        border-color: #ffd700;
+        transform: translateX(5px);
+      }
+
+      .navbar nav a.active {
+        background: #ffd700;
+        color: #0a1a2f;
+        font-weight: 600;
+        border-color: #ffd700;
+      }
+
+      .navbar nav a:after {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .menu-toggle.active i {
+        transform: rotate(90deg);
+      }
+
+      .menu-toggle i {
+        transition: transform 0.3s ease;
+      }
+
+      .menu-toggle.active i::before {
+        content: "\f00d";
+      }
+
+      .nav-overlay {
+        display: none; /* not used, kept for compatibility */
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    /* ---------- MAIN CARD (morphing login/signup) ---------- */
+    .main-wrap {
+      min-height: calc(100vh - 250px); /* flexible */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 5%;
+      background: radial-gradient(circle at 20% 30%, #0b1b2f, #030712);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* animated orbs (same as previous outstanding design) */
+    .orb {
+      position: absolute;
+      width: 30vmax;
+      height: 30vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.25), rgba(0, 255, 255, 0.1) 70%);
+      filter: blur(80px);
+      z-index: 1;
+      animation: orbFloat 25s infinite alternate ease-in-out;
+    }
+    .orb1 { top: -10vh; right: -5vw; background: rgba(255, 215, 0, 0.25); }
+    .orb2 { bottom: -10vh; left: -5vw; background: rgba(0, 255, 255, 0.2); animation-delay: -5s; width: 40vmax; height: 40vmax; }
+    .orb3 { top: 40%; left: 30%; background: rgba(255, 100, 200, 0.15); filter: blur(100px); animation: orbFloat2 30s infinite; }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 8%) scale(1.2); }
+    }
+    @keyframes orbFloat2 {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+      50% { transform: translate(-5%, -10%) scale(1.3); opacity: 0.5; }
+      100% { transform: translate(5%, 10%) scale(1); opacity: 0.3; }
+    }
+
+    .morph-card {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      min-height: 600px;
+      background: rgba(10, 25, 45, 0.6);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 3.5rem;
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,215,0,0.1) inset, 0 0 40px rgba(0,255,255,0.2);
+      z-index: 10;
+      overflow: hidden;
+      transition: box-shadow 0.4s;
+    }
+    .morph-card:hover {
+      box-shadow: 0 50px 100px -15px #000, 0 0 0 2px rgba(255,215,0,0.3) inset, 0 0 60px cyan;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+    }
+
+    .panel {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease, box-shadow 0.4s;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+    }
+
+    .panel-login {
+      left: 0;
+      background: rgba(5, 15, 28, 0.7);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255,215,0,0.2);
+      border-radius: 3.5rem 0 0 3.5rem;
+      z-index: 3;
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+    .panel-signup {
+      right: 0;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border-left: 1px solid rgba(0,255,255,0.2);
+      border-radius: 0 3.5rem 3.5rem 0;
+      z-index: 2;
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+
+    /* animations */
+    .card-inner.signup-active .panel-login {
+      transform: translateX(-100%) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .card-inner.signup-active .panel-signup {
+      transform: translateX(-50%) scale(1.02);
+      box-shadow: -10px 0 40px rgba(0,255,255,0.3);
+      border-left: 2px solid #ffd700;
+      z-index: 10;
+    }
+    .card-inner.login-active .panel-signup {
+      transform: translateX(100%) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .card-inner.login-active .panel-login {
+      transform: translateX(50%) scale(1.02);
+      box-shadow: 10px 0 40px rgba(255,215,0,0.3);
+      border-right: 2px solid cyan;
+      z-index: 10;
+    }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(130deg, #ffd700, #00ffff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .panel .welcome-tag {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2.2rem;
+      border-left: 3px solid #ffd700;
+      padding-left: 1rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      transition: 0.2s;
+      z-index: 2;
+    }
+    .input-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,215,0,0.3);
+      border-radius: 60px;
+      padding: 1rem 1rem 1rem 3.2rem;
+      font-size: 1rem;
+      color: white;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-group input:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 20px rgba(0,255,255,0.5), inset 0 0 10px rgba(255,215,0,0.1);
+      background: rgba(0,0,0,0.4);
+    }
+    .input-group input::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem 0 2rem;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+    }
+    .options-row label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .options-row input[type="checkbox"] {
+      accent-color: #ffd700;
+    }
+    .options-row a {
+      color: #00ffff;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(0,255,255,0.4);
+    }
+    .options-row a:hover {
+      color: #ffd700;
+      border-bottom-color: #ffd700;
+    }
+
+    .action-btn {
+      background: linear-gradient(145deg, #ffd700, #ffb800);
+      border: none;
+      color: #0a1a2f;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px -8px rgba(255,215,0,0.5);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s;
+    }
+    .action-btn:hover::before {
+      left: 100%;
+    }
+    .action-btn:hover {
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 25px 30px -8px gold;
+    }
+    .action-btn i {
+      transition: transform 0.3s;
+    }
+    .action-btn:hover i {
+      transform: translateX(6px);
+    }
+
+    .cosmic-or {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    .cosmic-or hr {
+      flex: 1;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ffd700, cyan, transparent);
+    }
+
+    .social-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .social-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,215,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      font-size: 1.3rem;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+    .social-icon:hover {
+      background: cyan;
+      color: #0a1a2f;
+      border-color: cyan;
+      transform: translateY(-5px) rotate(8deg);
+      box-shadow: 0 10px 20px cyan;
+    }
+
+    .panel-footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+    }
+    .morph-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: rgba(255,255,255,0.02);
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255,215,0,0.3);
+      color: #ffd700;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      margin-top: 1rem;
+    }
+    .morph-link i {
+      transition: transform 0.3s, rotate 0.3s;
+    }
+    .morph-link:hover {
+      background: rgba(255,215,0,0.15);
+      border-color: cyan;
+      color: white;
+      gap: 1.2rem;
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px cyan;
+    }
+    .morph-link:hover i {
+      transform: rotate(360deg) scale(1.2);
+      color: cyan;
+    }
+
+    .morph-tab {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      width: 80px;
+      height: 80px;
+      background: #0f2b46;
+      border: 3px solid #ffd700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      font-size: 2rem;
+      box-shadow: 0 0 50px cyan, 0 0 100px gold;
+      cursor: pointer;
+      transition: 0.5s;
+      animation: pulseOrb 3s infinite alternate;
+    }
+    .morph-tab:hover {
+      transform: translate(-50%, -50%) scale(1.2);
+      background: #ffd700;
+      color: #0f2b46;
+      border-color: cyan;
+      box-shadow: 0 0 80px white;
+    }
+    @keyframes pulseOrb {
+      0% { box-shadow: 0 0 20px gold, 0 0 40px cyan; }
+      100% { box-shadow: 0 0 60px gold, 0 0 100px cyan; }
+    }
+
+    /* responsive card */
+    @media (max-width: 800px) {
+      .morph-card { border-radius: 2.5rem; }
+      .panel { width: 100% !important; position: relative; left: 0 !important; right: 0 !important; transform: none !important; opacity: 1 !important; border-radius: 2.5rem; }
+      .card-inner { display: flex; flex-direction: column; }
+      .panel-login, .panel-signup { position: relative; width: 100%; min-height: auto; }
+      .morph-tab { display: none; }
+      .card-inner.signup-active .panel-signup,
+      .card-inner.login-active .panel-login { transform: none; opacity: 1; }
+      .card-inner.signup-active .panel-login { display: none; }
+      .card-inner.login-active .panel-signup { display: none; }
+      .panel h2 { font-size: 2.2rem; }
+    }
+
+    /* ---------- FOOTER (exact copy from index) ---------- */
+    .footer {
+      background: #0a1a2f;
+      color: #ffffff;
+      padding: 80px 5% 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto 60px;
+    }
+
+    .footer-logo img {
+      height: 60px;
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-about p {
+      color: #94a3b8;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transition: 0.3s;
+    }
+
+    .social-links a:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: translateY(-3px);
+    }
+
+    .footer h4 {
+      font-size: 18px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .footer h4:after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: #ffd700;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: #ffd700;
+      padding-left: 5px;
+    }
+
+    .newsletter p {
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .newsletter-form button {
+      width: 50px;
+      height: 50px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter-form button:hover {
+      background: #ffffff;
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .risk-disclaimer {
+      max-width: 1200px;
+      margin: 30px auto 0;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+
+    /* tiny extra */
+    .glow-text {
+      text-shadow: 0 0 15px cyan, 0 0 30px gold;
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-left">
+      <i class="fa-solid fa-phone"></i> +2348031901791
+      <i class="fa-solid fa-envelope" style="margin-left: 20px"></i> support@globalextrade.com
+    </div>
+    <div class="top-right">
+      <select id="languageSelect">
+        <option value="en">🌐 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="es">🇪🇸 Spanish</option>
+        <option value="de">🇩🇪 German</option>
+        <option value="pt">🇵🇹 Portuguese</option>
+        <option value="it">🇮🇹 Italian</option>
+        <option value="ar">🇸🇦 Arabic</option>
+        <option value="zh">🇨🇳 Chinese</option>
+        <option value="ja">🇯🇵 Japanese</option>
+        <option value="hi">🇮🇳 Hindi</option>
+        <option value="ru">🇷🇺 Russian</option>
+        <option value="tr">🇹🇷 Turkish</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- NAVBAR (same as other pages) -->
+  <header class="navbar" id="navbar">
+    <div class="logo">
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade Logo" />
+    </div>
+    <nav id="nav-menu">
+      <a href="index.html">HOME</a>
+      <a href="#">BROKER</a>
+      <a href="about.html">ABOUT US</a>
+      <a href="#">FAQS</a>
+      <a href="contact.html">CONTACTS</a>
+      <a href="#" class="active">LOGIN</a>
+      <a href="#">REGISTER</a>
+      <a href="#">DOWNLOAD APP</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </header>
+  <!-- overlay (unused but kept for compatibility) -->
+  <div class="nav-overlay" id="nav-overlay" style="display: none;"></div>
+
+  <!-- MAIN CONTENT : MORPHING CARD (login/signup) -->
+  <div class="main-wrap">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="morph-card">
+      <div class="card-inner login-active" id="cardInner">
+        <!-- LOGIN PANEL -->
+        <div class="panel panel-login">
+          <h2>welcome back<span class="glow-text">.</span></h2>
+          <div class="welcome-tag">access your global portfolio</div>
+          <form>
+            <div class="input-group">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="email" placeholder="email or user ID" required>
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="password" required>
+            </div>
+            <div class="options-row">
+              <label><input type="checkbox"> remember me</label>
+              <a href="#">forgot?</a>
+            </div>
+            <button type="submit" class="action-btn">
+              <span>log in</span>
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+          </form>
+          <div class="cosmic-or"><hr><span>OR CONTINUE WITH</span><hr></div>
+          <div class="social-row">
+            <a href="#" class="social-icon"><i class="fa-brands fa-google"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-apple"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
+          </div>
+          <div class="panel-footer">
+            <span style="color: #aaa;">new to Bytetrade?</span>
+            <a href="#" class="morph-link" id="goToSignup">
+              <i class="fa-regular fa-star"></i> create account <i class="fa-regular fa-hand-point-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- SIGNUP PANEL -->
+        <div class="panel panel-signup">
+          <h2>join the future<span class="glow-text">.</span></h2>
+          <div class="welcome-tag">start trading in minutes</div>
+          <form>
+            <div class="input-group">
+              <i class="fa-regular fa-user"></i>
+              <input type="text" placeholder="full name" required>
+            </div>
+            <div class="input-group">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="email" placeholder="email address" required>
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="password" required>
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="confirm password" required>
+            </div>
+            <div class="options-row">
+              <label><input type="checkbox" required> I accept <a href="#" style="color:cyan;">terms</a></label>
+            </div>
+            <button type="submit" class="action-btn">
+              <span>sign up</span>
+              <i class="fa-regular fa-paper-plane"></i>
+            </button>
+          </form>
+          <div class="cosmic-or"><hr><span>OR SIGN UP WITH</span><hr></div>
+          <div class="social-row">
+            <a href="#" class="social-icon"><i class="fa-brands fa-google"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-apple"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+          </div>
+          <div class="panel-footer">
+            <span style="color: #aaa;">already a member?</span>
+            <a href="#" class="morph-link" id="goToLogin">
+              <i class="fa-regular fa-star"></i> log in <i class="fa-regular fa-hand-point-left"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- central morph toggle -->
+        <div class="morph-tab" id="morphToggle">
+          <i class="fa-solid fa-rotate"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (identical to other pages) -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade"></div>
+        <p>Bytetrade is a leading online broker providing access to global financial markets with cutting-edge technology and exceptional support.</p>
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="#">Account Types</a></li><li><a href="#">Trading Instruments</a></li><li><a href="#">Platforms</a></li><li><a href="#">Education</a></li></ul></div>
+      <div><h4>Support</h4><ul class="footer-links"><li><a href="#">Help Center</a></li><li><a href="#">FAQs</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Funding Options</a></li><li><a href="#">Withdrawal</a></li></ul></div>
+      <div><h4>Legal</h4><ul class="footer-links"><li><a href="#">Terms & Conditions</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Risk Disclosure</a></li><li><a href="#">AML Policy</a></li><li><a href="#">Cookies Policy</a></li></ul></div>
+      <div class="newsletter"><h4>Market Insights</h4><p>Subscribe for daily market analysis</p><form class="newsletter-form"><input type="email" placeholder="Your email"><button type="submit"><i class="fa-solid fa-paper-plane"></i></button></form></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Bytetrade. All rights reserved.</p></div>
+    <div class="risk-disclaimer"><p>Risk Warning: Trading Forex and CFDs carries a high level of risk to your capital and may not be suitable for all investors. Please ensure you fully understand the risks involved and seek independent advice if necessary. Read our full risk disclosure.</p></div>
+  </footer>
+
+  <!-- SCRIPTS: navbar + morphing logic -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS (optional, but keeps consistency)
+    AOS.init({ duration: 800, once: true, offset: 100, easing: "ease-in-out" });
+
+    // MOBILE MENU (slide down, same as index)
+    const toggle = document.getElementById("menu-toggle");
+    const nav = document.getElementById("nav-menu");
+    function closeMenu() {
+      nav.classList.remove("active");
+      toggle.classList.remove("active");
+      document.body.classList.remove("menu-open");
+      toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    }
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      toggle.classList.toggle("active");
+      if (nav.classList.contains("active")) {
+        document.body.classList.add("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
+      } else {
+        document.body.classList.remove("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+    });
+    document.querySelectorAll("#nav-menu a").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 992) {
+        nav.classList.remove("active");
+        toggle.classList.remove("active");
+        document.body.classList.remove("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+    });
+
+    // STICKY NAVBAR
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add("sticky", "scrolled");
+        document.body.style.paddingTop = navbar.offsetHeight + "px";
+      } else {
+        navbar.classList.remove("sticky", "scrolled");
+        document.body.style.paddingTop = "0";
+      }
+    });
+
+    // LANGUAGE SELECT (cosmetic)
+    const langSelect = document.getElementById("languageSelect");
+    if (langSelect) {
+      langSelect.addEventListener("change", function() {
+        this.style.backgroundColor = "rgba(255, 215, 0, 0.2)";
+        setTimeout(() => this.style.backgroundColor = "", 300);
+      });
+    }
+
+    // MORPHING CARD LOGIC
+    const cardInner = document.getElementById('cardInner');
+    const goToSignup = document.getElementById('goToSignup');
+    const goToLogin = document.getElementById('goToLogin');
+    const morphToggle = document.getElementById('morphToggle');
+
+    function setActive(panel) {
+      cardInner.classList.remove('login-active', 'signup-active');
+      if (panel === 'login') {
+        cardInner.classList.add('login-active');
+      } else {
+        cardInner.classList.add('signup-active');
+      }
+      const icon = morphToggle.querySelector('i');
+      if (icon) {
+        icon.style.transform = panel === 'signup' ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    }
+
+    if (goToSignup) {
+      goToSignup.addEventListener('click', (e) => { e.preventDefault(); setActive('signup'); });
+    }
+    if (goToLogin) {
+      goToLogin.addEventListener('click', (e) => { e.preventDefault(); setActive('login'); });
+    }
+    if (morphToggle) {
+      morphToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isLogin = cardInner.classList.contains('login-active');
+        setActive(isLogin ? 'signup' : 'login');
+      });
+    }
+
+    // prevent form submit for demo
+    document.querySelectorAll('form').forEach(f => {
+      f.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('✨ welcome to Bytetrade — this is a demo interaction');
+      });
+    });
+
+    // extra: update time (tiny flair)
+    function updateTime() {
+      const d = new Date();
+      const t = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      // not essential, just a small detail
+    }
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
