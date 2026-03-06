@@ -1,355 +1,1258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connect Wallet</title>
-    <link rel="stylesheet" href="/CSS/connectwallet.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bytetrade • connect wallet · web3 gateway</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Clash Display (via CDN) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      min-height: 100vh;
+      background: #020617; /* deep space */
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      color: #fff;
+    }
+
+    /* ===== TOP BAR (fully responsive, same as index) ===== */
+    .top-bar {
+      background: #0f2b46;
+      color: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: clamp(8px, 2vh, 10px) 5%;
+      align-items: center;
+      font-size: clamp(12px, 3.5vw, 14px);
+      position: relative;
+      overflow: hidden;
+      z-index: 1001;
+      gap: clamp(8px, 2vw, 15px);
+    }
+    .top-bar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shimmer 8s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      20% { left: 200%; }
+      100% { left: 200%; }
+    }
+    .top-bar i { margin-right: 5px; color: #ffd700; }
+    .top-bar .fa-phone { animation: softPulse 2s infinite; }
+    @keyframes softPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    .top-bar select {
+      padding: clamp(6px, 1.5vh, 8px) clamp(15px, 4vw, 20px);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: clamp(12px, 3.5vw, 14px);
+      backdrop-filter: blur(5px);
+      min-width: clamp(120px, 30vw, 140px);
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+    .top-bar select:hover {
+      background: rgba(255,215,0,0.15);
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255,215,0,0.3);
+      transform: translateY(-2px);
+    }
+    @media (max-width: 600px) {
+      .top-bar { flex-direction: column; text-align: center; }
+      .top-left { justify-content: center; flex-wrap: wrap; }
+    }
+
+    /* ===== NAVBAR (fully responsive, slide-down) ===== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(10px, 2.5vh, 15px) 5%;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      z-index: 999;
+      position: relative;
+    }
+    .navbar.scrolled {
+      background: rgba(10,25,45,0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+    }
+    .navbar.scrolled nav a { color: #ffffff; }
+    .navbar.scrolled .logo img { filter: brightness(0) invert(1); }
+    .navbar.sticky {
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+    .navbar nav {
+      display: flex;
+      gap: clamp(15px, 3vw, 30px);
+    }
+    .navbar nav a {
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: 500;
+      font-size: clamp(12px, 3vw, 14px);
+      transition: 0.3s;
+      position: relative;
+    }
+    .navbar nav a:after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ffd700;
+      transition: 0.3s;
+    }
+    .navbar.scrolled nav a:after { background: #ffd700; }
+    .navbar nav a:hover:after,
+    .navbar nav a.active:after { width: 100%; }
+    .navbar nav a.active {
+      color: #0f2b46;
+      font-weight: 600;
+    }
+    .navbar.scrolled nav a.active { color: #ffd700; }
+    .logo img {
+      height: clamp(50px, 12vw, 80px);
+      transition: all 0.3s ease;
+    }
+    .menu-toggle {
+      display: none;
+      font-size: clamp(22px, 6vw, 28px);
+      cursor: pointer;
+      color: #0f2b46;
+      z-index: 1002;
+      transition: transform 0.3s ease;
+    }
+    .navbar.scrolled .menu-toggle { color: #ffd700; }
+    .menu-toggle:hover { transform: scale(1.1); }
+
+    @media (max-width: 992px) {
+      .navbar { flex-wrap: wrap; }
+      .navbar nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #0a1a2f;
+        flex-direction: column;
+        padding: 0 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        z-index: 998;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+        gap: 0;
+        display: flex !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+      }
+      .navbar nav.active {
+        max-height: 550px;
+        padding: 15px 20px 25px;
+        border-top: 1px solid rgba(255,215,0,0.3);
+      }
+      .navbar nav a {
+        color: #ffffff;
+        font-size: 16px;
+        padding: 14px 15px;
+        width: 100%;
+        text-align: left;
+        border-radius: 8px;
+        background: transparent;
+        border: 1px solid transparent;
+        margin: 2px 0;
+      }
+      .navbar nav a:hover {
+        background: #ffd700;
+        color: #0a1a2f;
+        transform: translateX(5px);
+      }
+      .navbar nav a.active {
+        background: #ffd700;
+        color: #0a1a2f;
+      }
+      .navbar nav a:after { display: none; }
+      .menu-toggle { display: block; }
+      .menu-toggle.active i { transform: rotate(90deg); }
+      .menu-toggle.active i::before { content: "\f00d"; }
+      body.menu-open { overflow: hidden; }
+    }
+
+    /* ===== MAIN – STUNNING CONNECT WALLET SECTION ===== */
+    .wallet-universe {
+      position: relative;
+      min-height: calc(100vh - 250px);
+      background: radial-gradient(ellipse at 30% 40%, #1a2f4e, #030712 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 5%;
+      overflow: hidden;
+    }
+
+    /* floating orbs – cosmic */
+    .cosmic-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.5;
+      z-index: 1;
+      animation: orbFloat 20s infinite alternate;
+    }
+    .orb-a {
+      top: 5%;
+      left: -5%;
+      width: min(600px, 70vw);
+      height: min(600px, 70vw);
+      background: radial-gradient(circle, #ffd700, transparent 80%);
+    }
+    .orb-b {
+      bottom: 0;
+      right: -5%;
+      width: min(700px, 80vw);
+      height: min(700px, 80vw);
+      background: radial-gradient(circle, cyan, transparent 80%);
+      animation-delay: -5s;
+    }
+    .orb-c {
+      top: 40%;
+      left: 30%;
+      width: min(400px, 50vw);
+      height: min(400px, 50vw);
+      background: radial-gradient(circle, #b026ff, transparent 80%);
+      animation-duration: 30s;
+    }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 10%) scale(1.3); }
+    }
+
+    /* main glass card */
+    .wallet-citadel {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      max-width: 1300px;
+      background: rgba(8, 20, 40, 0.4);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 4rem;
+      padding: clamp(2rem, 6vh, 4rem) clamp(2rem, 5vw, 4rem);
+      box-shadow: 0 50px 100px -30px black, 0 0 0 1px rgba(255,215,0,0.2) inset, 0 0 80px rgba(0,255,255,0.3);
+      transition: box-shadow 0.5s;
+    }
+    .wallet-citadel:hover {
+      box-shadow: 0 60px 120px -30px #000, 0 0 0 2px #ffd700 inset, 0 0 100px cyan;
+    }
+
+    /* header */
+    .wallet-header {
+      text-align: center;
+      margin-bottom: clamp(2.5rem, 8vh, 4rem);
+    }
+    .wallet-header h1 {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      filter: drop-shadow(0 0 30px rgba(255,215,0,0.5));
+    }
+    .wallet-header p {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: rgba(255,255,255,0.7);
+      max-width: 700px;
+      margin: 1.5rem auto 0;
+      border-bottom: 2px dashed rgba(0,255,255,0.3);
+      padding-bottom: 1.5rem;
+    }
+
+    /* wallet grid – madly stunning cards */
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(1.2rem, 3vw, 2rem);
+      margin: 3rem 0 4rem;
+    }
+
+    @media (max-width: 1100px) { .wallet-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .wallet-grid { grid-template-columns: 1fr; } }
+
+    .wallet-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 3rem;
+      padding: clamp(1.8rem, 4vh, 2.5rem) 1.5rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .wallet-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,215,0,0.3), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .wallet-card:hover::before {
+      opacity: 1;
+    }
+    .wallet-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      border-color: #ffd700;
+      box-shadow: 0 30px 50px -20px gold, 0 0 0 2px rgba(0,255,255,0.5) inset, 0 0 60px cyan;
+    }
+
+    .wallet-icon {
+      width: clamp(70px, 15vw, 100px);
+      height: clamp(70px, 15vw, 100px);
+      background: linear-gradient(145deg, #0f2b46, #1a3f62);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      color: #ffd700;
+      border: 3px solid rgba(255,215,0,0.5);
+      transition: 0.5s;
+      position: relative;
+      z-index: 5;
+    }
+    .wallet-card:hover .wallet-icon {
+      transform: rotateY(360deg);
+      background: #ffd700;
+      color: #0f2b46;
+      border-color: cyan;
+      box-shadow: 0 0 50px gold;
+    }
+
+    .wallet-name {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 600;
+      background: linear-gradient(145deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .wallet-desc {
+      font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.2rem;
+    }
+
+    .connect-badge {
+      background: rgba(0,255,255,0.1);
+      border: 1px solid cyan;
+      border-radius: 60px;
+      padding: 0.5rem 1.5rem;
+      font-size: 0.9rem;
+      color: cyan;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: 0.8rem;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+    .wallet-card:hover .connect-badge {
+      background: cyan;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px cyan;
+    }
+
+    /* featured / new wallet highlight */
+    .wallet-card.featured {
+      background: linear-gradient(145deg, rgba(255,215,0,0.1), rgba(0,255,255,0.05));
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 60px rgba(255,215,0,0.3);
+    }
+    .wallet-card.featured .wallet-icon {
+      border-color: cyan;
+    }
+    /* CHATBOT - FULLY RESPONSIVE */
+    .chatbot-container {
+      position: fixed;
+      bottom: clamp(20px, 5vh, 40px);
+      right: clamp(10px, 3vw, 20px);
+      z-index: 1000;
+    }
+
+    .chatbot-avatar {
+      width: clamp(50px, 12vw, 70px);
+      height: clamp(50px, 12vw, 70px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f2b46, #1a3f62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 3px solid #ffd700;
+      transition: all 0.3s ease;
+      animation: avatarPulse 2s infinite;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chatbot-avatar i {
+      font-size: clamp(25px, 6vw, 35px);
+      color: #ffd700;
+    }
+
+    .chatbot-avatar:hover {
+      transform: scale(1.1) rotate(5deg);
+      border-color: #00ffff;
+      box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+    }
+
+    @keyframes avatarPulse {
+      0%,100% { box-shadow: 0 5px 20px rgba(255,215,0,0.3); }
+      50% { box-shadow: 0 5px 30px rgba(255,215,0,0.6), 0 0 20px #00ffff; }
+    }
+
+    .chatbot-window {
+      position: absolute;
+      bottom: 60px;
+      right: 0;
+      width: min(350px, 90vw);
+      height: min(450px, 70vh);
+      background: rgba(15,43,70,0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+      transform-origin: bottom right;
+      animation: chatOpen 0.3s ease;
+    }
+
+    @keyframes chatOpen {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chatbot-window.active { display: flex; }
+
+    .chatbot-header {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      padding: clamp(15px, 3vh, 20px);
+      color: #0f2b46;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chatbot-header h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: clamp(16px, 4vw, 18px);
+    }
+
+    .chatbot-header i { font-size: clamp(18px, 4.5vw, 20px); }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: #0f2b46;
+      font-size: clamp(18px, 4.5vw, 20px);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .close-chat:hover { transform: rotate(90deg); }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 15px;
+      border-radius: 15px;
+      font-size: clamp(12px, 3.5vw, 14px);
+      line-height: 1.5;
+      animation: messageSlide 0.3s ease;
+    }
+
+    @keyframes messageSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+      border: 1px solid rgba(255,215,0,0.2);
+    }
+
+    .message.user {
+      background: #ffd700;
+      color: #0f2b46;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      width: fit-content;
+      border-bottom-left-radius: 5px;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .chat-input-area {
+      padding: clamp(15px, 3vh, 20px);
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,215,0,0.3);
+      transition: all 0.3s ease;
+      min-width: 0;
+    }
+
+    .chat-input-area input:focus {
+      outline: none;
+      border-color: #ffd700;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .chat-input-area input::placeholder { color: rgba(255,255,255,0.5); }
+
+    .chat-input-area button {
+      width: clamp(40px, 10vw, 45px);
+      height: clamp(40px, 10vw, 45px);
+      border-radius: 50%;
+      background: #ffd700;
+      border: none;
+      color: #0f2b46;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .chat-input-area button:hover {
+      transform: scale(1.1) rotate(5deg);
+      background: #fff;
+    }
+
+    /* SCROLL TO TOP BUTTON - FULLY RESPONSIVE */
+    .scroll-to-top {
+      position: fixed;
+      bottom: clamp(80px, 15vh, 115px);
+      right: clamp(10px, 3vw, 23px);
+      width: clamp(45px, 12vw, 60px);
+      height: clamp(45px, 12vw, 60px);
+      border-radius: 50%;
+      background: #0f2b46;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      font-weight: bold;
+      font-size: clamp(12px, 3vw, 14px);
+    }
+
+    .scroll-to-top.visible { opacity: 1; visibility: visible; }
+
+    .scroll-to-top:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+      background: #ffd700;
+      color: #0f2b46;
+    }
+
+    .scroll-to-top .progress-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scroll-to-top svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .scroll-to-top circle {
+      fill: none;
+      stroke: #ffd700;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 176;
+      stroke-dashoffset: 176;
+      transition: stroke-dashoffset 0.3s ease;
+    }
+
+    .scroll-to-top:hover circle { stroke: #0f2b46; }
+
+    .scroll-to-top .percentage {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(12px, 3vw, 14px);
+      font-weight: bold;
+    }
+
+
+    /* new tag */
+    .new-tag {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: #ffd700;
+      color: #0a1a2f;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 20px gold;
+      z-index: 10;
+    }
+
+    /* bottom actions */
+    .wallet-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1.5rem, 5vw, 3rem);
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,215,0,0.3);
+    }
+
+    .btn-cosmic {
+      background: transparent;
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: 600;
+      padding: clamp(0.8rem, 2.5vh, 1.2rem) clamp(1.8rem, 5vw, 2.8rem);
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.4s;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .btn-cosmic::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+    .btn-cosmic:hover::before {
+      left: 100%;
+    }
+    .btn-cosmic:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: scale(1.08);
+      box-shadow: 0 0 50px gold;
+      border-color: cyan;
+    }
+
+    .btn-cosmic i {
+      transition: transform 0.3s;
+    }
+    .btn-cosmic:hover i {
+      transform: translateX(8px) rotate(10deg);
+    }
+
+    .info-text {
+      color: rgba(255,255,255,0.5);
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .info-text i {
+      color: cyan;
+    }
+
+    /* glow animation */
+    .glow-pulse {
+      animation: pulseGlow 3s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { text-shadow: 0 0 10px gold, 0 0 20px cyan; }
+      50% { text-shadow: 0 0 30px gold, 0 0 60px cyan; }
+      100% { text-shadow: 0 0 10px gold, 0 0 20px cyan; }
+    }
+
+    /* ===== FOOTER (fully responsive, same as index) ===== */
+    .footer {
+      background: #0a1a2f;
+      color: #ffffff;
+      padding: clamp(50px, 10vh, 80px) 5% 30px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      gap: clamp(20px, 5vw, 40px);
+      max-width: 1200px;
+      margin: 0 auto 60px;
+    }
+    @media (max-width: 1200px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-logo img {
+      height: clamp(40px, 10vw, 60px);
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+    .footer-about p {
+      color: #94a3b8;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .social-links a {
+      width: clamp(35px, 8vw, 40px);
+      height: clamp(35px, 8vw, 40px);
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: 0.3s;
+      font-size: clamp(16px, 4vw, 18px);
+    }
+    .social-links a:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: translateY(-3px);
+    }
+    .footer h4 {
+      font-size: clamp(16px, 4vw, 18px);
+      margin-bottom: 25px;
+      position: relative;
+    }
+    .footer h4:after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: #ffd700;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: 0.3s;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+    .footer-links a:hover {
+      color: #ffd700;
+      padding-left: 5px;
+    }
+    .newsletter p {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+    .newsletter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .newsletter-form input {
+      flex: 1 1 150px;
+      padding: clamp(10px, 2.5vh, 12px);
+      border: none;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      min-width: 150px;
+    }
+    .newsletter-form button {
+      width: clamp(45px, 10vw, 50px);
+      height: clamp(45px, 10vw, 50px);
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .newsletter-form button:hover {
+      background: #fff;
+      transform: scale(1.1) rotate(5deg);
+    }
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      font-size: clamp(12px, 3vw, 14px);
+    }
+    .risk-disclaimer {
+      max-width: 1200px;
+      margin: 30px auto 0;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      font-size: clamp(11px, 3vw, 12px);
+      color: #94a3b8;
+    }
+  </style>
 </head>
-<body class="dark-theme">
-    <!-- Header -->
-       <header>
-        <div class="header-left">
-            <a href="dashboard.html" class="back-btn" title="Back to Home">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-        </div>
-        <div class="header-center">
-            <h1 class="header-title">Connect Wallet</h1>
-        </div>
-        <div class="header-right">
-            <a href="./notification.html" class="icon-button">
-                <i class="fa-solid fa-bell"></i>
-                <span class="notification-badge"></span>
-            </a>
-            <a href="./profilesetting.html" class="icon-button">
-                <i class="fa-solid fa-gear"></i>
-            </a>
-            <div class="theme-toggle-container">
-                <!-- <div class="theme-icon sun-icon"><i class="fas fa-sun"></i></div> -->
-                <label class="theme-toggle">
-                    <input type="checkbox" id="theme-toggle" checked>
-                    <span class="slider"></span>
-                </label>
-                <div class="theme-icon moon-icon"><i class="fas fa-moon"></i></div>
-            </div>
-        </div>
-    </header>
-
-
-    <!-- Main Content -->
-    <div class="container">
-        <div class="page-header">
-            <!-- <h1 class="page-title">Connect Your Wallet</h1> -->
-            <p class="page-subtitle">Securely connect your crypto wallet to access all features, manage assets, and start trading on our platform.</p>
-        </div>
-        
-        <!-- Connect Wallet Section -->
-        <div class="connect-section" id="connect-section">
-            <div class="connect-icon">
-                <i class="fas fa-wallet"></i>
-            </div>
-            <h2 class="connect-title">Choose Your Wallet</h2>
-            <p class="connect-description">
-                Select your preferred wallet provider to connect. We support all major wallets with secure, non-custodial connections. 
-                Your private keys never leave your device.
-            </p>
-            
-            <div class="wallets-grid">
-                <div class="wallet-option" data-wallet="metamask">
-                    <div class="wallet-icon metamask">
-                        <i class="fab fa-metamask"></i>
-                    </div>
-                    <div class="wallet-name">MetaMask</div>
-                </div>
-                <div class="wallet-option" data-wallet="trustwallet">
-                    <div class="wallet-icon trustwallet">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <div class="wallet-name">Trust Wallet</div>
-                </div>
-                <div class="wallet-option" data-wallet="brave">
-                    <div class="wallet-icon brave">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="wallet-name">Binance</div>
-                </div>
-                <div class="wallet-option" data-wallet="brave">
-                    <div class="wallet-icon brave">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="wallet-name">Bybit</div>
-                </div>
-                <div class="wallet-option" data-wallet="coinbase">
-                    <div class="wallet-icon coinbase">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="wallet-name">Coinbase</div>
-                </div>
-                <div class="wallet-option" data-wallet="walletconnect">
-                    <div class="wallet-icon walletconnect">
-                        <i class="fas fa-qrcode"></i>
-                    </div>
-                    <div class="wallet-name">WalletConnect</div>
-                </div>
-                <div class="wallet-option" data-wallet="ledger">
-                    <div class="wallet-icon ledger">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <div class="wallet-name">Ledger</div>
-                </div>
-                <div class="wallet-option" data-wallet="trezor">
-                    <div class="wallet-icon trezor">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div class="wallet-name">Trezor</div>
-                </div>
-                <div class="wallet-option" data-wallet="phantom">
-                    <div class="wallet-icon phantom">
-                        <i class="fas fa-ghost"></i>
-                    </div>
-                    <div class="wallet-name">Phantom</div>
-                </div>
-                <div class="wallet-option" data-wallet="brave">
-                    <div class="wallet-icon brave">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="wallet-name">Brave</div>
-                </div>
-                
-            </div>
-            
-            <p style="margin-top: 25px; color: var(--text-muted); font-size: 15px;">
-                <i class="fas fa-lock"></i> Your wallet connection is secure and encrypted. We never store your private keys.
-            </p>
-        </div>
-        
-        <!-- Connected Wallet Section (Initially Hidden) -->
-        <div class="connected-section" id="connected-section">
-            <div class="connected-header">
-                <div class="connected-icon">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h2 class="connected-title">Wallet Connected Successfully</h2>
-            </div>
-            
-            <p style="margin-bottom: 20px; color: var(--text-muted);">
-                Your wallet has been securely connected to MoneySync. You can now access all platform features.
-            </p>
-            
-            <div class="wallet-address-container">
-                <div class="wallet-address" id="wallet-address">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb</div>
-                <button class="copy-btn" id="copy-address-btn">
-                    <i class="fas fa-copy"></i>
-                </button>
-            </div>
-            
-            <div class="wallet-balance">
-                <i class="fas fa-balance-scale"></i>
-                <span>Available Balance: <strong>$1,245.67</strong></span>
-            </div>
-            
-            <div style="background: rgba(128, 128, 128, 0.08); border-radius: 12px; padding: 15px; margin: 20px 0; font-size: 15px; line-height: 1.6;">
-                <strong>Network:</strong> Ethereum Mainnet<br>
-                <strong>Wallet Type:</strong> MetaMask<br>
-                <strong>Connection:</strong> Secure & Encrypted
-            </div>
-            
-            <button class="disconnect-btn" id="disconnect-btn">
-                <i class="fas fa-plug"></i> Disconnect Wallet
-            </button>
-        </div>
-        
-        <!-- Instructions Section -->
-        <div class="instructions-section">
-            <h2 class="instructions-title">
-                <i class="fas fa-info-circle"></i> How to Connect Your Wallet
-            </h2>
-            <ol class="steps-list">
-                <li class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-title">Select Your Wallet</div>
-                    <div class="step-description">Choose your preferred wallet from the options above. Make sure you have the wallet app installed or browser extension enabled.</div>
-                </li>
-                <li class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-title">Approve Connection</div>
-                    <div class="step-description">Your wallet will prompt you to approve the connection. Review the permissions and confirm to proceed.</div>
-                </li>
-                <li class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-title">Start Trading</div>
-                    <div class="step-description">Once connected, you'll have full access to all platform features including buying, selling, and managing your crypto assets.</div>
-                </li>
-            </ol>
-            
-            <div class="security-tips">
-                <div class="security-title">
-                    <i class="fas fa-shield-alt"></i> Security Tips
-                </div>
-                <ul class="security-list">
-                    <li>Only connect wallets from official sources</li>
-                    <li>Never share your private keys or seed phrases</li>
-                    <li>Always verify the website URL before connecting</li>
-                    <li>Use hardware wallets for maximum security</li>
-                </ul>
-            </div>
-        </div>
+<body>
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-left">
+      <i class="fa-solid fa-phone"></i> +2348031901791
+      <i class="fa-solid fa-envelope" style="margin-left: 20px"></i> support@bytetrade.com
     </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-home"></i></div>
-            <div class="nav-label">Home</div>
-        </a>
-        <a href="swap.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-exchange-alt"></i></div>
-            <div class="nav-label">Swap</div>
-        </a>
-        <a href="center.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-plus-circle"></i></div>
-            <div class="nav-label">Action</div>
-        </a>
-        <a href="buycrypto.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-shopping-cart"></i></div>
-            <div class="nav-label">Buy</div>
-        </a>
-        <a href="notifications.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-bell"></i></div>
-            <div class="nav-label">Notifications</div>
-        </a>
+    <div class="top-right">
+      <select id="languageSelect">
+        <option value="en">🌐 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="es">🇪🇸 Spanish</option>
+        <option value="de">🇩🇪 German</option>
+        <option value="pt">🇵🇹 Portuguese</option>
+        <option value="it">🇮🇹 Italian</option>
+        <option value="ar">🇸🇦 Arabic</option>
+        <option value="zh">🇨🇳 Chinese</option>
+        <option value="ja">🇯🇵 Japanese</option>
+        <option value="hi">🇮🇳 Hindi</option>
+        <option value="ru">🇷🇺 Russian</option>
+        <option value="tr">🇹🇷 Turkish</option>
+      </select>
     </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('theme-toggle');
-            const body = document.body;
-            
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                body.classList.remove('dark-theme');
-                themeToggle.checked = false;
-            } else {
-                body.classList.add('dark-theme');
-                themeToggle.checked = true;
-            }
-            
-            // Theme toggle event listener
-            themeToggle.addEventListener('change', () => {
-                body.classList.toggle('dark-theme');
-                
-                // Save theme preference
-                if (body.classList.contains('dark-theme')) {
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    localStorage.setItem('theme', 'light');
-                }
-            });
-            
-            // Wallet connection simulation
-            const walletOptions = document.querySelectorAll('.wallet-option');
-            const connectSection = document.getElementById('connect-section');
-            const connectedSection = document.getElementById('connected-section');
-            const walletAddressElement = document.getElementById('wallet-address');
-            const copyAddressBtn = document.getElementById('copy-address-btn');
-            const disconnectBtn = document.getElementById('disconnect-btn');
-            
-            // Wallet address mapping (for demo purposes)
-            const walletAddresses = {
-                metamask: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-                trustwallet: '0x8912dF85C1278799D6b1868b855D0A1e1e8c7D3F',
-                coinbase: '0x3a1F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F',
-                walletconnect: '0x9B8e7d3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c',
-                ledger: '0x5F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c',
-                trezor: '0x2D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F',
-                phantom: '0xA1F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8',
-                brave: '0xC7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3F8c7D3'
-            };
-            
-            // Connect wallet handler
-            walletOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    const walletType = option.getAttribute('data-wallet');
-                    
-                    // Show visual feedback
-                    walletOptions.forEach(opt => opt.style.opacity = '0.6');
-                    option.style.opacity = '1';
-                    option.style.transform = 'scale(0.95)';
-                    
-                    // Simulate connection delay
-                    setTimeout(() => {
-                        // Update wallet address
-                        walletAddressElement.textContent = walletAddresses[walletType];
-                        
-                        // Show connected section, hide connect section
-                        connectSection.style.display = 'none';
-                        connectedSection.style.display = 'block';
-                        
-                        // Scroll to connected section
-                        connectedSection.scrollIntoView({ behavior: 'smooth' });
-                        
-                        // Reset wallet options
-                        walletOptions.forEach(opt => {
-                            opt.style.opacity = '1';
-                            opt.style.transform = 'none';
-                        });
-                        
-                        // Show success notification
-                        alert(`✅ Successfully connected to ${option.querySelector('.wallet-name').textContent}!`);
-                    }, 800);
-                });
-            });
-            
-            // Copy wallet address functionality
-            copyAddressBtn.addEventListener('click', () => {
-                const walletAddress = walletAddressElement.textContent;
-                navigator.clipboard.writeText(walletAddress).then(() => {
-                    // Visual feedback
-                    const originalIcon = copyAddressBtn.innerHTML;
-                    copyAddressBtn.innerHTML = '<i class="fas fa-check"></i>';
-                    copyAddressBtn.style.background = '#2ecc71';
-                    
-                    setTimeout(() => {
-                        copyAddressBtn.innerHTML = originalIcon;
-                        copyAddressBtn.style.background = '';
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy wallet address: ', err);
-                });
-            });
-            
-            // Disconnect wallet handler
-            disconnectBtn.addEventListener('click', () => {
-                if (confirm('Are you sure you want to disconnect your wallet?')) {
-                    // Hide connected section, show connect section
-                    connectedSection.style.display = 'none';
-                    connectSection.style.display = 'block';
-                    
-                    // Scroll to top
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    
-                    // Show confirmation
-                    alert('✅ Wallet disconnected successfully!');
-                }
-            });
-            
-            // Add subtle animation to wallet options on page load
-            walletOptions.forEach((option, index) => {
-                option.style.opacity = '0';
-                option.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    option.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    option.style.opacity = '1';
-                    option.style.transform = 'translateY(0)';
-                }, 300 + (index * 100));
-            });
-        });
-    </script>
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="logo">
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade Logo" />
+    </div>
+    <nav id="nav-menu">
+      <a href="index.html">HOME</a>
+      <a href="#">BROKER</a>
+      <a href="about.html">ABOUT US</a>
+      <a href="faqs.html">FAQS</a>
+      <a href="contact.html">CONTACTS</a>
+      <a href="login.html">LOGIN/SIGNUP</a>
+      <a href="connect-wallet.html" class="active">CONNECT WALLET</a>
+      <a href="download-app.html">DOWNLOAD APP</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </header>
+  <div class="nav-overlay" id="nav-overlay" style="display: none;"></div>
+
+  <!-- MAIN – CONNECT WALLET UNIVERSE -->
+  <section class="wallet-universe">
+    <div class="cosmic-orb orb-a"></div>
+    <div class="cosmic-orb orb-b"></div>
+    <div class="cosmic-orb orb-c"></div>
+
+    <div class="wallet-citadel">
+      <div class="wallet-header">
+        <h1 class="glow-pulse">enter the web3 realm</h1>
+        <p>seamlessly connect your favourite wallet and unlock the future of trading</p>
+      </div>
+
+      <!-- wallet grid – absolutely stunning -->
+      <div class="wallet-grid">
+        <!-- metamask -->
+        <div class="wallet-card featured">
+          <div class="new-tag">⭐ most used</div>
+          <div class="wallet-icon"><i class="fa-brands fa-firefox"></i></div>
+          <div class="wallet-name">MetaMask</div>
+          <div class="wallet-desc">the OG Ethereum wallet · 30M+ users</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- wallet connect -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-solid fa-qrcode"></i></div>
+          <div class="wallet-name">WalletConnect</div>
+          <div class="wallet-desc">connect any mobile wallet via QR</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- coinbase -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-brands fa-bitcoin"></i></div>
+          <div class="wallet-name">Coinbase Wallet</div>
+          <div class="wallet-desc">self-custody · multi-chain</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- phantom -->
+        <div class="wallet-card">
+          <div class="new-tag">NEW</div>
+          <div class="wallet-icon"><i class="fa-solid fa-ghost"></i></div>
+          <div class="wallet-name">Phantom</div>
+          <div class="wallet-desc">solana + polygon · blazing fast</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- trust wallet -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="wallet-name">Trust Wallet</div>
+          <div class="wallet-desc">binance's official · 10M+ assets</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- ledger -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-solid fa-usb"></i></div>
+          <div class="wallet-name">Ledger</div>
+          <div class="wallet-desc">hardware security · max safety</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- rainbow -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-solid fa-rainbow"></i></div>
+          <div class="wallet-name">Rainbow</div>
+          <div class="wallet-desc">beautiful ethereum experience</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+        <!-- argent -->
+        <div class="wallet-card">
+          <div class="wallet-icon"><i class="fa-solid fa-rocket"></i></div>
+          <div class="wallet-name">Argent</div>
+          <div class="wallet-desc">smart wallet · L2 ready</div>
+          <div class="connect-badge"><i class="fa-regular fa-circle-check"></i> connect</div>
+        </div>
+      </div>
+
+      <!-- bottom actions: connect & more -->
+      <div class="wallet-actions">
+        <button class="btn-cosmic" id="connectAllDemo"><i class="fa-solid fa-plug"></i> simulate connect</button>
+        <div class="info-text"><i class="fa-solid fa-circle-info"></i> we never access your private keys · 100% secure</div>
+        <button class="btn-cosmic"><i class="fa-regular fa-circle-question"></i> learn about wallets</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade"></div>
+        <p>Bytetrade is a leading online broker providing access to global financial markets with cutting-edge technology and exceptional support.</p>
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="#">Account Types</a></li><li><a href="#">Trading Instruments</a></li><li><a href="#">Platforms</a></li><li><a href="#">Education</a></li></ul></div>
+      <div><h4>Support</h4><ul class="footer-links"><li><a href="#">Help Center</a></li><li><a href="#">FAQs</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Funding Options</a></li><li><a href="#">Withdrawal</a></li></ul></div>
+      <div><h4>Legal</h4><ul class="footer-links"><li><a href="#">Terms & Conditions</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Risk Disclosure</a></li><li><a href="#">AML Policy</a></li><li><a href="#">Cookies Policy</a></li></ul></div>
+      <div class="newsletter"><h4>Market Insights</h4><p>Subscribe for daily market analysis</p><form class="newsletter-form"><input type="email" placeholder="Your email"><button type="submit"><i class="fa-solid fa-paper-plane"></i></button></form></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Bytetrade. All rights reserved.</p></div>
+    <div class="risk-disclaimer"><p>Risk Warning: Trading Forex and CFDs carries a high level of risk to your capital and may not be suitable for all investors. Please ensure you fully understand the risks involved and seek independent advice if necessary.</p></div>
+  </footer>
+
+   <!-- CHATBOT SYSTEM -->
+  <div class="chatbot-container">
+    <div class="chatbot-avatar" onclick="toggleChat()"><i class="fa-solid fa-robot"></i></div>
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header"><h3><i class="fa-solid fa-robot"></i> Trading Assistant</h3><button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-times"></i></button></div>
+      <div class="chat-messages" id="chatMessages"><div class="message bot">Hello! I'm your trading assistant. How can I help you today?</div></div>
+      <div class="typing-indicator" id="typingIndicator" style="display: none;"><span></span><span></span><span></span></div>
+      <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)"><button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button></div>
+    </div>
+  </div>
+
+  <!-- SCROLL TO TOP BUTTON -->
+  <div class="scroll-to-top" id="scrollToTop">
+    <svg class="progress-ring" width="60" height="60"><circle cx="30" cy="30" r="28" stroke="#ffd700" stroke-width="4" fill="none"/></svg>
+    <span class="percentage" id="scrollPercentage">0%</span>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    // mobile menu (same as index)
+    const toggle = document.getElementById("menu-toggle");
+    const nav = document.getElementById("nav-menu");
+    function closeMenu() {
+      nav.classList.remove("active");
+      toggle.classList.remove("active");
+      document.body.classList.remove("menu-open");
+      toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    }
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      toggle.classList.toggle("active");
+      if (nav.classList.contains("active")) {
+        document.body.classList.add("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
+      } else {
+        document.body.classList.remove("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+    });
+    document.querySelectorAll("#nav-menu a").forEach(link => link.addEventListener("click", closeMenu));
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 992) {
+        nav.classList.remove("active");
+        toggle.classList.remove("active");
+        document.body.classList.remove("menu-open");
+        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+    });
+
+    // sticky navbar
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add("sticky", "scrolled");
+        document.body.style.paddingTop = navbar.offsetHeight + "px";
+      } else {
+        navbar.classList.remove("sticky", "scrolled");
+        document.body.style.paddingTop = "0";
+      }
+    });
+
+    // language select (cosmetic)
+    document.getElementById("languageSelect")?.addEventListener("change", function(e) {
+      this.style.backgroundColor = "rgba(255,215,0,0.2)";
+      setTimeout(() => this.style.backgroundColor = "", 300);
+    });
+
+    // SIMULATE CONNECT – MADLY STUNNING INTERACTION
+    const connectBtn = document.getElementById('connectAllDemo');
+    const cards = document.querySelectorAll('.wallet-card');
+    if (connectBtn) {
+      connectBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // pick a random wallet to "connect"
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        const luckyCard = cards[randomIndex];
+        const walletName = luckyCard.querySelector('.wallet-name')?.innerText || 'wallet';
+        
+        // visual feedback – explode with joy
+        luckyCard.style.transform = 'scale(1.1)';
+        luckyCard.style.borderColor = '#00ffff';
+        luckyCard.style.boxShadow = '0 0 100px cyan, 0 0 200px gold';
+        luckyCard.style.transition = 'all 0.4s';
+        
+        // change badge text
+        const badge = luckyCard.querySelector('.connect-badge');
+        if (badge) {
+          badge.innerHTML = '<i class="fa-regular fa-circle-check"></i> connected!';
+          badge.style.background = '#00ffff';
+          badge.style.color = '#0a1a2f';
+        }
+        
+        // show alert (but stunning)
+        setTimeout(() => {
+          alert(`✨✨ ${walletName} SIMULATED connection! ✨✨\n\nYou're now part of the Bytetrade web3 realm. (demo only)`);
+          // reset after alert
+          luckyCard.style.transform = '';
+          luckyCard.style.borderColor = '';
+          luckyCard.style.boxShadow = '';
+          if (badge) {
+            badge.innerHTML = '<i class="fa-regular fa-circle-check"></i> connect';
+            badge.style.background = '';
+            badge.style.color = '';
+          }
+        }, 300);
+      });
+    }
+
+    // add click on each card for direct "connection"
+    cards.forEach(card => {
+      card.addEventListener('click', function() {
+        const wallet = this.querySelector('.wallet-name')?.innerText || 'Wallet';
+        alert(`🟡 ${wallet} connection flow — demo version. In production you'd be redirected to sign.`);
+      });
+    });
+
+    // CHATBOT
+    const chatbotWindow = document.getElementById("chatbotWindow");
+    const chatMessages = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
+    const typingIndicator = document.getElementById("typingIndicator");
+
+    function toggleChat() {
+      chatbotWindow.classList.toggle("active");
+      if (chatbotWindow.classList.contains("active")) chatInput.focus();
+    }
+
+    function handleKeyPress(e) { if (e.key === "Enter") sendMessage(); }
+
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+      addMessage(message, "user");
+      chatInput.value = "";
+      typingIndicator.style.display = "flex";
+      setTimeout(() => {
+        typingIndicator.style.display = "none";
+        addMessage(getBotResponse(message), "bot");
+      }, 1500);
+    }
+
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message ${sender}`;
+      messageDiv.textContent = text;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+      const lowerMsg = message.toLowerCase();
+      if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) return "Hello! How can I help you today?";
+      if (lowerMsg.includes("about") || lowerMsg.includes("company")) return "Bytetrade is a leading online broker founded in 2015. We serve over 250,000 traders in 120+ countries with cutting-edge trading technology and exceptional support.";
+      if (lowerMsg.includes("team") || lowerMsg.includes("leadership")) return "Our leadership team consists of experienced professionals from top financial institutions and technology companies, dedicated to your trading success.";
+      if (lowerMsg.includes("mission")) return "Our mission is to empower traders worldwide with innovative technology, transparent pricing, and exceptional support.";
+      if (lowerMsg.includes("values")) return "Our core values are Integrity, Innovation, Excellence, and Security. These principles guide everything we do.";
+      return "Thank you for your interest in Bytetrade. One of our representatives will assist you shortly. For immediate help, please contact our 24/7 live chat support.";
+    }
+
+    // SCROLL TO TOP
+    const scrollBtn = document.getElementById("scrollToTop");
+    const circle = scrollBtn.querySelector("circle");
+    const percentageSpan = document.getElementById("scrollPercentage");
+    const radius = 28, circumference = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = circumference;
+
+    function updateScrollProgress() {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100 || 0;
+      percentageSpan.textContent = Math.round(scrolled) + "%";
+      circle.style.strokeDashoffset = circumference - (scrolled / 100) * circumference;
+      scrollBtn.classList.toggle("visible", winScroll > 300);
+    }
+
+    window.addEventListener("scroll", updateScrollProgress);
+    scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    updateScrollProgress();
+
+  </script>
 </body>
 </html>

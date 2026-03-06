@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bytetrade • knowledge unleashed</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk + Playfair for accent -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ---------- TOP BAR (fully responsive, from index) ---------- */
+    .top-bar {
+      background: #0f2b46;
+      color: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: clamp(8px, 2vh, 10px) 5%;
+      align-items: center;
+      font-size: clamp(12px, 3.5vw, 14px);
+      position: relative;
+      overflow: hidden;
+      z-index: 1001;
+      gap: clamp(8px, 2vw, 15px);
+    }
+
+    .top-bar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      20% { left: 200%; }
+      100% { left: 200%; }
+    }
+
+    .top-bar i {
+      margin-right: 5px;
+      color: #ffd700;
+    }
+
+    .top-bar .fa-phone {
+      animation: softPulse 2s infinite;
+    }
+
+    @keyframes softPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .top-bar select {
+      padding: clamp(6px, 1.5vh, 8px) clamp(15px, 4vw, 20px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: clamp(12px, 3.5vw, 14px);
+      backdrop-filter: blur(5px);
+      min-width: clamp(120px, 30vw, 140px);
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .top-bar select:hover {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .top-bar select:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    }
+
+    .top-bar select option {
+      background: #0f2b46;
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .top-bar { flex-direction: column; text-align: center; }
+      .top-left { justify-content: center; flex-wrap: wrap; }
+    }
+
+    /* ---------- NAVBAR (fully responsive, slide-down, from index) ---------- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(10px, 2.5vh, 15px) 5%;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      position: relative;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 25, 45, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .navbar.scrolled nav a {
+      color: #ffffff;
+    }
+
+    .navbar.scrolled .logo img {
+      filter: brightness(0) invert(1);
+    }
+
+    .navbar.sticky {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar nav {
+      display: flex;
+      gap: clamp(15px, 3vw, 30px);
+    }
+
+    .navbar nav a {
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: 500;
+      font-size: clamp(12px, 3vw, 14px);
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .navbar nav a:after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ffd700;
+      transition: 0.3s;
+    }
+
+    .navbar.scrolled nav a:after {
+      background: #ffd700;
+    }
+
+    .navbar nav a:hover:after,
+    .navbar nav a.active:after {
+      width: 100%;
+    }
+
+    .navbar nav a.active {
+      color: #0f2b46;
+      font-weight: 600;
+    }
+
+    .navbar.scrolled nav a.active {
+      color: #ffd700;
+    }
+
+    .logo img {
+      height: clamp(50px, 12vw, 80px);
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: clamp(22px, 6vw, 28px);
+      cursor: pointer;
+      color: #0f2b46;
+      z-index: 1002;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar.scrolled .menu-toggle {
+      color: #ffd700;
+    }
+
+    .menu-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    /* mobile menu – slide down (fully responsive) */
+    @media (max-width: 992px) {
+      .navbar {
+        flex-wrap: wrap;
+        position: relative;
+      }
+
+      .navbar nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #0a1a2f;
+        flex-direction: column;
+        padding: 0 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        z-index: 998;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+        gap: 0;
+        display: flex !important;
+        pointer-events: auto;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+      }
+
+      .navbar nav.active {
+        max-height: 550px;
+        padding: 15px 20px 25px;
+        border-top: 1px solid rgba(255,215,0,0.3);
+      }
+
+      .navbar nav a {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 14px 15px;
+        width: 100%;
+        text-align: left;
+        border-radius: 8px;
+        opacity: 1;
+        transform: none;
+        transition: background 0.2s, color 0.2s, transform 0.2s;
+        background: transparent;
+        border: 1px solid transparent;
+        letter-spacing: 0.5px;
+        pointer-events: auto;
+        margin: 2px 0;
+      }
+
+      .navbar nav a:hover {
+        background: #ffd700;
+        color: #0a1a2f;
+        border-color: #ffd700;
+        transform: translateX(5px);
+      }
+
+      .navbar nav a.active {
+        background: #ffd700;
+        color: #0a1a2f;
+        font-weight: 600;
+        border-color: #ffd700;
+      }
+
+      .navbar nav a:after {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .menu-toggle.active i {
+        transform: rotate(90deg);
+      }
+
+      .menu-toggle i {
+        transition: transform 0.3s ease;
+      }
+
+      .menu-toggle.active i::before {
+        content: "\f00d";
+      }
+
+      .nav-overlay {
+        display: none;
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    /* ---------- PAGE HEADER (stunning) ---------- */
+    .faq-header {
+      background: linear-gradient(135deg, #0b1c2f, #1b3b5c);
+      padding: clamp(50px, 12vh, 100px) 5% clamp(40px, 10vh, 80px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    .faq-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,215,0,0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 70%, rgba(0,255,255,0.15) 0%, transparent 50%);
+      z-index: 1;
+      animation: glowPulse 8s infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .faq-header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 10vw, 5rem);
+      font-weight: 700;
+      background: linear-gradient(130deg, #ffd700, #00ffff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      animation: titleGlitch 3s infinite;
+    }
+
+    @keyframes titleGlitch {
+      0%, 100% { text-shadow: 0.05em 0 0 rgba(255,215,0,0.3), -0.05em -0.025em 0 rgba(0,255,255,0.3); }
+      25% { text-shadow: -0.05em 0.025em 0 rgba(255,215,0,0.3), 0.05em 0 0 rgba(0,255,255,0.3); }
+      50% { text-shadow: 0.075em 0.05em 0 rgba(255,215,0,0.3), -0.05em -0.05em 0 rgba(0,255,255,0.3); }
+      75% { text-shadow: -0.05em 0 0 rgba(255,215,0,0.3), 0.025em 0.05em 0 rgba(0,255,255,0.3); }
+    }
+
+    .faq-header .subhead {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: rgba(255,255,255,0.8);
+      max-width: 700px;
+      margin: 1.5rem auto 0;
+      position: relative;
+      z-index: 2;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      border-left: 4px solid #ffd700;
+      border-right: 4px solid cyan;
+      padding: 0.5rem 1.5rem;
+      display: inline-block;
+      backdrop-filter: blur(5px);
+      border-radius: 60px;
+    }
+
+    /* floating orbs (same vibe) */
+    .faq-orb {
+      position: absolute;
+      width: min(40vmax, 800px);
+      height: min(40vmax, 800px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(255,215,0,0.2), transparent 70%);
+      filter: blur(60px);
+      z-index: 0;
+      animation: orbDrift 20s infinite alternate;
+    }
+    .faq-orb1 { top: -20vh; right: -10vw; background: rgba(0,255,255,0.15); }
+    .faq-orb2 { bottom: -20vh; left: -10vw; background: rgba(255,215,0,0.2); animation-delay: -5s; }
+
+    @keyframes orbDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 10%) scale(1.2); }
+    }
+
+    /* ---------- SEARCH SECTION ---------- */
+    .search-section {
+      padding: 3rem 5%;
+      background: #f8fafc;
+      position: relative;
+      z-index: 5;
+    }
+
+    .search-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      gap: 1rem;
+      background: white;
+      border-radius: 60px;
+      padding: 0.5rem;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.2), 0 0 0 2px rgba(255,215,0,0.2);
+      transition: 0.4s;
+    }
+    .search-container:focus-within {
+      box-shadow: 0 20px 50px -15px gold, 0 0 0 3px cyan;
+    }
+
+    .search-container input {
+      flex: 1;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      border-radius: 60px;
+      outline: none;
+      background: transparent;
+    }
+
+    .search-container button {
+      background: linear-gradient(145deg, #0f2b46, #1a3f62);
+      border: none;
+      color: #ffd700;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: 0.3s;
+      border: 1px solid rgba(255,215,0,0.3);
+    }
+    .search-container button:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px gold;
+    }
+
+    /* ---------- CATEGORY TABS ---------- */
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem auto 3rem;
+      max-width: 1200px;
+      padding: 0 5%;
+    }
+
+    .cat-btn {
+      background: transparent;
+      border: 2px solid rgba(255,215,0,0.3);
+      color: #0f2b46;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cat-btn i { color: #ffd700; }
+    .cat-btn.active, .cat-btn:hover {
+      background: linear-gradient(145deg, #0f2b46, #1a3f62);
+      color: #ffd700;
+      border-color: cyan;
+      box-shadow: 0 10px 30px rgba(0,255,255,0.3);
+      transform: translateY(-3px);
+    }
+    .cat-btn.active i, .cat-btn:hover i { color: cyan; }
+
+    /* ---------- FAQ GRID (MADLY STUNNING) ---------- */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 5% 4rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .faq-card {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 2.5rem;
+      padding: 2rem 2rem 1.8rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .faq-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #ffd700, cyan, #ffd700);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .faq-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      border-color: cyan;
+      box-shadow: 0 40px 70px -10px rgba(255,215,0,0.5), 0 0 0 2px rgba(0,255,255,0.3);
+    }
+
+    .faq-card:hover::before {
+      transform: translateX(0);
+    }
+
+    .faq-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(145deg, #0f2b46, #1a3f62);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      border: 2px solid cyan;
+      box-shadow: 0 0 30px cyan;
+      transition: 0.4s;
+    }
+    .faq-card:hover .faq-icon {
+      transform: rotate(360deg) scale(1.1);
+      background: #ffd700;
+      color: #0f2b46;
+      border-color: #0f2b46;
+    }
+
+    .faq-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #0f2b46;
+      padding-right: 2rem;
+    }
+
+    .faq-desc {
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .faq-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed rgba(255,215,0,0.4);
+      padding-top: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    .faq-tag {
+      background: rgba(255,215,0,0.15);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0f2b46;
+      border: 1px solid rgba(255,215,0,0.4);
+    }
+
+    .read-more {
+      color: cyan;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.3s;
+    }
+    .read-more:hover {
+      gap: 1rem;
+      color: #ffd700;
+    }
+
+    /* ---------- CTA SECTION (stunning) ---------- */
+    .faq-cta {
+      background: linear-gradient(145deg, #0f2b46, #1a3f62);
+      padding: 4rem 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+    }
+
+    .faq-cta h2 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: #ffd700;
+      margin-bottom: 1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .faq-cta p {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: rgba(255,255,255,0.9);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+    .cta-button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .cta-btn {
+      background: transparent;
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      padding: 1rem 3rem;
+      border-radius: 60px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 0.4s;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      backdrop-filter: blur(5px);
+    }
+    .cta-btn:hover {
+      background: #ffd700;
+      color: #0f2b46;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 40px gold;
+    }
+    .cta-btn.alt {
+      border-color: cyan;
+      color: cyan;
+    }
+    .cta-btn.alt:hover {
+      background: cyan;
+      color: #0f2b46;
+      box-shadow: 0 20px 40px cyan;
+    }
+
+    /* ---------- FOOTER (fully responsive, from index) ---------- */
+    .footer {
+      background: #0a1a2f;
+      color: #ffffff;
+      padding: clamp(50px, 10vh, 80px) 5% 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      gap: clamp(20px, 5vw, 40px);
+      max-width: 1200px;
+      margin: 0 auto 60px;
+    }
+
+    @media (max-width: 1200px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; } }
+
+    .footer-logo img {
+      height: clamp(40px, 10vw, 60px);
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-about p {
+      color: #94a3b8;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .social-links a {
+      width: clamp(35px, 8vw, 40px);
+      height: clamp(35px, 8vw, 40px);
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transition: 0.3s;
+      font-size: clamp(16px, 4vw, 18px);
+    }
+
+    .social-links a:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: translateY(-3px);
+    }
+
+    .footer h4 {
+      font-size: clamp(16px, 4vw, 18px);
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .footer h4:after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: #ffd700;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: 0.3s;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+
+    .footer-links a:hover {
+      color: #ffd700;
+      padding-left: 5px;
+    }
+
+    .newsletter p {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-size: clamp(14px, 3.5vw, 16px);
+    }
+
+    .newsletter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .newsletter-form input {
+      flex: 1 1 150px;
+      padding: clamp(10px, 2.5vh, 12px);
+      border: none;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.2);
+      min-width: 150px;
+    }
+
+    .newsletter-form button {
+      width: clamp(45px, 10vw, 50px);
+      height: clamp(45px, 10vw, 50px);
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter-form button:hover {
+      background: #ffffff;
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      font-size: clamp(12px, 3vw, 14px);
+    }
+
+    .risk-disclaimer {
+      max-width: 1200px;
+      margin: 30px auto 0;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      font-size: clamp(11px, 3vw, 12px);
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+
+    /* ---------- CHATBOT (fully responsive, from index) ---------- */
+    .chatbot-container {
+      position: fixed;
+      bottom: clamp(20px, 5vh, 40px);
+      right: clamp(10px, 3vw, 20px);
+      z-index: 1000;
+    }
+
+    .chatbot-avatar {
+      width: clamp(50px, 12vw, 70px);
+      height: clamp(50px, 12vw, 70px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f2b46, #1a3f62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 3px solid #ffd700;
+      transition: all 0.3s ease;
+      animation: avatarPulse 2s infinite;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chatbot-avatar i {
+      font-size: clamp(25px, 6vw, 35px);
+      color: #ffd700;
+    }
+
+    .chatbot-avatar:hover {
+      transform: scale(1.1) rotate(5deg);
+      border-color: #00ffff;
+      box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+    }
+
+    @keyframes avatarPulse {
+      0%,100% { box-shadow: 0 5px 20px rgba(255,215,0,0.3); }
+      50% { box-shadow: 0 5px 30px rgba(255,215,0,0.6), 0 0 20px #00ffff; }
+    }
+
+    .chatbot-window {
+      position: absolute;
+      bottom: 60px;
+      right: 0;
+      width: min(350px, 90vw);
+      height: min(450px, 70vh);
+      background: rgba(15,43,70,0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+      transform-origin: bottom right;
+      animation: chatOpen 0.3s ease;
+    }
+
+    @keyframes chatOpen {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chatbot-window.active { display: flex; }
+
+    .chatbot-header {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      padding: clamp(15px, 3vh, 20px);
+      color: #0f2b46;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chatbot-header h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: clamp(16px, 4vw, 18px);
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: #0f2b46;
+      font-size: clamp(18px, 4.5vw, 20px);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .close-chat:hover { transform: rotate(90deg); }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 15px;
+      border-radius: 15px;
+      font-size: clamp(12px, 3.5vw, 14px);
+      line-height: 1.5;
+      animation: messageSlide 0.3s ease;
+    }
+
+    @keyframes messageSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+      border: 1px solid rgba(255,215,0,0.2);
+    }
+
+    .message.user {
+      background: #ffd700;
+      color: #0f2b46;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      width: fit-content;
+      border-bottom-left-radius: 5px;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .chat-input-area {
+      padding: clamp(15px, 3vh, 20px);
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,215,0,0.3);
+      transition: all 0.3s ease;
+      min-width: 0;
+    }
+    .chat-input-area input:focus {
+      outline: none;
+      border-color: #ffd700;
+      background: rgba(255,255,255,0.15);
+    }
+    .chat-input-area button {
+      width: clamp(40px, 10vw, 45px);
+      height: clamp(40px, 10vw, 45px);
+      border-radius: 50%;
+      background: #ffd700;
+      border: none;
+      color: #0f2b46;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .chat-input-area button:hover {
+      transform: scale(1.1) rotate(5deg);
+      background: #fff;
+    }
+
+    /* ---------- SCROLL TO TOP (fully responsive) ---------- */
+    .scroll-to-top {
+      position: fixed;
+      bottom: clamp(80px, 15vh, 115px);
+      right: clamp(10px, 3vw, 23px);
+      width: clamp(45px, 12vw, 60px);
+      height: clamp(45px, 12vw, 60px);
+      border-radius: 50%;
+      background: #0f2b46;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      font-weight: bold;
+      font-size: clamp(12px, 3vw, 14px);
+    }
+
+    .scroll-to-top.visible { opacity: 1; visibility: visible; }
+
+    .scroll-to-top:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+      background: #ffd700;
+      color: #0f2b46;
+    }
+
+    .scroll-to-top .progress-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .scroll-to-top svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .scroll-to-top circle {
+      fill: none;
+      stroke: #ffd700;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 176;
+      stroke-dashoffset: 176;
+      transition: stroke-dashoffset 0.3s ease;
+    }
+    .scroll-to-top:hover circle { stroke: #0f2b46; }
+    .scroll-to-top .percentage {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(12px, 3vw, 14px);
+      font-weight: bold;
+    }
+
+    /* category filter visibility */
+    .faq-card[data-category] { display: block; }
+    .faq-grid.hide-basic .faq-card[data-category="basic"] { display: none; }
+    .faq-grid.hide-account .faq-card[data-category="account"] { display: none; }
+    .faq-grid.hide-trading .faq-card[data-category="trading"] { display: none; }
+    .faq-grid.hide-tech .faq-card[data-category="tech"] { display: none; }
+    .faq-grid.hide-funds .faq-card[data-category="funds"] { display: none; }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-left">
+      <i class="fa-solid fa-phone"></i> +2348031901791
+      <i class="fa-solid fa-envelope" style="margin-left: 20px"></i> support@bytetrade.com
+    </div>
+    <div class="top-right">
+      <select id="languageSelect">
+        <option value="en">🌐 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="es">🇪🇸 Spanish</option>
+        <option value="de">🇩🇪 German</option>
+        <option value="pt">🇵🇹 Portuguese</option>
+        <option value="it">🇮🇹 Italian</option>
+        <option value="ar">🇸🇦 Arabic</option>
+        <option value="zh">🇨🇳 Chinese</option>
+        <option value="ja">🇯🇵 Japanese</option>
+        <option value="hi">🇮🇳 Hindi</option>
+        <option value="ru">🇷🇺 Russian</option>
+        <option value="tr">🇹🇷 Turkish</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="logo">
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade Logo" />
+    </div>
+    <nav id="nav-menu">
+      <a href="index.html">HOME</a>
+      <a href="about.html">ABOUT US</a>
+      <a href="faqs.html" class="active">FAQS</a>
+      <a href="contact.html">CONTACTS</a>
+      <a href="login.html">LOGIN/SIGNUP</a>
+      <a href="download-app.html">DOWNLOAD APP</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </header>
+  <div class="nav-overlay" id="nav-overlay" style="display: none;"></div>
+
+  <!-- PAGE HEADER (MADLY STUNNING) -->
+  <section class="faq-header">
+    <div class="faq-orb faq-orb1"></div>
+    <div class="faq-orb faq-orb2"></div>
+    <h1 data-aos="fade-down">knowledge base</h1>
+    <div class="subhead" data-aos="fade-up" data-aos-delay="150">answers crafted with &nbsp; <i class="fa-solid fa-bolt" style="color:#ffd700;"></i> &nbsp; &  &nbsp; <i class="fa-solid fa-brain" style="color:cyan;"></i></div>
+  </section>
+
+  <!-- SEARCH BAR -->
+  <section class="search-section" data-aos="fade-up">
+    <div class="search-container">
+      <input type="text" placeholder="search for answers... e.g., withdrawal, leverage" id="faqSearch">
+      <button><i class="fa-solid fa-magnifying-glass"></i> <span>ask</span></button>
+    </div>
+  </section>
+
+  <!-- CATEGORY TABS -->
+  <div class="category-tabs" data-aos="fade-up" data-aos-delay="100">
+    <button class="cat-btn active" data-cat="all"><i class="fa-solid fa-globe"></i> all</button>
+    <button class="cat-btn" data-cat="basic"><i class="fa-solid fa-star"></i> basic</button>
+    <button class="cat-btn" data-cat="account"><i class="fa-solid fa-user"></i> account</button>
+    <button class="cat-btn" data-cat="trading"><i class="fa-solid fa-chart-line"></i> trading</button>
+    <button class="cat-btn" data-cat="tech"><i class="fa-solid fa-microchip"></i> tech</button>
+    <button class="cat-btn" data-cat="funds"><i class="fa-solid fa-coins"></i> funds</button>
+  </div>
+
+  <!-- FAQ GRID (MADLY STUNNING CARDS) -->
+  <div class="faq-grid" id="faqGrid" data-aos="fade-up" data-aos-delay="200">
+    <!-- BASIC -->
+    <div class="faq-card" data-category="basic">
+      <div class="faq-icon"><i class="fa-regular fa-hand-point-right"></i></div>
+      <h3>What is Bytetrade?</h3>
+      <p class="faq-desc">Bytetrade is a next‑gen brokerage offering forex, stocks, crypto & commodities with 0.0 pip spreads and 1:500 leverage.</p>
+      <div class="faq-meta"><span class="faq-tag">#basics</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="basic">
+      <div class="faq-icon"><i class="fa-regular fa-clock"></i></div>
+      <h3>How do I start?</h3>
+      <p class="faq-desc">Register in 2 minutes, verify identity, fund your account (min $250) and you're ready to trade global markets.</p>
+      <div class="faq-meta"><span class="faq-tag">#basics</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="faq-card" data-category="account">
+      <div class="faq-icon"><i class="fa-regular fa-id-card"></i></div>
+      <h3>Account types?</h3>
+      <p class="faq-desc">Basic ($250), Premium ($5,000) and VIP ($25,000). Each offers increasing leverage, spreads & personal manager.</p>
+      <div class="faq-meta"><span class="faq-tag">#account</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="account">
+      <div class="faq-icon"><i class="fa-regular fa-circle-check"></i></div>
+      <h3>Verification time?</h3>
+      <p class="faq-desc">Usually within 2 hours. Upload proof of ID and address, and our AI‑assisted team reviews instantly.</p>
+      <div class="faq-meta"><span class="faq-tag">#account</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+
+    <!-- TRADING -->
+    <div class="faq-card" data-category="trading">
+      <div class="faq-icon"><i class="fa-solid fa-chart-simple"></i></div>
+      <h3>Leverage & spreads?</h3>
+      <p class="faq-desc">Up to 1:500. Spreads start from 0.0 pips on major pairs. No hidden fees, raw spreads on Premium+.</p>
+      <div class="faq-meta"><span class="faq-tag">#trading</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="trading">
+      <div class="faq-icon"><i class="fa-solid fa-bolt"></i></div>
+      <h3>Execution speed?</h3>
+      <p class="faq-desc">Average execution 15ms – we use fibre‑optic and dedicated servers next to liquidity providers.</p>
+      <div class="faq-meta"><span class="faq-tag">#trading</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+
+    <!-- TECH -->
+    <div class="faq-card" data-category="tech">
+      <div class="faq-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+      <h3>Mobile app?</h3>
+      <p class="faq-desc">Yes, full trading platform for iOS & Android. Download from App Store or Google Play.</p>
+      <div class="faq-meta"><span class="faq-tag">#tech</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="tech">
+      <div class="faq-icon"><i class="fa-solid fa-lock"></i></div>
+      <h3>Security measures?</h3>
+      <p class="faq-desc">256‑bit SSL, segregated funds at top banks, 2FA, and biometric login on mobile.</p>
+      <div class="faq-meta"><span class="faq-tag">#tech</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+
+    <!-- FUNDS -->
+    <div class="faq-card" data-category="funds">
+      <div class="faq-icon"><i class="fa-regular fa-credit-card"></i></div>
+      <h3>Deposit methods?</h3>
+      <p class="faq-desc">Visa, Mastercard, bank transfer, Bitcoin, Ethereum, PayPal. Instant, no fees.</p>
+      <div class="faq-meta"><span class="faq-tag">#funds</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="funds">
+      <div class="faq-icon"><i class="fa-regular fa-clock"></i></div>
+      <h3>Withdrawal time?</h3>
+      <p class="faq-desc">Most withdrawals processed within 2 hours. Crypto withdrawals are instant, bank transfers 1‑2 days.</p>
+      <div class="faq-meta"><span class="faq-tag">#funds</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="faq-card" data-category="funds">
+      <div class="faq-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+      <h3>Minimum withdrawal?</h3>
+      <p class="faq-desc">$50 equivalent. No hidden fees, and first withdrawal per month is free.</p>
+      <div class="faq-meta"><span class="faq-tag">#funds</span><a href="#" class="read-more">read <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+  </div>
+
+  <!-- CTA SECTION (STUNNING) -->
+  <section class="faq-cta">
+    <h2 data-aos="zoom-in">still have questions?</h2>
+    <p data-aos="zoom-in" data-aos-delay="100">our support wizards are online 24/7 – ask away</p>
+    <div class="cta-button-group" data-aos="fade-up" data-aos-delay="200">
+      <a href="contact.html" class="cta-btn"><i class="fa-regular fa-message"></i> contact us</a>
+      <a href="#" class="cta-btn alt" onclick="toggleChat(); return false;"><i class="fa-regular fa-comment-dots"></i> live chat</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade"></div>
+        <p>Bytetrade is a leading online broker providing access to global financial markets with cutting‑edge technology and exceptional support.</p>
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="#">Account Types</a></li><li><a href="#">Trading Instruments</a></li><li><a href="#">Platforms</a></li><li><a href="#">Education</a></li></ul></div>
+      <div><h4>Support</h4><ul class="footer-links"><li><a href="#">Help Center</a></li><li><a href="faqs.html">FAQs</a></li><li><a href="contact.html">Contact Us</a></li><li><a href="#">Funding Options</a></li><li><a href="#">Withdrawal</a></li></ul></div>
+      <div><h4>Legal</h4><ul class="footer-links"><li><a href="#">Terms & Conditions</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Risk Disclosure</a></li><li><a href="#">AML Policy</a></li><li><a href="#">Cookies Policy</a></li></ul></div>
+      <div class="newsletter"><h4>Market Insights</h4><p>Subscribe for daily market analysis</p><form class="newsletter-form"><input type="email" placeholder="Your email"><button type="submit"><i class="fa-solid fa-paper-plane"></i></button></form></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Bytetrade. All rights reserved.</p></div>
+    <div class="risk-disclaimer"><p>Risk Warning: Trading Forex and CFDs carries a high level of risk to your capital and may not be suitable for all investors. Please ensure you fully understand the risks involved and seek independent advice if necessary. Read our full risk disclosure.</p></div>
+  </footer>
+
+  <!-- CHATBOT -->
+  <div class="chatbot-container">
+    <div class="chatbot-avatar" onclick="toggleChat()"><i class="fa-solid fa-robot"></i></div>
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header"><h3><i class="fa-solid fa-robot"></i> ByteBot</h3><button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-times"></i></button></div>
+      <div class="chat-messages" id="chatMessages"><div class="message bot">Hi! ask me anything about trading, accounts, or tech 🙌</div></div>
+      <div class="typing-indicator" id="typingIndicator" style="display: none;"><span></span><span></span><span></span></div>
+      <div class="chat-inputarea"><input type="text" id="chatInput" placeholder="type your question..." onkeypress="handleKeyPress(event)"><button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button></div>
+    </div>
+  </div>
+
+  <!-- SCROLL TO TOP -->
+  <div class="scroll-to-top" id="scrollToTop">
+    <svg class="progress-ring" width="60" height="60"><circle cx="30" cy="30" r="28" stroke="#ffd700" stroke-width="4" fill="none"/></svg>
+    <span class="percentage" id="scrollPercentage">0%</span>
+  </div>
+
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 100 });
+
+    // ----- MOBILE MENU (same as index) -----
+    const toggle = document.getElementById("menu-toggle");
+    const nav = document.getElementById("nav-menu");
+    function closeMenu() { nav.classList.remove("active"); toggle.classList.remove("active"); document.body.classList.remove("menu-open"); toggle.innerHTML = '<i class="fa-solid fa-bars"></i>'; }
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      toggle.classList.toggle("active");
+      if (nav.classList.contains("active")) { document.body.classList.add("menu-open"); toggle.innerHTML = '<i class="fa-solid fa-times"></i>'; }
+      else { document.body.classList.remove("menu-open"); toggle.innerHTML = '<i class="fa-solid fa-bars"></i>'; }
+    });
+    document.querySelectorAll("#nav-menu a").forEach(link => link.addEventListener("click", closeMenu));
+    window.addEventListener("resize", () => { if (window.innerWidth > 992) closeMenu(); });
+
+    // ----- STICKY NAVBAR -----
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 50) { navbar.classList.add("sticky", "scrolled"); document.body.style.paddingTop = navbar.offsetHeight + "px"; }
+      else { navbar.classList.remove("sticky", "scrolled"); document.body.style.paddingTop = "0"; }
+    });
+
+    // ----- SCROLL TO TOP -----
+    const scrollBtn = document.getElementById("scrollToTop");
+    const circle = scrollBtn.querySelector("circle");
+    const percentSpan = document.getElementById("scrollPercentage");
+    const radius = 28, circ = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = circ;
+    window.addEventListener("scroll", () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100 || 0;
+      percentSpan.textContent = Math.round(scrolled) + "%";
+      circle.style.strokeDashoffset = circ - (scrolled / 100) * circ;
+      scrollBtn.classList.toggle("visible", winScroll > 300);
+    });
+    scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    // ----- LANGUAGE SELECT (cosmetic) -----
+    const langSelect = document.getElementById("languageSelect");
+    if (langSelect) {
+      langSelect.addEventListener("change", function() { this.style.backgroundColor = "rgba(255,215,0,0.2)"; setTimeout(() => this.style.backgroundColor = "", 300); });
+    }
+
+    // ----- CHATBOT -----
+    const chatbotWindow = document.getElementById('chatbotWindow');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    function toggleChat() { chatbotWindow.classList.toggle('active'); if (chatbotWindow.classList.contains('active')) chatInput.focus(); }
+    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+    function sendMessage() {
+      const msg = chatInput.value.trim(); if (!msg) return;
+      addMessage(msg, 'user'); chatInput.value = ''; typingIndicator.style.display = 'flex';
+      setTimeout(() => { typingIndicator.style.display = 'none'; addMessage(getBotResponse(msg), 'bot'); }, 1200);
+    }
+    function addMessage(text, sender) { const d = document.createElement('div'); d.className = `message ${sender}`; d.textContent = text; chatMessages.appendChild(d); chatMessages.scrollTop = chatMessages.scrollHeight; }
+    function getBotResponse(m) {
+      m = m.toLowerCase();
+      if (m.includes('hello')||m.includes('hi')) return 'Hello! how can i assist?';
+      if (m.includes('account')) return 'We offer Basic ($250), Premium ($5k) & VIP ($25k) accounts. Which interests you?';
+      if (m.includes('withdraw')) return 'Withdrawals take ~2h, min $50. First withdrawal free!';
+      if (m.includes('leverage')) return 'Leverage up to 1:500, depending on account and instrument.';
+      if (m.includes('spread')) return 'Spreads start from 0.0 pips on majors.';
+      return 'Please contact support for detailed help, or ask me something else!';
+    }
+
+    // ----- CATEGORY FILTER -----
+    const catBtns = document.querySelectorAll('.cat-btn');
+    const faqGrid = document.getElementById('faqGrid');
+    catBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        // remove all filter classes
+        faqGrid.classList.remove('hide-basic', 'hide-account', 'hide-trading', 'hide-tech', 'hide-funds');
+        if (cat !== 'all') {
+          faqGrid.classList.add(`hide-${cat}`);
+        }
+      });
+    });
+
+    // ----- SEARCH (simple filter) -----
+    const searchInput = document.getElementById('faqSearch');
+    searchInput.addEventListener('input', function() {
+      const term = this.value.toLowerCase().trim();
+      document.querySelectorAll('.faq-card').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (term === '' || text.includes(term)) card.style.display = 'block';
+        else card.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>
