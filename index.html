@@ -20,19 +20,20 @@
       background: #f8fafc;
     }
 
-    /* PRELOADER - TASK 4 */
+    /* NEW LIGHTWEIGHT PRELOADER - TASK 3 */
     .preloader {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #0f2b46, #1a3f62);
+      background: linear-gradient(135deg, #0a1a2f, #1a3f62);
       z-index: 9999;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      will-change: opacity, visibility;
     }
 
     .preloader.hidden {
@@ -44,13 +45,14 @@
       text-align: center;
       position: relative;
       width: 90%;
-      max-width: 500px;
+      max-width: 400px;
     }
 
     .preloader-logo {
-      width: clamp(80px, 20vw, 120px);
-      height: clamp(80px, 20vw, 120px);
-      margin: 0 auto clamp(15px, 4vh, 30px);
+      width: clamp(70px, 15vw, 100px);
+      height: clamp(70px, 15vw, 100px);
+      margin: 0 auto 20px;
+      animation: softPulse 2s ease-in-out infinite;
     }
 
     .preloader-logo img {
@@ -60,84 +62,95 @@
       filter: brightness(0) invert(1);
     }
 
-    .preloader-spinner {
+    .preloader-ring {
       position: relative;
-      width: clamp(50px, 15vw, 80px);
-      height: clamp(50px, 15vw, 80px);
-      margin: 0 auto clamp(15px, 4vh, 30px);
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
     }
 
-    .preloader-spinner::before,
-    .preloader-spinner::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
+    .preloader-ring svg {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
-      border: 4px solid transparent;
-      border-top-color: #ffd700;
-      border-bottom-color: #00ffff;
-      animation: spin 1.5s linear infinite;
+      transform: rotate(-90deg);
     }
 
-    .preloader-spinner::after {
-      animation: spin 2s linear reverse infinite;
-      border-top-color: #00ffff;
-      border-bottom-color: #ffd700;
-      width: 75%;
-      height: 75%;
-      top: 12.5%;
-      left: 12.5%;
+    .preloader-ring circle {
+      fill: none;
+      stroke: #ffd700;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 226;
+      stroke-dashoffset: 226;
+      animation: drawRing 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
     }
 
-    .preloader-bars {
+    @keyframes drawRing {
+      0% { stroke-dashoffset: 226; }
+      50% { stroke-dashoffset: 56.5; }
+      100% { stroke-dashoffset: 226; }
+    }
+
+    .preloader-dots {
       display: flex;
-      gap: clamp(4px, 2vw, 8px);
+      gap: 8px;
       justify-content: center;
-      margin-top: clamp(15px, 4vh, 30px);
+      margin-top: 20px;
     }
 
-    .preloader-bar {
-      width: clamp(6px, 2vw, 8px);
-      height: clamp(20px, 6vh, 30px);
-      background: linear-gradient(180deg, #ffd700, #00ffff);
-      border-radius: 4px;
-      animation: barWave 1.2s ease-in-out infinite;
+    .preloader-dot {
+      width: 8px;
+      height: 8px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: dotPulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
 
-    .preloader-bar:nth-child(2) { animation-delay: 0.1s; }
-    .preloader-bar:nth-child(3) { animation-delay: 0.2s; }
-    .preloader-bar:nth-child(4) { animation-delay: 0.3s; }
-    .preloader-bar:nth-child(5) { animation-delay: 0.4s; }
-
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    @keyframes pulseLogo {
-      0%,100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.8; }
+    .preloader-dot:nth-child(2) {
+      animation-delay: 0.2s;
+      background: #00ffff;
+    }
+    .preloader-dot:nth-child(3) {
+      animation-delay: 0.4s;
+      background: #ffd700;
+    }
+    .preloader-dot:nth-child(4) {
+      animation-delay: 0.6s;
+      background: #00ffff;
+    }
+    .preloader-dot:nth-child(5) {
+      animation-delay: 0.8s;
+      background: #ffd700;
     }
 
-    @keyframes barWave {
-      0%,100% { transform: scaleY(0.5); opacity: 0.5; }
-      50% { transform: scaleY(1.5); opacity: 1; }
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.5); opacity: 1; }
+    }
+
+    @keyframes softPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
     }
 
     .preloader-text {
       color: #fff;
-      font-size: clamp(14px, 4vw, 18px);
+      font-size: clamp(12px, 3vw, 14px);
       letter-spacing: 2px;
-      margin-top: clamp(10px, 3vh, 20px);
+      margin-top: 15px;
       text-transform: uppercase;
-      background: linear-gradient(90deg, #ffd700, #00ffff, #ffd700);
+      background: linear-gradient(90deg, #ffd700, #00ffff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-size: 200% auto;
-      animation: gradientShift 2s linear infinite;
+      animation: textGlow 2s ease-in-out infinite;
     }
 
-    @keyframes gradientShift { 100% { background-position: 200% center; } }
+    @keyframes textGlow {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+    }
 
     /* ORIGINAL TOP BAR STYLES PRESERVED - ENHANCED */
     .top-bar {
@@ -418,7 +431,7 @@
       z-index: 1;
     }
 
-    /* HERO SECTION */
+    /* HERO SECTION - OPTIMIZED */
     .hero {
       position: relative;
       height: 90vh;
@@ -471,13 +484,16 @@
       width: 100%;
       height: 100%;
       z-index: 3;
-      pointer-events: none;
+      pointer-events: none; /* Critical fix - prevents blocking interactions */
+      will-change: transform;
+      contain: strict;
     }
 
     .particle {
       position: absolute;
       pointer-events: none;
       filter: drop-shadow(0 0 10px currentColor);
+      will-change: transform, opacity;
     }
 
     .particle-glow-dot {
@@ -604,7 +620,8 @@
       color: #fff;
       padding: 20px;
       max-width: min(900px, 90%);
-      z-index: 4;
+      z-index: 4; /* Higher than particles */
+      pointer-events: auto; /* Ensure buttons are clickable */
     }
 
     .hero h1 {
@@ -2119,19 +2136,23 @@
   </style>
 </head>
 <body>
-  <!-- PRELOADER - TASK 4 -->
+  <!-- NEW LIGHTWEIGHT PRELOADER -->
   <div class="preloader" id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">
-        <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade">
+        <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade">
       </div>
-      <div class="preloader-spinner"></div>
-      <div class="preloader-bars">
-        <div class="preloader-bar"></div>
-        <div class="preloader-bar"></div>
-        <div class="preloader-bar"></div>
-        <div class="preloader-bar"></div>
-        <div class="preloader-bar"></div>
+      <div class="preloader-ring">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="36" />
+        </svg>
+      </div>
+      <div class="preloader-dots">
+        <div class="preloader-dot"></div>
+        <div class="preloader-dot"></div>
+        <div class="preloader-dot"></div>
+        <div class="preloader-dot"></div>
+        <div class="preloader-dot"></div>
       </div>
       <div class="preloader-text">Loading Markets...</div>
     </div>
@@ -2164,7 +2185,7 @@
   <!-- NAVBAR (pattern changed to solid white) -->
   <header class="navbar" id="navbar">
     <div class="logo">
-      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade Logo">
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade Logo">
     </div>
     <nav id="nav-menu">
       <a href="index.html" class="active">HOME</a>
@@ -2187,24 +2208,7 @@
   <section class="live-trade-section" data-aos="fade-down">
     <div class="tradingview-widget-container">
       <div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        {
-          "symbols": [
-            { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
-            { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
-            { "proName": "FX:EURUSD", "title": "EUR/USD" },
-            { "proName": "BITSTAMP:BTCUSD", "title": "BTC/USD" },
-            { "proName": "BITSTAMP:ETHUSD", "title": "ETH/USD" },
-            { "proName": "FX:GBPUSD", "title": "GBP/USD" },
-            { "proName": "COMEX:GC", "title": "GOLD" }
-          ],
-          "showSymbolLogo": true,
-          "isTransparent": false,
-          "displayMode": "adaptive",
-          "colorTheme": "light",
-          "locale": "en"
-        }
-      </script>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async defer></script>
     </div>
   </section>
 
@@ -2289,7 +2293,7 @@
     <div class="section-header">
       <div class="section-subtitle">Simple Process</div>
       <h2>Start Trading in 4 Easy Steps</h2>
-      <p>Get started with Globalextrade in minutes</p>
+      <p>Get started with Bytetrade in minutes</p>
     </div>
     <div class="steps-container">
       <div class="step-item" data-aos="fade-right" data-aos-delay="100">
@@ -2485,7 +2489,7 @@
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-about">
-        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade"></div>
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade"></div>
         <p>Bytetrade is a leading online broker providing access to global financial markets with cutting-edge technology and exceptional support.</p>
         <div class="social-links">
           <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
@@ -2579,101 +2583,125 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      once: true,
-      offset: 100,
-      easing: "ease-in-out"
-    });
-
-    // PRELOADER - TASK 4
+    // OPTIMIZED INITIALIZATION
+    // Preloader removal - immediate after load
     window.addEventListener('load', function() {
-      setTimeout(function() {
-        document.getElementById('preloader').classList.add('hidden');
-        document.body.style.overflow = '';
-      }, 800);
-    });
-    document.body.style.overflow = 'hidden';
-
-    // MOBILE MENU - SLIDE DOWN FROM TOP, NO OVERLAY
-    const toggle = document.getElementById('menu-toggle');
-    const nav = document.getElementById('nav-menu');
-
-    function closeMenu() {
-      nav.classList.remove('active');
-      toggle.classList.remove('active');
-      document.body.classList.remove('menu-open');
-      toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
-    }
-
-    toggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      nav.classList.toggle('active');
-      toggle.classList.toggle('active');
-      if (nav.classList.contains('active')) {
-        document.body.classList.add('menu-open');
-        toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
-      } else {
-        document.body.classList.remove('menu-open');
-        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.classList.add('hidden');
       }
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        document.body.style.overflow = '';
+      }, 100);
     });
 
-    document.querySelectorAll('#nav-menu a').forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
+    // Mobile menu initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS with optimized settings
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100,
+        easing: "ease-in-out",
+        disable: 'mobile' // Disable on mobile for better performance
+      });
 
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 992) {
+      const toggle = document.getElementById('menu-toggle');
+      const nav = document.getElementById('nav-menu');
+
+      function closeMenu() {
         nav.classList.remove('active');
         toggle.classList.remove('active');
         document.body.classList.remove('menu-open');
         toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
       }
+
+      if (toggle) {
+        toggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          nav.classList.toggle('active');
+          toggle.classList.toggle('active');
+          if (nav.classList.contains('active')) {
+            document.body.classList.add('menu-open');
+            toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
+          } else {
+            document.body.classList.remove('menu-open');
+            toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+          }
+        });
+      }
+
+      document.querySelectorAll('#nav-menu a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) {
+          closeMenu();
+        }
+      });
     });
 
-    // STICKY NAVBAR
+    // STICKY NAVBAR - Optimized with requestAnimationFrame
     const navbar = document.getElementById('navbar');
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        navbar.classList.add('sticky', 'scrolled');
-        document.body.style.paddingTop = navbar.offsetHeight + 'px';
-      } else {
-        navbar.classList.remove('sticky', 'scrolled');
-        document.body.style.paddingTop = '0';
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 50) {
+            navbar.classList.add('sticky', 'scrolled');
+            document.body.style.paddingTop = navbar.offsetHeight + 'px';
+          } else {
+            navbar.classList.remove('sticky', 'scrolled');
+            document.body.style.paddingTop = '0';
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     });
 
-    // HERO PARTICLES
+    // OPTIMIZED HERO PARTICLES - Run after load with requestAnimationFrame
     function createEnhancedParticles() {
       const particlesContainer = document.getElementById('hero-particles');
       if (!particlesContainer) return;
+      
+      // Clear existing particles
       particlesContainer.innerHTML = '';
-      const particleTypes = ['particle-glow-dot','particle-chart-line','particle-candle','particle-cyan-dot','particle-green-line'];
-      const indicators = ['▲ 2.4%','▼ 1.2%','● 0.8%','◆ 3.1%','⬆ 1.5%','⬇ 0.9%','★ 4.2%'];
-      for (let i = 0; i < 60; i++) {
-        const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
-        const particle = document.createElement('div');
-        particle.className = `particle ${type}`;
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        particle.style.animationDuration = 15 + Math.random() * 20 + 's';
-        if (type === 'particle-candle') particle.style.height = 15 + Math.random() * 30 + 'px';
-        if (type === 'particle-chart-line') particle.style.width = 60 + Math.random() * 80 + 'px';
-        particlesContainer.appendChild(particle);
-      }
-      for (let i = 0; i < 20; i++) {
-        const indicator = document.createElement('div');
-        indicator.className = 'particle particle-indicator';
-        indicator.textContent = indicators[Math.floor(Math.random() * indicators.length)];
-        indicator.style.left = Math.random() * 100 + '%';
-        indicator.style.top = Math.random() * 100 + '%';
-        indicator.style.animationDelay = Math.random() * 5 + 's';
-        indicator.style.fontSize = 12 + Math.random() * 8 + 'px';
-        particlesContainer.appendChild(indicator);
-      }
+      
+      // Use requestAnimationFrame for smooth rendering
+      requestAnimationFrame(() => {
+        const particleTypes = ['particle-glow-dot','particle-chart-line','particle-candle','particle-cyan-dot','particle-green-line'];
+        const indicators = ['▲ 2.4%','▼ 1.2%','● 0.8%','◆ 3.1%','⬆ 1.5%','⬇ 0.9%','★ 4.2%'];
+        
+        // Reduced particle count for better performance (from 60 to 40)
+        for (let i = 0; i < 40; i++) {
+          const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+          const particle = document.createElement('div');
+          particle.className = `particle ${type}`;
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 10 + 's';
+          particle.style.animationDuration = 15 + Math.random() * 20 + 's';
+          if (type === 'particle-candle') particle.style.height = 15 + Math.random() * 30 + 'px';
+          if (type === 'particle-chart-line') particle.style.width = 60 + Math.random() * 80 + 'px';
+          particlesContainer.appendChild(particle);
+        }
+        
+        // Reduced indicator count (from 20 to 15)
+        for (let i = 0; i < 15; i++) {
+          const indicator = document.createElement('div');
+          indicator.className = 'particle particle-indicator';
+          indicator.textContent = indicators[Math.floor(Math.random() * indicators.length)];
+          indicator.style.left = Math.random() * 100 + '%';
+          indicator.style.top = Math.random() * 100 + '%';
+          indicator.style.animationDelay = Math.random() * 5 + 's';
+          indicator.style.fontSize = 12 + Math.random() * 8 + 'px';
+          particlesContainer.appendChild(indicator);
+        }
+      });
     }
 
     // CHATBOT
@@ -2682,14 +2710,16 @@
     const chatInput = document.getElementById('chatInput');
     const typingIndicator = document.getElementById('typingIndicator');
 
-    function toggleChat() {
+    window.toggleChat = function() {
       chatbotWindow.classList.toggle('active');
       if (chatbotWindow.classList.contains('active')) chatInput.focus();
-    }
+    };
 
-    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+    window.handleKeyPress = function(e) { 
+      if (e.key === 'Enter') sendMessage(); 
+    };
 
-    function sendMessage() {
+    window.sendMessage = function() {
       const message = chatInput.value.trim();
       if (!message) return;
       addMessage(message, 'user');
@@ -2699,7 +2729,7 @@
         typingIndicator.style.display = 'none';
         addMessage(getBotResponse(message), 'bot');
       }, 1500);
-    }
+    };
 
     function addMessage(text, sender) {
       const messageDiv = document.createElement('div');
@@ -2721,7 +2751,7 @@
       return 'Thank you for your message. One of our support representatives will assist you shortly. For immediate help, please contact our 24/7 live chat support.';
     }
 
-    // FIXED NOTIFICATION SYSTEM - TASK 2 - MULTI-DIRECTIONAL
+    // FIXED NOTIFICATION SYSTEM
     const notificationWrappers = {
       topLeft: document.getElementById('notificationTopLeft'),
       topRight: document.getElementById('notificationTopRight'),
@@ -2737,6 +2767,8 @@
       const directions = ['topLeft','topRight','bottomLeft','bottomRight'];
       const direction = directions[Math.floor(Math.random() * directions.length)];
       const wrapper = notificationWrappers[direction];
+      if (!wrapper) return;
+      
       const name = names[Math.floor(Math.random() * names.length)];
       const country = countries[Math.floor(Math.random() * countries.length)];
       const action = actions[Math.floor(Math.random() * actions.length)];
@@ -2753,7 +2785,7 @@
     }
 
     function startNotifications() {
-      const minDelay = 10000, maxDelay = 25000;
+      const minDelay = 15000, maxDelay = 30000; // Increased delays for better performance
       function scheduleNext() {
         const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
         setTimeout(() => { createNotification(); scheduleNext(); }, delay);
@@ -2765,7 +2797,9 @@
     function initMarquee() {
       const track = document.getElementById('marqueeTrack');
       if (!track) return;
-      Array.from(track.children).forEach(card => track.appendChild(card.cloneNode(true)));
+      // Clone cards only once
+      const cards = Array.from(track.children);
+      cards.forEach(card => track.appendChild(card.cloneNode(true)));
     }
 
     // LANGUAGE SELECTOR
@@ -2778,7 +2812,7 @@
       });
     }
 
-    // COUNTER ANIMATION
+    // COUNTER ANIMATION - Optimized with IntersectionObserver
     function initCounters() {
       const counters = [
         { element: document.getElementById('investor-count'), target: 2500, suffix: '', prefix: '' },
@@ -2786,7 +2820,9 @@
         { element: document.getElementById('trades-count'), target: 2.1, suffix: 'M', prefix: '' },
         { element: document.getElementById('success-count'), target: 99.5, suffix: '%', prefix: '' }
       ];
+      
       counters.forEach(c => { if (c.element) c.element.textContent = c.prefix + '0' + c.suffix; });
+      
       let animated = false;
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -2795,7 +2831,8 @@
             counters.forEach(c => {
               if (!c.element) return;
               let current = 0;
-              const steps = 60, increment = c.target / steps;
+              const steps = 40; // Reduced steps for better performance
+              const increment = c.target / steps;
               let step = 0;
               const timer = setInterval(() => {
                 step++;
@@ -2803,12 +2840,14 @@
                 if (step >= steps) { current = c.target; clearInterval(timer); }
                 let displayValue = Number.isInteger(c.target) ? Math.floor(current) : current.toFixed(1);
                 c.element.textContent = c.prefix + displayValue + c.suffix;
-              }, 25);
+              }, 30);
             });
           }
         });
       }, { threshold: 0.3 });
-      observer.observe(document.getElementById('performance-stats'));
+      
+      const statsSection = document.getElementById('performance-stats');
+      if (statsSection) observer.observe(statsSection);
     }
 
     // SCROLL TO TOP
@@ -2816,17 +2855,23 @@
       const scrollBtn = document.getElementById('scrollToTop');
       const circle = scrollBtn.querySelector('circle');
       const percentageSpan = document.getElementById('scrollPercentage');
-      const radius = 28, circumference = 2 * Math.PI * radius;
-      circle.style.strokeDasharray = circumference;
+      const radius = 28;
+      const circumference = 2 * Math.PI * radius;
+      
+      if (circle) circle.style.strokeDasharray = circumference;
+      
       function updateScrollProgress() {
         const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = (winScroll / height) * 100;
         percentageSpan.textContent = Math.round(scrolled) + '%';
-        const offset = circumference - (scrolled / 100) * circumference;
-        circle.style.strokeDashoffset = offset;
+        if (circle) {
+          const offset = circumference - (scrolled / 100) * circumference;
+          circle.style.strokeDashoffset = offset;
+        }
         scrollBtn.classList.toggle('visible', winScroll > 300);
       }
+      
       window.addEventListener('scroll', updateScrollProgress);
       scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
       updateScrollProgress();
@@ -2842,14 +2887,22 @@
         ['ADVANCED TRADING TOOLS', 'AT YOUR FINGERTIPS'],
         ['JOIN THE FUTURE OF', 'ONLINE TRADING']
       ];
+      
       setInterval(() => {
+        if (slides.length === 0) return;
         slides[currentSlide].classList.remove('active');
         currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
         const lines = document.querySelectorAll('.hero .line');
-        lines[0].textContent = headlines[currentSlide][0];
-        lines[1].textContent = headlines[currentSlide][1];
-        lines.forEach(line => { line.style.animation = 'none'; line.offsetHeight; line.style.animation = null; });
+        if (lines.length >= 2) {
+          lines[0].textContent = headlines[currentSlide][0];
+          lines[1].textContent = headlines[currentSlide][1];
+          lines.forEach(line => { 
+            line.style.animation = 'none'; 
+            line.offsetHeight; 
+            line.style.animation = null; 
+          });
+        }
       }, 7000);
     }
 
@@ -2873,21 +2926,36 @@
       });
     }
 
-    // Initialize everything
+    // Initialize everything after DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-      createEnhancedParticles();
-      initHeroSlider();
+      // Initialize all features except particles (will run after load)
+      initMarquee();
       initCounters();
       initScrollToTop();
       addRippleEffect();
-      initMarquee();
       startNotifications();
+      
       window.addEventListener('resize', () => {
         if (navbar.classList.contains('sticky')) {
           document.body.style.paddingTop = navbar.offsetHeight + 'px';
         }
       });
-      AOS.refresh();
+      
+      // Refresh AOS
+      if (typeof AOS !== 'undefined') {
+        AOS.refresh();
+      }
+    });
+
+    // Run heavy tasks after window load
+    window.addEventListener('load', function() {
+      // Initialize particles after everything else is loaded
+      setTimeout(() => {
+        createEnhancedParticles();
+      }, 100);
+      
+      // Initialize hero slider
+      initHeroSlider();
     });
   </script>
 </body>
