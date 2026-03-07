@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <!-- viewport ensures proper responsive scaling on all devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>Bytetrade • knowledge unleashed</title>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -22,6 +23,7 @@
       background: #f8fafc;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
+      width: 100%;
     }
 
     /* ---------- TOP BAR (fully responsive, from index) ---------- */
@@ -477,6 +479,7 @@
       border-radius: 60px;
       outline: none;
       background: transparent;
+      min-width: 0; /* prevents overflow on small screens */
     }
 
     .search-container button {
@@ -1322,7 +1325,7 @@
       <div class="chatbot-header"><h3><i class="fa-solid fa-robot"></i> ByteBot</h3><button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-times"></i></button></div>
       <div class="chat-messages" id="chatMessages"><div class="message bot">Hi! ask me anything about trading, accounts, or tech 🙌</div></div>
       <div class="typing-indicator" id="typingIndicator" style="display: none;"><span></span><span></span><span></span></div>
-      <div class="chat-inputarea"><input type="text" id="chatInput" placeholder="type your question..." onkeypress="handleKeyPress(event)"><button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button></div>
+      <div class="chat-input-area"><input type="text" id="chatInput" placeholder="type your question..." onkeypress="handleKeyPress(event)"><button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button></div>
     </div>
   </div>
 
