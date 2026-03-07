@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bytetrade • Admin Portal</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk + Orbitron for futuristic touch -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #0a0f1e;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .cyber-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .cyber-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background-image: 
+        linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: rotate(-15deg) translate(-10%, -10%);
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: rotate(-15deg) translate(-10%, -10%); }
+      100% { transform: rotate(-15deg) translate(-30%, -30%); }
+    }
+
+    .cyber-orbs {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cyber-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      animation: orbFloat 20s infinite alternate;
+    }
+
+    .cyber-orb:nth-child(1) {
+      top: 10%;
+      left: 20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle at 30% 30%, #ffd700, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .cyber-orb:nth-child(2) {
+      bottom: 20%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle at 70% 70%, #00ffff, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    .cyber-orb:nth-child(3) {
+      top: 40%;
+      right: 30%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle at 50% 50%, #ff6b6b, transparent 70%);
+      animation-delay: -10s;
+    }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 5%) scale(1.2); }
+    }
+
+    /* Particles */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #ffd700;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+      animation: particleFloat 15s infinite linear;
+      opacity: 0.3;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .admin-login-container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Login Card */
+    .login-card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(10, 20, 30, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 40px;
+      padding: 50px 40px;
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 215, 0, 0.1) inset,
+        0 0 50px rgba(0, 255, 255, 0.2);
+      animation: cardGlow 3s infinite alternate;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes cardGlow {
+      0% { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 215, 0, 0.1) inset, 0 0 50px rgba(0, 255, 255, 0.2); }
+      100% { box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 215, 0, 0.2) inset, 0 0 80px rgba(0, 255, 255, 0.3); }
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 215, 0, 0.1),
+        rgba(0, 255, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { transform: rotate(45deg) translate(-100%, -100%); }
+      20% { transform: rotate(45deg) translate(100%, 100%); }
+      100% { transform: rotate(45deg) translate(100%, 100%); }
+    }
+
+    /* Logo Area */
+    .logo-area {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .logo-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      font-size: 3rem;
+      color: #0a1a2f;
+      box-shadow: 
+        0 20px 40px rgba(255, 215, 0, 0.3),
+        0 0 0 3px rgba(255, 255, 255, 0.1) inset;
+      transform: rotate(45deg);
+      animation: logoSpin 10s infinite linear;
+    }
+
+    .logo-icon i {
+      transform: rotate(-45deg);
+    }
+
+    @keyframes logoSpin {
+      0% { transform: rotate(45deg); }
+      25% { transform: rotate(135deg); }
+      50% { transform: rotate(225deg); }
+      75% { transform: rotate(315deg); }
+      100% { transform: rotate(405deg); }
+    }
+
+    .logo-area h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffd700, #00ffff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      animation: gradientShift 5s infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .logo-area p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.95rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .logo-area p i {
+      color: #ffd700;
+      margin: 0 5px;
+      font-size: 0.6rem;
+    }
+
+    /* Access Level Badge */
+    .access-badge {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      padding: 8px 20px;
+      margin-bottom: 30px;
+      color: #ffd700;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      backdrop-filter: blur(5px);
+      animation: badgePulse 2s infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+    }
+
+    .access-badge i {
+      margin-right: 8px;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+      font-size: 1.2rem;
+      z-index: 2;
+      transition: 0.3s;
+    }
+
+    .input-wrapper .toggle-password {
+      left: auto;
+      right: 20px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .input-wrapper .toggle-password:hover {
+      color: #ffd700;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 215, 0, 0.2);
+      border-radius: 50px;
+      padding: 18px 25px 18px 55px;
+      font-size: 1rem;
+      color: #fff;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.3),
+        0 0 0 4px rgba(255, 215, 0, 0.1);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .input-wrapper input::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+      font-style: italic;
+    }
+
+    /* Password Strength Meter */
+    .password-strength {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strength-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      transition: width 0.3s, background 0.3s;
+    }
+
+    .strength-bar.weak::after {
+      width: 33.33%;
+      background: #f44336;
+      box-shadow: 0 0 10px #f44336;
+    }
+
+    .strength-bar.medium::after {
+      width: 66.66%;
+      background: #ff9800;
+      box-shadow: 0 0 10px #ff9800;
+    }
+
+    .strength-bar.strong::after {
+      width: 100%;
+      background: #4caf50;
+      box-shadow: 0 0 10px #4caf50;
+    }
+
+    /* Options Row */
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #ffd700;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #00ffff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.3s;
+      border-bottom: 1px dotted transparent;
+    }
+
+    .forgot-link:hover {
+      color: #ffd700;
+      border-bottom-color: #ffd700;
+    }
+
+    /* 2FA Section */
+    .two-factor-section {
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 20px;
+      margin: 25px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      backdrop-filter: blur(5px);
+      animation: sectionGlow 3s infinite;
+    }
+
+    @keyframes sectionGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.4); }
+    }
+
+    .two-factor-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 255, 255, 0.1);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #00ffff;
+    }
+
+    .two-factor-text {
+      flex: 1;
+    }
+
+    .two-factor-text strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .two-factor-text span {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+    }
+
+    .two-factor-toggle {
+      width: 50px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .two-factor-toggle.active {
+      background: #00ffff;
+    }
+
+    .two-factor-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .two-factor-toggle.active::after {
+      left: 27px;
+    }
+
+    /* Login Button */
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 50px;
+      padding: 18px;
+      color: #0a1a2f;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(145deg, #ffaa00, #ffd700);
+    }
+
+    .login-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .login-btn i {
+      margin-left: 10px;
+      transition: transform 0.3s;
+    }
+
+    .login-btn:hover i {
+      transform: translateX(10px) rotate(90deg);
+    }
+
+    /* Security Note */
+    .security-note {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      backdrop-filter: blur(5px);
+    }
+
+    .security-note i {
+      font-size: 2rem;
+      color: #4caf50;
+      animation: shieldPulse 2s infinite;
+    }
+
+    @keyframes shieldPulse {
+      0%, 100% { filter: drop-shadow(0 0 10px #4caf50); }
+      50% { filter: drop-shadow(0 0 20px #4caf50); }
+    }
+
+    .security-note p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .security-note strong {
+      color: #ffd700;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: none;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 215, 0, 0.3);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error Message */
+    .error-message {
+      background: rgba(244, 67, 54, 0.1);
+      border: 1px solid #f44336;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #f44336;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(5px);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .error-message i {
+      font-size: 1.2rem;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid #4caf50;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #4caf50;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .success-message.show {
+      display: flex;
+    }
+
+    /* IP Info */
+    .ip-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .ip-info span i {
+      color: #ffd700;
+      margin-right: 5px;
+    }
+
+    /* Footer */
+    .login-footer {
+      margin-top: 30px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.85rem;
+    }
+
+    .login-footer a {
+      color: #ffd700;
+      text-decoration: none;
+      margin: 0 5px;
+      transition: 0.3s;
+    }
+
+    .login-footer a:hover {
+      color: #00ffff;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .login-card {
+        padding: 40px 25px;
+      }
+
+      .logo-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+      }
+
+      .logo-area h1 {
+        font-size: 2rem;
+      }
+
+      .options-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .two-factor-section {
+        flex-wrap: wrap;
+      }
+
+      .ip-info {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 30px 20px;
+      }
+
+      .input-wrapper input {
+        padding: 15px 20px 15px 50px;
+        font-size: 0.95rem;
+      }
+
+      .security-note {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* Ripple Effect */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Glitch Effect */
+    @keyframes glitch {
+      0%, 100% { transform: skew(0deg); opacity: 1; }
+      20% { transform: skew(2deg); opacity: 0.8; }
+      40% { transform: skew(-2deg); opacity: 0.9; }
+      60% { transform: skew(1deg); opacity: 0.7; }
+      80% { transform: skew(-1deg); opacity: 0.8; }
+    }
+
+    .glitch {
+      animation: glitch 3s infinite;
+    }
+
+    /* Typing Effect */
+    .typing-demo {
+      display: inline-block;
+      overflow: hidden;
+      border-right: 2px solid #ffd700;
+      white-space: nowrap;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #ffd700; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Cyber Background -->
+  <div class="cyber-bg">
+    <div class="cyber-grid"></div>
+    <div class="cyber-orbs">
+      <div class="cyber-orb"></div>
+      <div class="cyber-orb"></div>
+      <div class="cyber-orb"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <!-- Login Container -->
+  <div class="admin-login-container">
+    <div class="login-card" data-aos="fade-up" data-aos-duration="1000">
+      <!-- Logo Area -->
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fas fa-crown"></i>
+        </div>
+        <h1>Bytetrade</h1>
+        <p><i class="fas fa-circle"></i> ADMIN PORTAL <i class="fas fa-circle"></i></p>
+      </div>
+
+      <!-- Access Level Badge -->
+      <div class="access-badge" data-aos="fade-up" data-aos-delay="100">
+        <i class="fas fa-shield-alt"></i> SECURE ADMIN ACCESS • LEVEL 5
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Invalid credentials. Please try again.</span>
+      </div>
+
+      <!-- Success Message -->
+      <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i>
+        <span>Authentication successful! Redirecting to dashboard...</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="adminLoginForm" data-aos="fade-up" data-aos-delay="200">
+        <!-- Username/Email Field -->
+        <div class="form-group">
+          <label><i class="fas fa-user-shield"></i> ADMIN ID / EMAIL</label>
+          <div class="input-wrapper">
+            <i class="fas fa-id-badge"></i>
+            <input type="text" id="username" placeholder="Enter your admin credentials" value="admin@bytetrade.com" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> PASSWORD</label>
+          <div class="input-wrapper">
+            <i class="fas fa-key"></i>
+            <input type="password" id="password" placeholder="•••••••••••••" value="Admin@123">
+            <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+          </div>
+          
+          <!-- Password Strength Meter -->
+          <div class="password-strength" id="passwordStrength">
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+          </div>
+        </div>
+
+        <!-- Options Row -->
+        <div class="options-row">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember this device</span>
+          </label>
+          <a href="#" class="forgot-link" id="forgotPassword">
+            <i class="fas fa-question-circle"></i> Reset 2FA
+          </a>
+        </div>
+
+        <!-- 2FA Section -->
+        <div class="two-factor-section" data-aos="fade-up" data-aos-delay="300">
+          <div class="two-factor-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <div class="two-factor-text">
+            <strong>Two-Factor Authentication</strong>
+            <span>Enable for enhanced security</span>
+          </div>
+          <div class="two-factor-toggle" id="twoFactorToggle"></div>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span>ACCESS ADMIN PANEL</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <!-- Loading Spinner -->
+        <div class="spinner" id="loadingSpinner"></div>
+
+        <!-- IP Info -->
+        <div class="ip-info" data-aos="fade-up" data-aos-delay="400">
+          <span><i class="fas fa-network-wired"></i> IP: 192.168.1.1 (Secure)</span>
+          <span><i class="fas fa-clock"></i> Session: 30 min timeout</span>
+          <span><i class="fas fa-shield-halved"></i> TLS 1.3 Encrypted</span>
+        </div>
+      </form>
+
+      <!-- Security Note -->
+      <div class="security-note" data-aos="fade-up" data-aos-delay="500">
+        <i class="fas fa-shield-halved"></i>
+        <div>
+          <strong>Secure Admin Access Only</strong>
+          <p>This portal is protected by military-grade encryption. All access attempts are logged and monitored. Unauthorized access is prohibited.</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p>© 2024 Bytetrade • <a href="#">Privacy</a> • <a href="#">Terms</a> • <a href="#">Security</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+      easing: "ease-in-out"
+    });
+
+    // Create particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = 10 + Math.random() * 20 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    // Password Strength Meter
+    const passwordStrength = document.getElementById('passwordStrength');
+    const strengthBars = passwordStrength.querySelectorAll('.strength-bar');
+
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      let strength = 0;
+      
+      // Check password strength
+      if (password.length >= 8) strength++;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/) && password.match(/[^a-zA-Z0-9]/)) strength++;
+      
+      // Update bars
+      strengthBars.forEach((bar, index) => {
+        bar.classList.remove('weak', 'medium', 'strong');
+        if (index < strength) {
+          if (strength === 1) bar.classList.add('weak');
+          else if (strength === 2) bar.classList.add('medium');
+          else if (strength === 3) bar.classList.add('strong');
+        }
+      });
+    });
+
+    // 2FA Toggle
+    const twoFactorToggle = document.getElementById('twoFactorToggle');
+    twoFactorToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      if (this.classList.contains('active')) {
+        showNotification('2FA Enabled', 'success');
+      } else {
+        showNotification('2FA Disabled', 'info');
+      }
+    });
+
+    // Show notification function
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.className = `success-message show`;
+      notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i><span>${message}</span>`;
+      document.querySelector('.login-card').insertBefore(notification, document.querySelector('.security-note'));
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Admin credentials (for demo)
+    const ADMIN_CREDENTIALS = {
+      username: 'admin@bytetrade.com',
+      password: 'Admin@123'
+    };
+
+    // Form submission
+    const loginForm = document.getElementById('adminLoginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const usernameInput = document.getElementById('username');
+    const rememberMe = document.getElementById('rememberMe');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Hide previous messages
+      errorMessage.classList.remove('show');
+      successMessage.classList.remove('show');
+      
+      // Show loading state
+      loginBtn.style.opacity = '0.7';
+      loginBtn.disabled = true;
+      loadingSpinner.style.display = 'block';
+      
+      // Get input values
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Check credentials (case-sensitive for demo)
+      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        // Success
+        successMessage.classList.add('show');
+        
+        // Save session if remember me is checked
+        if (rememberMe.checked) {
+          localStorage.setItem('adminRemembered', 'true');
+          localStorage.setItem('adminEmail', username);
+        }
+        
+        // Store admin session
+        sessionStorage.setItem('adminAuthenticated', 'true');
+        sessionStorage.setItem('adminLoginTime', new Date().toISOString());
+        
+        // Redirect to admin dashboard after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'admin-dashboard.html';
+        }, 2000);
+      } else {
+        // Error
+        errorMessage.classList.add('show');
+        
+        // Shake the form
+        document.querySelector('.login-card').style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+          document.querySelector('.login-card').style.animation = '';
+        }, 500);
+      }
+      
+      // Reset loading state
+      loginBtn.style.opacity = '1';
+      loginBtn.disabled = false;
+      loadingSpinner.style.display = 'none';
+    });
+
+    // Forgot password / 2FA reset
+    document.getElementById('forgotPassword').addEventListener('click', (e) => {
+      e.preventDefault();
+      showNotification('Reset link sent to your recovery email', 'info');
+    });
+
+    // Remember me functionality
+    if (localStorage.getItem('adminRemembered') === 'true') {
+      usernameInput.value = localStorage.getItem('adminEmail') || '';
+      rememberMe.checked = true;
+    }
+
+    // Add ripple effect to buttons
+    function addRippleEffect(element) {
+      element.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.className = 'ripple-effect';
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    }
+
+    addRippleEffect(loginBtn);
+    addRippleEffect(twoFactorToggle);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Ctrl + L to focus username
+      if (e.ctrlKey && e.key === 'l') {
+        e.preventDefault();
+        usernameInput.focus();
+      }
+      // Ctrl + P to focus password
+      if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        passwordInput.focus();
+      }
+    });
+
+    // Auto-focus username field
+    usernameInput.focus();
+
+    // Log security event
+    console.log('🔒 Admin login page loaded - Security check passed');
+    console.log(`📍 Access from: ${window.location.hostname}`);
+    console.log(`🕒 Time: ${new Date().toLocaleString()}`);
+
+    // Prevent right-click context menu (security measure)
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      return false;
+    });
+
+    // Detect developer tools (basic)
+    setInterval(() => {
+      const start = performance.now();
+      debugger;
+      const end = performance.now();
+      if (end - start > 100) {
+        console.warn('⚠️ Developer tools detected - Security alert');
+      }
+    }, 1000);
+
+    // Simulate typing effect for welcome message
+    const welcomeText = document.querySelector('.access-badge span');
+    if (welcomeText) {
+      welcomeText.classList.add('typing-demo');
+    }
+
+    // Add glitch effect on hover
+    const logoIcon = document.querySelector('.logo-icon');
+    logoIcon.addEventListener('mouseenter', () => {
+      logoIcon.classList.add('glitch');
+    });
+    logoIcon.addEventListener('mouseleave', () => {
+      logoIcon.classList.remove('glitch');
+    });
+
+    // Session timeout warning
+    let timeoutWarning;
+    function resetSessionTimer() {
+      clearTimeout(timeoutWarning);
+      timeoutWarning = setTimeout(() => {
+        showNotification('Session will expire in 5 minutes', 'info');
+      }, 25 * 60 * 1000); // 25 minutes
+    }
+
+    document.addEventListener('mousemove', resetSessionTimer);
+    document.addEventListener('keypress', resetSessionTimer);
+    resetSessionTimer();
+
+    // Mock IP detection (for demo)
+    async function getIPInfo() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        document.querySelector('.ip-info span:first-child').innerHTML = 
+          `<i class="fas fa-network-wired"></i> IP: ${data.ip} (Secure)`;
+      } catch (error) {
+        console.log('Using local IP simulation');
+      }
+    }
+    getIPInfo();
+
+    // Prevent form resubmission on page refresh
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+
+    // Check if already authenticated
+    if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+      const loginTime = new Date(sessionStorage.getItem('adminLoginTime'));
+      const now = new Date();
+      const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+      
+      // If less than 8 hours since last login, auto-redirect
+      if (hoursDiff < 8) {
+        window.location.href = 'admin-dashboard.html';
+      } else {
+        sessionStorage.removeItem('adminAuthenticated');
+      }
+    }
+  </script>
+</body>
+</html>

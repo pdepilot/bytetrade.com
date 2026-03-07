@@ -19,7 +19,6 @@
       overflow-x: hidden;
       background: #f8fafc;
     }
-
     /* TOP BAR STYLES - FULLY RESPONSIVE */
     .top-bar {
       background: #0f2b46;
@@ -173,7 +172,7 @@
     .navbar.scrolled nav a.active { color: #ffd700; }
 
     .logo img {
-      height: clamp(50px, 12vw, 80px);
+     height: clamp(30px, 10vw, 60px);
       transition: all 0.3s ease;
     }
 
@@ -267,6 +266,62 @@
       body.menu-open { overflow: hidden; }
     }
 
+     /* CTA button style for LOGIN/SIGNUP link */
+    .navbar nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffb800);
+      color: #0f2b46;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .navbar nav a.cta-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .navbar nav a.cta-link:hover::before {
+      left: 100%;
+    }
+
+    .navbar nav a.cta-link:hover {
+      background: linear-gradient(145deg, #ffb800, #ffd700);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.5);
+      border-color: #00ffff;
+    }
+
+    .navbar nav a.cta-link:after {
+      display: none;
+    }
+
+    .navbar nav a.cta-link i {
+      margin-right: 5px;
+      transition: transform 0.3s;
+    }
+
+    .navbar nav a.cta-link:hover i {
+      transform: rotate(90deg);
+    }
+
+    .navbar.scrolled nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
+
     /* PAGE HEADER - FULLY RESPONSIVE */
     .page-header {
       background: linear-gradient(135deg, #0f2b46 0%, #1a3f62 100%);
@@ -286,6 +341,7 @@
       background: rgba(255,215,0,0.1);
       border-radius: 50%;
       animation: floatHeader 20s infinite ease-in-out;
+      pointer-events: none;
     }
 
     .page-header::after {
@@ -298,6 +354,7 @@
       background: rgba(0,255,255,0.1);
       border-radius: 50%;
       animation: floatHeaderReverse 25s infinite ease-in-out;
+      pointer-events: none;
     }
 
     @keyframes floatHeader {
@@ -390,6 +447,7 @@
       border-radius: 50%;
       transform: translate(200px, -200px);
       z-index: 0;
+      pointer-events: none;
     }
 
     .about-hero-container {
@@ -467,67 +525,20 @@
       font-weight: 500;
     }
 
-    .about-hero-image { position: relative; }
-
-    .about-hero-image img {
+    .chart-box {
       width: 100%;
-      border-radius: 30px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
-      transition: transform 0.5s ease;
+      height: min(400px, 50vh);
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
     }
 
-    .about-hero-image:hover img { transform: scale(1.02); }
-
-    .about-hero-image::before {
-      content: "";
-      position: absolute;
-      top: -20px;
-      left: -20px;
+    #tradingview_chart {
       width: 100%;
       height: 100%;
-      border: 4px solid #ffd700;
-      border-radius: 30px;
-      z-index: -1;
-      animation: borderMove 3s infinite ease-in-out;
-    }
-
-    @keyframes borderMove {
-      0%,100% { transform: translate(0,0); }
-      50% { transform: translate(10px,10px); }
-    }
-
-    .experience-badge {
-      position: absolute;
-      bottom: -30px;
-      right: -30px;
-      background: #ffd700;
-      color: #0f2b46;
-      width: clamp(120px, 25vw, 150px);
-      height: clamp(120px, 25vw, 150px);
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 20px 40px rgba(255,215,0,0.3);
-      animation: badgePulse 2s infinite;
-    }
-
-    @keyframes badgePulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .experience-badge .years {
-      font-size: clamp(32px, 8vw, 48px);
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .experience-badge .text {
-      font-size: clamp(12px, 3vw, 16px);
-      font-weight: 600;
-      text-align: center;
     }
 
     /* MISSION VISION SECTION - FULLY RESPONSIVE */
@@ -757,6 +768,7 @@
       height: min(300px, 50vw);
       background: rgba(255,215,0,0.1);
       border-radius: 50%;
+      pointer-events: none;
     }
 
     .team-section::after {
@@ -768,6 +780,7 @@
       height: min(300px, 50vw);
       background: rgba(0,255,255,0.1);
       border-radius: 50%;
+      pointer-events: none;
     }
 
     .team-grid {
@@ -902,6 +915,7 @@
       height: 100%;
       background: linear-gradient(180deg, #ffd700, #00ffff, #ffd700);
       border-radius: 2px;
+      pointer-events: none;
     }
 
     .timeline-item {
@@ -1025,6 +1039,7 @@
       background-size: 200px;
       opacity: 0.1;
       z-index: 1;
+      pointer-events: none;
     }
 
     .achievements-grid {
@@ -1168,6 +1183,7 @@
       font-family: serif;
       color: rgba(255,215,0,0.2);
       line-height: 1;
+      pointer-events: none;
     }
 
     .testimonial-slide i.fa-quote-right {
@@ -1176,6 +1192,7 @@
       right: 30px;
       font-size: clamp(30px, 8vw, 40px);
       color: rgba(255,215,0,0.2);
+      pointer-events: none;
     }
 
     .testimonial-text {
@@ -1260,6 +1277,7 @@
       background: rgba(255,255,255,0.1);
       border-radius: 50%;
       animation: floatCta 20s infinite ease-in-out;
+      pointer-events: none;
     }
 
     .cta-section::after {
@@ -1272,6 +1290,7 @@
       background: rgba(255,255,255,0.1);
       border-radius: 50%;
       animation: floatCtaReverse 20s infinite ease-in-out;
+      pointer-events: none;
     }
 
     @keyframes floatCta {
@@ -1814,20 +1833,6 @@
       color: black;
     }
 
-    /* CHART SIDE */
-    .chart-box {
-      flex: 1;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      height: min(600px, 70vh);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-    }
-
-    @media (max-width: 992px) {
-      .chart-box { width: 100%; height: 400px; margin-top: 30px; }
-    }
-
     /* RIPPLE EFFECT */
     .ripple-effect {
       position: absolute;
@@ -1840,15 +1845,16 @@
 
     @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
   </style>
-  <!-- Add TradingView Library -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
+  <!-- Add TradingView Library with async loading -->
+  <script src="https://s3.tradingview.com/tv.js" async defer></script>
 </head>
 <body>
+
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="top-left">
       <i class="fa-solid fa-phone"></i> +2348031901791
-      <i class="fa-solid fa-envelope" style="margin-left: 20px;"></i> support@globalextrade.com
+      <i class="fa-solid fa-envelope" style="margin-left: 20px;"></i> support@bytetrade.com
     </div>
     <div class="top-right">
       <select id="languageSelect">
@@ -1871,15 +1877,16 @@
   <!-- NAVBAR -->
   <header class="navbar" id="navbar">
     <div class="logo">
-      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade Logo">
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade Logo">
     </div>
     <nav id="nav-menu">
       <a href="index.html">HOME</a>
       <a href="about.html" class="active">ABOUT US</a>
       <a href="faqs.html">FAQS</a>
       <a href="contact.html">CONTACTS</a>
-      <a href="login.html">LOGIN/SIGNUP</a>
+      <a href="connectwallet.html">CONNECT-WALLET</a>
       <a href="download-app.html">DOWNLOAD APP</a>
+      <a href="login.html" class="active cta-link"><i class="fa-solid fa-right-to-bracket"></i> LOGIN/SIGNUP</a>
     </nav>
     <div class="menu-toggle" id="menu-toggle">
       <i class="fa-solid fa-bars"></i>
@@ -2085,7 +2092,7 @@
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-about">
-        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade"></div>
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade"></div>
         <p>Bytetrade is a leading online broker providing access to global financial markets with cutting-edge technology and exceptional support.</p>
         <div class="social-links">
           <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
@@ -2123,53 +2130,70 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Initialize AOS
-    AOS.init({ duration: 800, once: true, offset: 100, easing: "ease-in-out" });
+    // OPTIMIZED INITIALIZATION
 
-    // MOBILE MENU - slide down
-    const toggle = document.getElementById("menu-toggle");
-    const nav = document.getElementById("nav-menu");
+    // Mobile menu initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS with optimized settings
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100,
+        easing: "ease-in-out",
+        disable: 'mobile' // Disable on mobile for better performance
+      });
 
-    function closeMenu() {
-      nav.classList.remove("active");
-      toggle.classList.remove("active");
-      document.body.classList.remove("menu-open");
-      toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
-    }
+      const toggle = document.getElementById("menu-toggle");
+      const nav = document.getElementById("nav-menu");
 
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      nav.classList.toggle("active");
-      toggle.classList.toggle("active");
-      if (nav.classList.contains("active")) {
-        document.body.classList.add("menu-open");
-        toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
-      } else {
-        document.body.classList.remove("menu-open");
-        toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
-      }
-    });
-
-    document.querySelectorAll("#nav-menu a").forEach(link => link.addEventListener("click", closeMenu));
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 992) {
+      function closeMenu() {
         nav.classList.remove("active");
         toggle.classList.remove("active");
         document.body.classList.remove("menu-open");
         toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
       }
+
+      if (toggle) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.classList.toggle("active");
+          toggle.classList.toggle("active");
+          if (nav.classList.contains("active")) {
+            document.body.classList.add("menu-open");
+            toggle.innerHTML = '<i class="fa-solid fa-times"></i>';
+          } else {
+            document.body.classList.remove("menu-open");
+            toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+          }
+        });
+      }
+
+      document.querySelectorAll("#nav-menu a").forEach(link => link.addEventListener("click", closeMenu));
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 992) {
+          closeMenu();
+        }
+      });
     });
 
-    // STICKY NAVBAR
+    // STICKY NAVBAR - Optimized with requestAnimationFrame
     const navbar = document.getElementById("navbar");
+    let ticking = false;
+
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 50) {
-        navbar.classList.add("sticky", "scrolled");
-        document.body.style.paddingTop = navbar.offsetHeight + "px";
-      } else {
-        navbar.classList.remove("sticky", "scrolled");
-        document.body.style.paddingTop = "0";
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 50) {
+            navbar.classList.add("sticky", "scrolled");
+            document.body.style.paddingTop = navbar.offsetHeight + "px";
+          } else {
+            navbar.classList.remove("sticky", "scrolled");
+            document.body.style.paddingTop = "0";
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     });
 
@@ -2179,14 +2203,16 @@
     const chatInput = document.getElementById("chatInput");
     const typingIndicator = document.getElementById("typingIndicator");
 
-    function toggleChat() {
+    window.toggleChat = function() {
       chatbotWindow.classList.toggle("active");
       if (chatbotWindow.classList.contains("active")) chatInput.focus();
-    }
+    };
 
-    function handleKeyPress(e) { if (e.key === "Enter") sendMessage(); }
+    window.handleKeyPress = function(e) { 
+      if (e.key === "Enter") sendMessage(); 
+    };
 
-    function sendMessage() {
+    window.sendMessage = function() {
       const message = chatInput.value.trim();
       if (!message) return;
       addMessage(message, "user");
@@ -2196,7 +2222,7 @@
         typingIndicator.style.display = "none";
         addMessage(getBotResponse(message), "bot");
       }, 1500);
-    }
+    };
 
     function addMessage(text, sender) {
       const messageDiv = document.createElement("div");
@@ -2220,15 +2246,19 @@
     const scrollBtn = document.getElementById("scrollToTop");
     const circle = scrollBtn.querySelector("circle");
     const percentageSpan = document.getElementById("scrollPercentage");
-    const radius = 28, circumference = 2 * Math.PI * radius;
-    circle.style.strokeDasharray = circumference;
+    const radius = 28;
+    const circumference = 2 * Math.PI * radius;
+    
+    if (circle) circle.style.strokeDasharray = circumference;
 
     function updateScrollProgress() {
       const winScroll = document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100 || 0;
       percentageSpan.textContent = Math.round(scrolled) + "%";
-      circle.style.strokeDashoffset = circumference - (scrolled / 100) * circumference;
+      if (circle) {
+        circle.style.strokeDashoffset = circumference - (scrolled / 100) * circumference;
+      }
       scrollBtn.classList.toggle("visible", winScroll > 300);
     }
 
@@ -2263,39 +2293,6 @@
       });
     }
 
-    // Initialize everything
-    document.addEventListener("DOMContentLoaded", () => {
-      addRippleEffect();
-      window.addEventListener("resize", () => {
-        if (navbar.classList.contains("sticky")) {
-          document.body.style.paddingTop = navbar.offsetHeight + "px";
-        }
-      });
-      AOS.refresh();
-
-      // Initialize TradingView widget
-      if (typeof TradingView !== 'undefined') {
-        new TradingView.widget({
-          "container_id": "tradingview_chart",
-          "width": "100%",
-          "height": "100%",
-          "symbol": "BITSTAMP:BTCUSD",
-          "interval": "D",
-          "timezone": "Etc/UTC",
-          "theme": "light",
-          "style": "1",
-          "locale": "en",
-          "toolbar_bg": "#f1f3f6",
-          "enable_publishing": false,
-          "allow_symbol_change": true,
-          "hide_top_toolbar": false,
-          "withdateranges": true
-        });
-      } else {
-        console.error("TradingView library not loaded");
-      }
-    });
-
     // BRAND TYPING EFFECT
     const brand = "Bytetrade";
     const element = document.getElementById("brand");
@@ -2315,7 +2312,44 @@
         }, 2500);
       }
     }
-    typeBrand();
+
+    // Initialize everything after DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+      addRippleEffect();
+      
+      window.addEventListener("resize", () => {
+        if (navbar.classList.contains("sticky")) {
+          document.body.style.paddingTop = navbar.offsetHeight + "px";
+        }
+      });
+      
+      AOS.refresh();
+
+      // Start typing animation
+      typeBrand();
+    });
+
+    // Initialize TradingView widget after window load
+    window.addEventListener('load', function() {
+      if (typeof TradingView !== 'undefined') {
+        new TradingView.widget({
+          "container_id": "tradingview_chart",
+          "width": "100%",
+          "height": "100%",
+          "symbol": "BITSTAMP:BTCUSD",
+          "interval": "D",
+          "timezone": "Etc/UTC",
+          "theme": "light",
+          "style": "1",
+          "locale": "en",
+          "toolbar_bg": "#f1f3f6",
+          "enable_publishing": false,
+          "allow_symbol_change": true,
+          "hide_top_toolbar": false,
+          "withdateranges": true
+        });
+      }
+    });
   </script>
 </body>
 </html>

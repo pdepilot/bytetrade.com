@@ -149,6 +149,7 @@
     .navbar nav {
       display: flex;
       gap: clamp(15px, 3vw, 30px);
+      align-items: center;
     }
 
     .navbar nav a {
@@ -189,8 +190,63 @@
       color: #ffd700;
     }
 
+    /* CTA button style for LOGIN/SIGNUP link */
+    .navbar nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffb800);
+      color: #0f2b46;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .navbar nav a.cta-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .navbar nav a.cta-link:hover::before {
+      left: 100%;
+    }
+
+    .navbar nav a.cta-link:hover {
+      background: linear-gradient(145deg, #ffb800, #ffd700);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.5);
+      border-color: #00ffff;
+    }
+
+    .navbar nav a.cta-link:after {
+      display: none;
+    }
+
+    .navbar nav a.cta-link i {
+      margin-right: 5px;
+      transition: transform 0.3s;
+    }
+
+    .navbar nav a.cta-link:hover i {
+      transform: rotate(90deg);
+    }
+
+    .navbar.scrolled nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
     .logo img {
-      height: clamp(50px, 12vw, 80px);
+      height: clamp(30px, 10vw, 60px);
       transition: all 0.3s ease;
     }
 
@@ -276,6 +332,24 @@
         border-color: #ffd700;
       }
 
+      .navbar nav a.cta-link {
+        background: rgba(255, 215, 0, 0.2);
+        color: #ffd700;
+        border: 1px solid #ffd700;
+        box-shadow: none;
+        padding: 14px 15px;
+        border-radius: 8px;
+      }
+
+      .navbar nav a.cta-link:hover {
+        background: #ffd700;
+        color: #0a1a2f;
+      }
+
+      .navbar nav a.cta-link i {
+        margin-right: 10px;
+      }
+
       .navbar nav a:after {
         display: none;
       }
@@ -346,7 +420,7 @@
       position: relative;
       width: 100%;
       max-width: 1000px;
-      min-height: min(720px, 90vh);
+      min-height: min(750px, 100vh);
       background: rgba(10, 25, 45, 0.6);
       backdrop-filter: blur(16px) saturate(180%);
       -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -365,66 +439,69 @@
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: min(650px, 85vh);
+      min-height: min(650px, 95vh);
+      display: flex;
     }
 
     .panel {
-      position: absolute;
-      top: 0;
+      flex: 1;
       width: 50%;
       height: 100%;
       padding: clamp(1.5rem, 5vh, 3rem) clamp(1.5rem, 4vw, 2.5rem);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease, box-shadow 0.4s;
-      will-change: transform, opacity;
+      transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: transform, opacity, box-shadow;
       backface-visibility: hidden;
+      overflow-y: auto;
+      position: relative;
     }
 
     .panel-login {
-      left: 0;
       background: rgba(5, 15, 28, 0.7);
       backdrop-filter: blur(10px);
       border-right: 1px solid rgba(255,215,0,0.2);
       border-radius: clamp(2rem, 5vw, 3.5rem) 0 0 clamp(2rem, 5vw, 3.5rem);
       z-index: 3;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
       opacity: 1;
     }
+
     .panel-signup {
-      right: 0;
       background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
       border-left: 1px solid rgba(0,255,255,0.2);
       border-radius: 0 clamp(2rem, 5vw, 3.5rem) clamp(2rem, 5vw, 3.5rem) 0;
       z-index: 2;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
       opacity: 1;
     }
 
-    /* animations */
+    /* animations for morphing effect */
     .card-inner.signup-active .panel-login {
-      transform: translateX(-100%) scale(0.9);
+      transform: translateX(-100%);
       opacity: 0;
       pointer-events: none;
     }
     .card-inner.signup-active .panel-signup {
-      transform: translateX(-50%) scale(1.02);
+      transform: translateX(-50%);
       box-shadow: -10px 0 40px rgba(0,255,255,0.3);
       border-left: 2px solid #ffd700;
       z-index: 10;
+      width: 100%;
     }
     .card-inner.login-active .panel-signup {
-      transform: translateX(100%) scale(0.9);
+      transform: translateX(100%);
       opacity: 0;
       pointer-events: none;
     }
     .card-inner.login-active .panel-login {
-      transform: translateX(50%) scale(1.02);
+      transform: translateX(50%);
       box-shadow: 10px 0 40px rgba(255,215,0,0.3);
       border-right: 2px solid cyan;
       z-index: 10;
+      width: 100%;
     }
 
     .panel h2 {
@@ -622,7 +699,6 @@
       backdrop-filter: blur(8px);
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      margin-top: 1.5rem;
       font-size: clamp(0.9rem, 2.5vw, 1rem);
     }
     .morph-link i {
@@ -674,17 +750,104 @@
       100% { box-shadow: 0 0 60px gold, 0 0 100px cyan; }
     }
 
-    /* responsive card (stack on mobile) */
+    /* responsive card (stack on mobile) - IMPROVED */
     @media (max-width: 800px) {
-      .morph-card { border-radius: 2.5rem; }
-      .panel { width: 100% !important; position: relative; left: 0 !important; right: 0 !important; transform: none !important; opacity: 1 !important; border-radius: 2.5rem; border: none; }
-      .card-inner { display: flex; flex-direction: column; }
-      .panel-login, .panel-signup { position: relative; width: 100%; min-height: auto; border-radius: 2.5rem; margin-bottom: 1rem; }
-      .morph-tab { display: none; }
+      .card-inner {
+        flex-direction: column;
+      }
+      
+      .panel { 
+        width: 100% !important;
+        border-radius: 2rem !important;
+        margin: 0;
+        padding: 2rem 1.5rem;
+        min-height: auto;
+        overflow-y: visible;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+      
+      .panel-login, .panel-signup { 
+        border: 1px solid rgba(255,215,0,0.2);
+        margin-bottom: 1rem; 
+      }
+      
+      .panel-signup {
+        margin-top: 0;
+      }
+      
+      .morph-tab { 
+        display: none; 
+      }
+      
       .card-inner.signup-active .panel-signup,
-      .card-inner.login-active .panel-login { transform: none; opacity: 1; display: block; }
-      .card-inner.signup-active .panel-login { display: none; }
-      .card-inner.login-active .panel-signup { display: none; }
+      .card-inner.login-active .panel-login { 
+        display: block; 
+      }
+      
+      .card-inner.signup-active .panel-login { 
+        display: none; 
+      }
+      
+      .card-inner.login-active .panel-signup { 
+        display: none; 
+      }
+      
+      /* Ensure all content is visible in signup panel */
+      .panel-signup form {
+        max-height: none;
+        overflow-y: visible;
+      }
+      
+      .panel-signup .input-group:last-of-type {
+        margin-bottom: 1.5rem;
+      }
+      
+      .panel-signup .options-row {
+        margin: 1rem 0 1.5rem;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 480px) {
+      .panel {
+        padding: 1.5rem 1rem;
+      }
+      
+      .panel h2 {
+        font-size: 1.8rem;
+      }
+      
+      .input-group input {
+        padding-left: 2.8rem;
+        font-size: 0.9rem;
+      }
+      
+      .input-group i {
+        left: 15px;
+        font-size: 1rem;
+      }
+      
+      .options-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .social-row {
+        gap: 0.5rem;
+      }
+      
+      .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      
+      .morph-link {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+      }
     }
 
     /* ---------- FOOTER (fully responsive) ---------- */
@@ -849,7 +1012,7 @@
   <div class="top-bar">
     <div class="top-left">
       <i class="fa-solid fa-phone"></i> +2348031901791
-      <i class="fa-solid fa-envelope" style="margin-left: 20px"></i> support@globalextrade.com
+      <i class="fa-solid fa-envelope" style="margin-left: 20px"></i> support@bytetrade.com
     </div>
     <div class="top-right">
       <select id="languageSelect">
@@ -872,15 +1035,16 @@
   <!-- NAVBAR (same as other pages) -->
   <header class="navbar" id="navbar">
     <div class="logo">
-      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade Logo" />
+      <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade Logo" />
     </div>
     <nav id="nav-menu">
       <a href="index.html">HOME</a>
       <a href="about.html">ABOUT US</a>
       <a href="faqs.html">FAQS</a>
       <a href="contact.html">CONTACTS</a>
-      <a href="login.html" class="active">LOGIN/SIGNUP</a>
+      <a href="connectwallet.html">CONNECT-WALLET</a>
       <a href="download-app.html">DOWNLOAD APP</a>
+      <a href="login.html" class="active cta-link"><i class="fa-solid fa-right-to-bracket"></i> LOGIN/SIGNUP</a>
     </nav>
     <div class="menu-toggle" id="menu-toggle">
       <i class="fa-solid fa-bars"></i>
@@ -990,7 +1154,7 @@
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-about">
-        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Globalextrade"></div>
+        <div class="footer-logo"><img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade"></div>
         <p>Bytetrade is a leading online broker providing access to global financial markets with cutting-edge technology and exceptional support.</p>
         <div class="social-links">
           <a href="#"><i class="fa-brands fa-facebook-f"></i></a>

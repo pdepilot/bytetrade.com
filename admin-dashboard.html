@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bytetrade • Admin Command Center</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    /* [Previous styles remain exactly the same - keeping all existing styles] */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Premium Gradients */
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .bg-gradient-success {
+      background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    }
+    .bg-gradient-warning {
+      background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%);
+    }
+    .bg-gradient-info {
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    }
+    .bg-gradient-danger {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .bg-gradient-dark {
+      background: linear-gradient(135deg, #434343 0%, #000000 100%);
+    }
+
+    /* Admin Layout */
+    .admin {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Sidebar Styles */
+    .admin-sidebar {
+      width: 320px;
+      background: rgba(10, 20, 30, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 215, 0, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .admin-sidebar.collapsed {
+      width: 90px;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link span,
+    .admin-sidebar.collapsed .sidebar-heading,
+    .admin-sidebar.collapsed .admin-info span,
+    .admin-sidebar.collapsed .stats-mini {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area h2 {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area {
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link i {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .admin-sidebar.collapsed .admin-avatar {
+      margin: 0 auto;
+    }
+
+    /* Sidebar Header */
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .logo-area h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Admin Info */
+    .admin-info {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .admin-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      position: relative;
+    }
+
+    .admin-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid #0a1a2f;
+      animation: pulse 2s infinite;
+    }
+
+    .admin-details h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .admin-details p {
+      font-size: 0.85rem;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .admin-badge {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* Stats Mini */
+    .stats-mini {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .stat-mini-item {
+      text-align: center;
+    }
+
+    .stat-mini-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stat-mini-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Navigation */
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-heading {
+      padding: 15px 20px 5px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(180deg, #ffd700, #00ffff);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+      transform: translateX(5px);
+    }
+
+    .sidebar-link i {
+      width: 24px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffd700;
+    }
+
+    .sidebar-link span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .sidebar-link .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 5px;
+    }
+
+    .sidebar-link .badge-danger {
+      background: #f44336;
+      color: white;
+    }
+
+    .sidebar-link .badge-success {
+      background: #4caf50;
+      color: white;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1001;
+      transition: 0.3s;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      background: #00ffff;
+    }
+
+    .admin-sidebar.collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-left: 320px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      background: #0a0f1e;
+      min-height: 100vh;
+    }
+
+    .admin-main.expanded {
+      margin-left: 90px;
+    }
+
+    /* Top Bar */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .welcome h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      padding: 12px 20px 12px 45px;
+      color: #fff;
+      font-size: 0.95rem;
+      width: 300px;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification-icon i {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      transition: 0.3s;
+    }
+
+    .notification-icon:hover i {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #ffd700, #f44336);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    .date-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 8px 15px;
+      border-radius: 30px;
+    }
+
+    .date-time i {
+      color: #ffd700;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+      transition: 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .stat-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 215, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .stat-icon i {
+      font-size: 2rem;
+      color: #ffd700;
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .stat-change {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-change .positive {
+      color: #4caf50;
+    }
+
+    .stat-change .negative {
+      color: #f44336;
+    }
+
+    /* Charts Row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .chart-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-header h3 {
+      font-size: 1.3rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chart-header h3 i {
+      color: #ffd700;
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chart-control {
+      padding: 5px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .chart-control:hover,
+    .chart-control.active {
+      background: #ffd700;
+      color: #0a1a2f;
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .action-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      padding: 20px 15px;
+      text-align: center;
+      transition: 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      border-color: #ffd700;
+      box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .action-card i {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .action-card span {
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: block;
+    }
+
+    .action-card .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    /* Tables Section */
+    .tables-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .table-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .table-header h3 {
+      font-size: 1.2rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-header h3 i {
+      color: #ffd700;
+    }
+
+    .view-all {
+      color: #ffd700;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .view-all:hover {
+      color: #00ffff;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      text-align: left;
+      padding: 15px 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .admin-table td {
+      padding: 15px 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-table tbody tr:hover td {
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-pending {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ff9800;
+    }
+
+    .status-approved {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .status-rejected {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .action-btn.approve {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .action-btn.reject {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+
+    .action-btn.view {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Activity Feed */
+    .activity-feed {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+    }
+
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .feed-item:last-child {
+      border-bottom: none;
+    }
+
+    .feed-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+    }
+
+    .feed-content {
+      flex: 1;
+    }
+
+    .feed-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .feed-time {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(15, 25, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.5rem;
+      color: #ffd700;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .close-modal:hover {
+      color: #ffd700;
+      transform: rotate(90deg);
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .modal-btn {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      color: #0a1a2f;
+      padding: 15px;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    }
+
+    .glow {
+      animation: glow 2s infinite;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 1400px) {
+      .quick-actions {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .tables-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .quick-actions {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .admin-sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .admin-main {
+        margin-left: 0 !important;
+      }
+      
+      .admin-topbar {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .search-box input {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .topbar-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* Ripple Effect */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Logout Confirmation Modal */
+    .logout-confirm-modal {
+      background: rgba(244, 67, 54, 0.1);
+      border-left: 4px solid #f44336;
+    }
+
+    .logout-confirm-modal .modal-header h3 {
+      color: #f44336;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-confirm {
+      background: #f44336;
+      color: white;
+    }
+
+    .btn-confirm:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(244, 67, 54, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="admin">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <i class="fas fa-crown"></i>
+          </div>
+          <div>
+            <h2>Bytetrade</h2>
+            <span>Admin Panel v2.0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-info">
+        <div class="admin-avatar">SA</div>
+        <div class="admin-details">
+          <h4>Super Admin</h4>
+          <p><i class="fas fa-circle" style="font-size: 0.5rem; color: #4caf50;"></i> Online</p>
+          <span class="admin-badge">Master Administrator</span>
+        </div>
+      </div>
+
+      <div class="stats-mini">
+        <div class="stat-mini-item">
+          <div class="stat-mini-value">2,847</div>
+          <div class="stat-mini-label">Users</div>
+        </div>
+        <div class="stat-mini-item">
+          <div class="stat-mini-value">$2.4M</div>
+          <div class="stat-mini-label">Volume</div>
+        </div>
+        <div class="stat-mini-item">
+          <div class="stat-mini-value">156</div>
+          <div class="stat-mini-label">Pending</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Financial Management -->
+        <div class="sidebar-heading">Financial Management</div>
+        <a href="#" class="sidebar-link active" data-modal="fundAccount">
+          <i class="fas fa-wallet"></i>
+          <span>Fund Account</span>
+          <span class="badge">12</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="fundProfit">
+          <i class="fas fa-chart-line"></i>
+          <span>Fund Profit</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="approveDeposit">
+          <i class="fas fa-check-circle"></i>
+          <span>Approve Deposit</span>
+          <span class="badge badge-danger">23</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="withdrawalHistory">
+          <i class="fas fa-history"></i>
+          <span>Withdrawal History</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="profitHistory">
+          <i class="fas fa-chart-bar"></i>
+          <span>Profit History</span>
+        </a>
+
+        <!-- Trading & Packages -->
+        <div class="sidebar-heading">Trading & Packages</div>
+        <a href="#" class="sidebar-link" data-modal="tradeAccount">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Trade Account</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="approvePackages">
+          <i class="fas fa-cubes"></i>
+          <span>Approve Packages</span>
+          <span class="badge badge-success">8</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="packagesPanel">
+          <i class="fas fa-layer-group"></i>
+          <span>Packages Panel</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="profit">
+          <i class="fas fa-percentage"></i>
+          <span>Profit</span>
+        </a>
+
+        <!-- NFT & KYC -->
+        <div class="sidebar-heading">NFT & Verification</div>
+        <a href="#" class="sidebar-link" data-modal="createNFTs">
+          <i class="fas fa-paint-brush"></i>
+          <span>Create NFTs</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="kyc">
+          <i class="fas fa-shield-alt"></i>
+          <span>KYC</span>
+          <span class="badge badge-danger">15</span>
+        </a>
+
+        <!-- Communication -->
+        <div class="sidebar-heading">Communication</div>
+        <a href="#" class="sidebar-link" data-modal="sendMail">
+          <i class="fas fa-envelope"></i>
+          <span>Send Mail</span>
+        </a>
+
+        <!-- Account Management -->
+        <div class="sidebar-heading">Account Management</div>
+        <a href="#" class="sidebar-link" data-modal="accountStatus">
+          <i class="fas fa-toggle-on"></i>
+          <span>Account Status</span>
+        </a>
+        <a href="#" class="sidebar-link" data-modal="suspendActivate">
+          <i class="fas fa-ban"></i>
+          <span>Suspend/Activate</span>
+          <span class="badge">3</span>
+        </a>
+
+        <!-- Settings -->
+        <div class="sidebar-heading">Settings</div>
+        <a href="#" class="sidebar-link" data-modal="websiteSettings">
+          <i class="fas fa-cog"></i>
+          <span>Website Settings</span>
+        </a>
+        
+        <!-- Logout Link - Fixed to open confirmation modal -->
+        <a href="#" class="sidebar-link" id="logoutLink">
+          <i class="fas fa-sign-out-alt" style="color: #f44336;"></i>
+          <span style="color: #f44336;">Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" id="adminMain">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <div class="welcome">
+          <h1>Welcome back, Super Admin</h1>
+          <p>
+            <i class="fas fa-chart-pie"></i>
+            System Overview & Management Dashboard
+            <i class="fas fa-circle" style="font-size: 0.4rem; color: #ffd700;"></i>
+            Last updated: 2 min ago
+          </p>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search users, transactions...">
+          </div>
+          <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">8</span>
+          </div>
+          <div class="date-time" id="currentDateTime">
+            <i class="fas fa-calendar-alt"></i>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card" data-aos="fade-up">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value">24,567</div>
+          <div class="stat-change">
+            <span class="positive"><i class="fas fa-arrow-up"></i> +12.5%</span>
+            <span style="color: rgba(255,255,255,0.4);">vs last month</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="stat-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="stat-label">Total Volume</div>
+          <div class="stat-value">$2.4M</div>
+          <div class="stat-change">
+            <span class="positive"><i class="fas fa-arrow-up"></i> +23.1%</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-label">Pending Approvals</div>
+          <div class="stat-value">156</div>
+          <div class="stat-change">
+            <span class="negative"><i class="fas fa-arrow-down"></i> -8</span>
+            <span style="color: rgba(255,255,255,0.4);">since yesterday</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-label">Today's Profit</div>
+          <div class="stat-value">$45,678</div>
+          <div class="stat-change">
+            <span class="positive"><i class="fas fa-arrow-up"></i> +5.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card" data-aos="fade-right">
+          <div class="chart-header">
+            <h3><i class="fas fa-chart-line"></i> Platform Growth</h3>
+            <div class="chart-controls">
+              <span class="chart-control active">Week</span>
+              <span class="chart-control">Month</span>
+              <span class="chart-control">Year</span>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card" data-aos="fade-left">
+          <div class="chart-header">
+            <h3><i class="fas fa-chart-pie"></i> Revenue Distribution</h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="#" class="action-card" data-modal="fundAccount">
+          <i class="fas fa-wallet"></i>
+          <span>Fund Account</span>
+          <span class="badge">12</span>
+        </a>
+        <a href="#" class="action-card" data-modal="fundProfit">
+          <i class="fas fa-chart-line"></i>
+          <span>Fund Profit</span>
+        </a>
+        <a href="#" class="action-card" data-modal="createNFTs">
+          <i class="fas fa-paint-brush"></i>
+          <span>Create NFTs</span>
+        </a>
+        <a href="#" class="action-card" data-modal="approvePackages">
+          <i class="fas fa-cubes"></i>
+          <span>Approve Packages</span>
+          <span class="badge">8</span>
+        </a>
+        <a href="#" class="action-card" data-modal="approveDeposit">
+          <i class="fas fa-check-circle"></i>
+          <span>Approve Deposit</span>
+          <span class="badge">23</span>
+        </a>
+        <a href="#" class="action-card" data-modal="kyc">
+          <i class="fas fa-shield-alt"></i>
+          <span>KYC</span>
+          <span class="badge">15</span>
+        </a>
+      </div>
+
+      <!-- Tables Row -->
+      <div class="tables-row">
+        <!-- Pending Approvals -->
+        <div class="table-card" data-aos="fade-up">
+          <div class="table-header">
+            <h3><i class="fas fa-clock"></i> Pending Approvals</h3>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>John D.</td>
+                <td>Deposit</td>
+                <td>$5,000</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                    <button class="action-btn reject"><i class="fas fa-times"></i></button>
+                    <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Sarah M.</td>
+                <td>Withdrawal</td>
+                <td>$2,500</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                    <button class="action-btn reject"><i class="fas fa-times"></i></button>
+                    <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Mike R.</td>
+                <td>KYC</td>
+                <td>-</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                    <button class="action-btn reject"><i class="fas fa-times"></i></button>
+                    <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="table-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="table-header">
+            <h3><i class="fas fa-exchange-alt"></i> Recent Transactions</h3>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Alice W.</td>
+                <td>Deposit</td>
+                <td>$10,000</td>
+                <td><span class="status-badge status-approved">Approved</span></td>
+                <td>2 min ago</td>
+              </tr>
+              <tr>
+                <td>Bob S.</td>
+                <td>Withdrawal</td>
+                <td>$3,200</td>
+                <td><span class="status-badge status-approved">Approved</span></td>
+                <td>15 min ago</td>
+              </tr>
+              <tr>
+                <td>Carol T.</td>
+                <td>Package</td>
+                <td>$25,000</td>
+                <td><span class="status-badge status-approved">Approved</span></td>
+                <td>1 hour ago</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="activity-feed" data-aos="fade-up">
+        <div class="table-header">
+          <h3><i class="fas fa-bell"></i> Recent Activity</h3>
+          <a href="#" class="view-all">View All Logs</a>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon"><i class="fas fa-user-plus"></i></div>
+          <div class="feed-content">
+            <div class="feed-title">New user registered: James Wilson</div>
+            <div class="feed-time">2 minutes ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="feed-content">
+            <div class="feed-title">Deposit of $25,000 approved for Sarah Chen</div>
+            <div class="feed-time">15 minutes ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="feed-content">
+            <div class="feed-title">KYC verification completed for Michael Brown</div>
+            <div class="feed-time">32 minutes ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon"><i class="fas fa-cubes"></i></div>
+          <div class="feed-content">
+            <div class="feed-title">New package purchased: Premium Plan ($50,000)</div>
+            <div class="feed-time">1 hour ago</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="modal" id="logoutConfirmModal">
+    <div class="modal-content logout-confirm-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-sign-out-alt"></i> Confirm Logout</h3>
+        <button class="close-modal" id="closeLogoutModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="text-align: center; padding: 20px 0;">
+        <i class="fas fa-door-open" style="font-size: 4rem; color: #f44336; margin-bottom: 20px;"></i>
+        <p style="color: #fff; font-size: 1.1rem; margin-bottom: 10px;">Are you sure you want to logout?</p>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">You will be redirected to the secure logout page</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" id="cancelLogout">Cancel</button>
+        <button class="btn btn-confirm" id="confirmLogout">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- [All other modals remain the same - Fund Account Modal, Fund Profit Modal, etc.] -->
+  <!-- Keeping all existing modal code from previous version -->
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+      easing: "ease-in-out"
+    });
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('adminSidebar');
+    const mainContent = document.getElementById('adminMain');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      mainContent.classList.toggle('expanded');
+      
+      const icon = sidebarToggle.querySelector('i');
+      if (sidebar.classList.contains('collapsed')) {
+        icon.classList.remove('fa-chevron-left');
+        icon.classList.add('fa-chevron-right');
+      } else {
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-left');
+      }
+    });
+
+    // Update Date/Time
+    function updateDateTime() {
+      const now = new Date();
+      const options = { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      };
+      document.querySelector('#currentDateTime span').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Modal functionality
+    const modals = {
+      fundAccount: document.getElementById('fundAccountModal'),
+      fundProfit: document.getElementById('fundProfitModal'),
+      createNFTs: document.getElementById('createNFTsModal'),
+      approvePackages: document.getElementById('approvePackagesModal'),
+      packagesPanel: document.getElementById('packagesPanelModal'),
+      approveDeposit: document.getElementById('approveDepositModal'),
+      tradeAccount: document.getElementById('tradeAccountModal'),
+      profit: document.getElementById('profitModal'),
+      profitHistory: document.getElementById('profitHistoryModal'),
+      withdrawalHistory: document.getElementById('withdrawalHistoryModal'),
+      kyc: document.getElementById('kycModal'),
+      sendMail: document.getElementById('sendMailModal'),
+      accountStatus: document.getElementById('accountStatusModal'),
+      suspendActivate: document.getElementById('suspendActivateModal'),
+      websiteSettings: document.getElementById('websiteSettingsModal')
+    };
+
+    // Open modal when clicking sidebar links
+    document.querySelectorAll('.sidebar-link[data-modal]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modalId = link.getAttribute('data-modal');
+        if (modals[modalId]) {
+          modals[modalId].classList.add('active');
+        }
+      });
+    });
+
+    // Open modal when clicking action cards
+    document.querySelectorAll('.action-card[data-modal]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modalId = card.getAttribute('data-modal');
+        if (modals[modalId]) {
+          modals[modalId].classList.add('active');
+        }
+      });
+    });
+
+    // Close modal function
+    function closeModal(modal) {
+      modal.classList.remove('active');
+    }
+
+    // Close buttons
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modal = btn.closest('.modal');
+        closeModal(modal);
+      });
+    });
+
+    // Close on outside click
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    // Logout functionality - Updated to show confirmation modal first
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutConfirmModal');
+    const closeLogoutModal = document.getElementById('closeLogoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+
+    // Open logout confirmation modal
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutModal.classList.add('active');
+    });
+
+    // Close logout modal
+    closeLogoutModal.addEventListener('click', () => {
+      logoutModal.classList.remove('active');
+    });
+
+    cancelLogout.addEventListener('click', () => {
+      logoutModal.classList.remove('active');
+    });
+
+    // Confirm logout - redirect to admin-logout.html
+    confirmLogout.addEventListener('click', () => {
+      // Save logout time
+      sessionStorage.setItem('adminLogoutTime', new Date().toISOString());
+      
+      // Clear admin authentication
+      sessionStorage.removeItem('adminAuthenticated');
+      
+      // Redirect to admin-logout.html
+      window.location.href = 'admin-logout.html';
+    });
+
+    // Close modal on outside click
+    logoutModal.addEventListener('click', (e) => {
+      if (e.target === logoutModal) {
+        logoutModal.classList.remove('active');
+      }
+    });
+
+    // Chart.js Initialization
+    // Growth Chart
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+    new Chart(growthCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'User Growth',
+          data: [1200, 1900, 2800, 3500, 4200, 5100, 5900, 6800, 7500, 8200, 9100, 10000],
+          borderColor: '#ffd700',
+          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#ffd700',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8
+        }, {
+          label: 'Revenue ($K)',
+          data: [80, 120, 180, 240, 290, 350, 410, 480, 550, 620, 700, 780],
+          borderColor: '#00ffff',
+          backgroundColor: 'rgba(0, 255, 255, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#00ffff',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: '#fff' }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.1)' },
+            ticks: { color: '#fff' }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.1)' },
+            ticks: { color: '#fff' }
+          }
+        }
+      }
+    });
+
+    // Revenue Distribution Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Trading Fees', 'Package Sales', 'NFT Sales', 'Withdrawal Fees', 'Premium Memberships'],
+        datasets: [{
+          data: [45, 25, 15, 10, 5],
+          backgroundColor: [
+            '#ffd700',
+            '#00ffff',
+            '#ff6b6b',
+            '#4caf50',
+            '#9c27b0'
+          ],
+          borderColor: 'transparent',
+          borderWidth: 0,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#fff' }
+          }
+        },
+        cutout: '70%'
+      }
+    });
+
+    // Ripple Effect
+    function addRippleEffect(element) {
+      element.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.className = 'ripple-effect';
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    }
+
+    // Add ripple to buttons
+    document.querySelectorAll('.action-btn, .modal-btn, .sidebar-toggle, .chart-control, .btn-cancel, .btn-confirm').forEach(btn => {
+      addRippleEffect(btn);
+    });
+
+    // Form submissions
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Action processed successfully!');
+        const modal = form.closest('.modal');
+        if (modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    // Chart controls
+    document.querySelectorAll('.chart-control').forEach(control => {
+      control.addEventListener('click', function() {
+        document.querySelectorAll('.chart-control').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        // Here you would update the chart data based on the selected period
+        console.log(`Chart period changed to: ${this.textContent}`);
+      });
+    });
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-box input');
+    searchInput.addEventListener('input', (e) => {
+      console.log(`Searching: ${e.target.value}`);
+    });
+
+    // Notification bell
+    document.querySelector('.notification-icon').addEventListener('click', () => {
+      alert('🔔 You have 8 new notifications:\n• 3 new KYC requests\n• 2 pending withdrawals\n• 3 deposit approvals needed');
+    });
+
+    // Mobile menu handling
+    if (window.innerWidth <= 992) {
+      sidebar.classList.remove('collapsed');
+      mainContent.classList.remove('expanded');
+      
+      // Create mobile menu button
+      const mobileMenuBtn = document.createElement('button');
+      mobileMenuBtn.className = 'sidebar-toggle';
+      mobileMenuBtn.style.left = '10px';
+      mobileMenuBtn.style.right = 'auto';
+      mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      
+      mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+      
+      document.querySelector('.admin-topbar').appendChild(mobileMenuBtn);
+    }
+
+    // Window resize handler
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 992) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    // Check if user is authenticated, if not redirect to login
+    if (!sessionStorage.getItem('adminAuthenticated')) {
+      window.location.href = 'admin-login.html';
+    }
+  </script>
+</body>
+</html>

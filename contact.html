@@ -101,6 +101,61 @@
       .top-left { justify-content: center; }
     }
 
+    /* CTA button style for LOGIN/SIGNUP link */
+    .navbar nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffb800);
+      color: #0f2b46;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .navbar nav a.cta-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .navbar nav a.cta-link:hover::before {
+      left: 100%;
+    }
+
+    .navbar nav a.cta-link:hover {
+      background: linear-gradient(145deg, #ffb800, #ffd700);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.5);
+      border-color: #00ffff;
+    }
+
+    .navbar nav a.cta-link:after {
+      display: none;
+    }
+
+    .navbar nav a.cta-link i {
+      margin-right: 5px;
+      transition: transform 0.3s;
+    }
+
+    .navbar nav a.cta-link:hover i {
+      transform: rotate(90deg);
+    }
+
+    .navbar.scrolled nav a.cta-link {
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
     /* NAVBAR STYLES - FULLY RESPONSIVE (slide down) */
     .navbar {
       display: flex;
@@ -173,7 +228,7 @@
     .navbar.scrolled nav a.active { color: #ffd700; }
 
     .logo img {
-      height: clamp(50px, 12vw, 80px);
+      height: clamp(30px, 10vw, 60px);
       transition: all 0.3s ease;
     }
 
@@ -1782,8 +1837,9 @@
       <a href="about.html">ABOUT US</a>
       <a href="faqs.html">FAQS</a>
       <a href="contact.html" class="active">CONTACTS</a>
-      <a href="login.html">LOGIN/SIGNUP</a>
+      <a href="connectwallet.html">CONNECT-WALLET</a>
       <a href="download-app.html">DOWNLOAD APP</a>
+      <a href="login.html" class="active cta-link"><i class="fa-solid fa-right-to-bracket"></i> LOGIN/SIGNUP</a>
     </nav>
 
     <div class="menu-toggle" id="menu-toggle">

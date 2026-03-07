@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bytetrade • Secure Logout</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk + Orbitron -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    /* [All previous styles remain exactly the same] */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #0a0f1e;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .logout-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Gradient Orbs */
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.2;
+      animation: orbFloat 20s infinite alternate;
+    }
+
+    .gradient-orb:nth-child(1) {
+      top: 10%;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle at 30% 30%, #ffd700, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .gradient-orb:nth-child(2) {
+      bottom: 10%;
+      right: 20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle at 70% 70%, #00ffff, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    .gradient-orb:nth-child(3) {
+      top: 40%;
+      right: 30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle at 50% 50%, #ff6b6b, transparent 70%);
+      animation-delay: -10s;
+    }
+
+    /* Matrix Rain Effect */
+    .matrix-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 215, 0, 0.02) 100%);
+      pointer-events: none;
+    }
+
+    .matrix-rain {
+      position: absolute;
+      top: -20px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 215, 0, 0.03) 0px,
+        rgba(0, 255, 255, 0.03) 1px,
+        transparent 2px,
+        transparent 5px
+      );
+      animation: matrixMove 20s linear infinite;
+    }
+
+    @keyframes matrixMove {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Particles */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #ffd700;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700;
+      animation: particleFloat 15s infinite linear;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      90% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100px) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .logout-container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Logout Card */
+    .logout-card {
+      width: 100%;
+      max-width: 550px;
+      background: rgba(10, 20, 30, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 50px;
+      padding: 60px 50px;
+      box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 215, 0, 0.1) inset,
+        0 0 80px rgba(0, 255, 255, 0.2);
+      animation: cardPulse 3s infinite alternate;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    @keyframes cardPulse {
+      0% { 
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.1) inset, 0 0 80px rgba(0, 255, 255, 0.2);
+        transform: scale(1);
+      }
+      100% { 
+        box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.2) inset, 0 0 120px rgba(0, 255, 255, 0.3);
+        transform: scale(1.02);
+      }
+    }
+
+    .logout-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 215, 0, 0.05),
+        rgba(0, 255, 255, 0.05),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 8s infinite;
+      pointer-events: none;
+    }
+
+    /* Success Animation */
+    .success-animation {
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .checkmark-circle {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      display: inline-block;
+      vertical-align: top;
+      margin: 0 auto;
+    }
+
+    .checkmark-circle .background {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255, 215, 0, 0.1);
+      border: 3px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+      position: absolute;
+    }
+
+    .checkmark-circle .checkmark {
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: block;
+      stroke-width: 3;
+      stroke: #ffd700;
+      stroke-miterlimit: 10;
+      animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+
+    .checkmark-circle .checkmark__circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 3;
+      stroke-miterlimit: 10;
+      stroke: #ffd700;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark-circle .checkmark__check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke {
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes scale {
+      0%, 100% { transform: none; }
+      50% { transform: scale3d(1.1, 1.1, 1); }
+    }
+
+    @keyframes fill {
+      100% { box-shadow: inset 0px 0px 0px 30px rgba(255, 215, 0, 0.1); }
+    }
+
+    /* Logout Icon Animation */
+    .logout-icon {
+      font-size: 5rem;
+      color: #ffd700;
+      margin-bottom: 20px;
+      animation: logoutFloat 2s infinite ease-in-out;
+      filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+    }
+
+    @keyframes logoutFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    /* Logo */
+    .mini-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .mini-logo i {
+      font-size: 2.5rem;
+      color: #ffd700;
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+      animation: logoSpin 10s infinite linear;
+    }
+
+    .mini-logo span {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Title */
+    .logout-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 2px;
+    }
+
+    /* Subtitle */
+    .logout-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    /* Session Info */
+    .session-info {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 30px;
+      padding: 20px;
+      margin: 30px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .session-item {
+      text-align: center;
+    }
+
+    .session-item i {
+      font-size: 1.5rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .session-item .label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .session-item .value {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* Countdown Timer */
+    .countdown-container {
+      margin: 30px 0;
+    }
+
+    .countdown-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .countdown-item {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 20px;
+      padding: 15px;
+      min-width: 80px;
+      animation: countdownPulse 1s infinite;
+    }
+
+    .countdown-item .number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ffd700;
+      line-height: 1;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .countdown-item .unit {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    @keyframes countdownPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      margin: 30px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700, #00ffff);
+      border-radius: 10px;
+      animation: progressShrink 10s linear forwards;
+      transform-origin: left;
+    }
+
+    @keyframes progressShrink {
+      0% { width: 100%; }
+      100% { width: 0%; }
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 18px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(145deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(255, 215, 0, 0.5);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .btn i {
+      margin-right: 8px;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover i {
+      transform: translateX(5px);
+    }
+
+    /* Security Badge */
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 50px;
+      padding: 12px 25px;
+      margin-top: 30px;
+      color: #00ffff;
+      font-size: 0.95rem;
+      animation: badgeGlow 2s infinite;
+    }
+
+    @keyframes badgeGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.4); }
+    }
+
+    .security-badge i {
+      font-size: 1.2rem;
+    }
+
+    /* Session Note */
+    .session-note {
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .session-note i {
+      color: #ffd700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .logout-card {
+        padding: 40px 30px;
+      }
+
+      .logout-title {
+        font-size: 2.2rem;
+      }
+
+      .logout-subtitle {
+        font-size: 1rem;
+      }
+
+      .session-info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .countdown-timer {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .countdown-item {
+        min-width: 60px;
+        padding: 10px;
+      }
+
+      .countdown-item .number {
+        font-size: 1.8rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logout-card {
+        padding: 30px 20px;
+      }
+
+      .logout-title {
+        font-size: 1.8rem;
+      }
+
+      .mini-logo i {
+        font-size: 2rem;
+      }
+
+      .mini-logo span {
+        font-size: 1.5rem;
+      }
+
+      .security-badge {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Ripple Effect */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Fade Out Animation */
+    .fade-out {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    /* Slide In Animation */
+    .slide-in {
+      animation: slideIn 0.5s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="logout-bg">
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb"></div>
+    <div class="matrix-bg">
+      <div class="matrix-rain"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+  <!-- Logout Container -->
+  <div class="logout-container">
+    <div class="logout-card" data-aos="fade-up" data-aos-duration="1000">
+      <!-- Mini Logo -->
+      <div class="mini-logo">
+        <i class="fas fa-crown"></i>
+        <span>Bytetrade</span>
+      </div>
+
+      <!-- Success Animation -->
+      <div class="success-animation">
+        <div class="checkmark-circle">
+          <div class="background"></div>
+          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Logout Icon -->
+      <div class="logout-icon">
+        <i class="fas fa-door-open"></i>
+      </div>
+
+      <!-- Title -->
+      <h1 class="logout-title">Logged Out</h1>
+      
+      <!-- Subtitle -->
+      <p class="logout-subtitle">You have successfully terminated your admin session. All active sessions have been cleared.</p>
+
+      <!-- Session Info -->
+      <div class="session-info">
+        <div class="session-item">
+          <i class="fas fa-clock"></i>
+          <div class="label">Session Duration</div>
+          <div class="value" id="sessionDuration">2h 15m</div>
+        </div>
+        <div class="session-item">
+          <i class="fas fa-globe"></i>
+          <div class="label">Last IP</div>
+          <div class="value" id="lastIP">192.168.1.1</div>
+        </div>
+        <div class="session-item">
+          <i class="fas fa-calendar"></i>
+          <div class="label">Date</div>
+          <div class="value" id="currentDate"></div>
+        </div>
+      </div>
+
+      <!-- Countdown Timer -->
+      <div class="countdown-container">
+        <div class="countdown-label">Auto-redirect to login in</div>
+        <div class="countdown-timer" id="countdown">
+          <div class="countdown-item">
+            <div class="number" id="seconds">10</div>
+            <div class="unit">Seconds</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- Button Group -->
+      <div class="button-group">
+        <button class="btn btn-primary" id="loginNowBtn">
+          <i class="fas fa-sign-in-alt"></i>
+          Login Now
+        </button>
+        <button class="btn btn-secondary" id="homeBtn">
+          <i class="fas fa-home"></i>
+          Home Page
+        </button>
+      </div>
+
+      <!-- Security Badge -->
+      <div class="security-badge">
+        <i class="fas fa-shield-halved"></i>
+        <span>All sessions terminated • Security cleared</span>
+      </div>
+
+      <!-- Session Note -->
+      <div class="session-note">
+        <i class="fas fa-info-circle"></i>
+        <span>For security reasons, please close your browser if this was a public computer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+      easing: "ease-in-out"
+    });
+
+    // Create particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = 10 + Math.random() * 20 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Get session data from sessionStorage
+    const sessionData = {
+      loginTime: sessionStorage.getItem('adminLoginTime'),
+      logoutTime: sessionStorage.getItem('adminLogoutTime'),
+      ip: sessionStorage.getItem('adminIP') || '192.168.1.1',
+      email: sessionStorage.getItem('adminEmail') || 'admin@bytetrade.com'
+    };
+
+    // Calculate session duration
+    function calculateSessionDuration() {
+      if (sessionData.loginTime && sessionData.logoutTime) {
+        const loginTime = new Date(sessionData.loginTime);
+        const logoutTime = new Date(sessionData.logoutTime);
+        const diffMs = logoutTime - loginTime;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        
+        if (diffHrs > 0) {
+          document.getElementById('sessionDuration').textContent = `${diffHrs}h ${diffMins}m`;
+        } else {
+          document.getElementById('sessionDuration').textContent = `${diffMins}m`;
+        }
+      } else {
+        document.getElementById('sessionDuration').textContent = '2h 15m';
+      }
+    }
+
+    // Set current date
+    function setCurrentDate() {
+      const now = new Date();
+      const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    // Set last IP
+    document.getElementById('lastIP').textContent = sessionData.ip;
+
+    // Countdown timer
+    let secondsLeft = 10;
+    const secondsElement = document.getElementById('seconds');
+    const progressBar = document.getElementById('progressBar');
+    const loginNowBtn = document.getElementById('loginNowBtn');
+    const homeBtn = document.getElementById('homeBtn');
+
+    // Clear any existing session data
+    function clearSessionData() {
+      sessionStorage.removeItem('adminAuthenticated');
+      sessionStorage.removeItem('adminLoginTime');
+      sessionStorage.removeItem('adminLogoutTime');
+      sessionStorage.removeItem('adminEmail');
+      sessionStorage.removeItem('adminRemembered');
+      
+      // Clear localStorage if not remember me
+      if (!localStorage.getItem('adminRemembered')) {
+        localStorage.removeItem('adminEmail');
+        localStorage.removeItem('adminRemembered');
+      }
+    }
+
+    // Clear session data on logout
+    clearSessionData();
+
+    // Countdown interval
+    const countdownInterval = setInterval(() => {
+      secondsLeft--;
+      secondsElement.textContent = secondsLeft;
+      
+      // Update progress bar width (inverse)
+      const percentage = (secondsLeft / 10) * 100;
+      progressBar.style.width = percentage + '%';
+      
+      if (secondsLeft <= 0) {
+        clearInterval(countdownInterval);
+        redirectToLogin();
+      }
+    }, 1000);
+
+    // Redirect to login function
+    function redirectToLogin() {
+      document.body.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'admin-login.html';
+      }, 500);
+    }
+
+    // Login Now button
+    loginNowBtn.addEventListener('click', function() {
+      clearInterval(countdownInterval);
+      addRippleEffect(this);
+      redirectToLogin();
+    });
+
+    // Home button (redirect to main site)
+    homeBtn.addEventListener('click', function() {
+      clearInterval(countdownInterval);
+      addRippleEffect(this);
+      document.body.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 500);
+    });
+
+    // Add ripple effect to buttons
+    function addRippleEffect(element) {
+      element.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.className = 'ripple-effect';
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    }
+
+    addRippleEffect(loginNowBtn);
+    addRippleEffect(homeBtn);
+
+    // Log security event
+    console.log('🔒 Admin logout successful');
+    console.log(`📍 Session ended at: ${new Date().toLocaleString()}`);
+    console.log(`🖥️ Device: ${navigator.userAgent}`);
+
+    // Calculate and display session duration
+    calculateSessionDuration();
+    setCurrentDate();
+
+    // Prevent back button after logout
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+      history.go(1);
+    };
+
+    // Check if user came from dashboard, if not redirect to login
+    if (!document.referrer.includes('admin-dashboard') && !document.referrer.includes('admin-login')) {
+      // If someone tries to access logout page directly without coming from dashboard, redirect to login
+      window.location.href = 'admin-login.html';
+    }
+
+    // Show logout confirmation
+    const logoutTime = new Date();
+    console.log(`✅ Logout completed at: ${logoutTime.toLocaleTimeString()}`);
+
+    // Add keyboard shortcut (press L to login immediately)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'l' || e.key === 'L') {
+        clearInterval(countdownInterval);
+        redirectToLogin();
+      }
+    });
+
+    // Mouse movement tracking for security (optional)
+    let lastActivity = new Date();
+    document.addEventListener('mousemove', () => {
+      lastActivity = new Date();
+    });
+
+    // Check if user is trying to close tab
+    window.addEventListener('beforeunload', (e) => {
+      // Don't show confirmation, just log
+      console.log('User leaving logout page');
+    });
+
+    // Simulate network request to log out on server
+    async function notifyServerLogout() {
+      try {
+        // In production, this would be an actual API call
+        console.log('📡 Notifying server of logout...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('✅ Server notified successfully');
+      } catch (error) {
+        console.error('Failed to notify server:', error);
+      }
+    }
+    
+    notifyServerLogout();
+
+    // Add animation to countdown when low
+    const countdownItem = document.querySelector('.countdown-item');
+    setInterval(() => {
+      if (secondsLeft <= 3) {
+        countdownItem.style.animation = 'countdownPulse 0.5s infinite';
+        countdownItem.style.background = 'rgba(244, 67, 54, 0.2)';
+        countdownItem.style.borderColor = '#f44336';
+      }
+    }, 100);
+
+    // Initialize tooltips
+    const sessionItems = document.querySelectorAll('.session-item');
+    sessionItems.forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px)';
+        this.style.transition = 'transform 0.3s';
+      });
+      item.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Handle visibility change (user switches tabs)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        console.log('Tab hidden - session still terminating');
+      } else {
+        console.log('Tab visible - continuing countdown');
+      }
+    });
+
+    // Prevent form resubmission on page refresh
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
+</body>
+</html>
