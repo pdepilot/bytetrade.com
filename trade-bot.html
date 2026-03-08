@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Bytetrade • Trade Bot Management</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* Dashboard Layout - Exactly the same as original */
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      width: 100%;
+    }
+
+    /* Sidebar Styles - Exact copy from original */
+    .sidebar {
+      width: 280px;
+      background: rgba(15, 25, 35, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 215, 0, 0.1);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+
+    .sidebar.collapsed .sidebar-link span,
+    .sidebar.collapsed .sidebar-heading,
+    .sidebar.collapsed .user-info span,
+    .sidebar.collapsed .balance-details,
+    .sidebar.collapsed .user-details {
+      display: none;
+    }
+
+    .sidebar.collapsed .logo-area h2 {
+      display: none;
+    }
+
+    .sidebar.collapsed .logo-area {
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .sidebar.collapsed .sidebar-link i {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .sidebar.collapsed .user-avatar {
+      margin: 0 auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logo-area img {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+      flex-shrink: 0;
+    }
+
+    .logo-area h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    .user-info {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .user-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid #0a1a2f;
+    }
+
+    .user-details h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .user-details p {
+      font-size: 0.85rem;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.1));
+      margin: 20px;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .balance-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .balance-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+      word-break: break-word;
+    }
+
+    .balance-change {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .change-positive {
+      color: #4caf50;
+      background: rgba(76, 175, 80, 0.1);
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-heading {
+      padding: 10px 20px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 600;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: linear-gradient(180deg, #ffd700, #00ffff);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+    }
+
+    .sidebar-link i {
+      width: 24px;
+      font-size: 1.2rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-link .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1001;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1);
+      background: #00ffff;
+    }
+
+    .sidebar.collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 1002;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      margin-right: 10px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      background: #0a0f1e;
+      min-height: 100vh;
+      width: calc(100% - 280px);
+    }
+
+    .main-content.expanded {
+      margin-left: 80px;
+      width: calc(100% - 80px);
+    }
+
+    /* Top Bar - Exact copy from original */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1 1 auto;
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-title p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 2vw, 20px);
+      flex-wrap: wrap;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .notification-icon i {
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      color: rgba(255, 255, 255, 0.7);
+      transition: 0.3s;
+    }
+
+    .notification-icon:hover i {
+      color: #ffd700;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+      background: #ffd700;
+      border-radius: 50%;
+      color: #0a1a2f;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .date-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+      white-space: nowrap;
+    }
+
+    .date-time i {
+      color: #ffd700;
+    }
+
+    /* ========== TRADE BOT PAGE SPECIFIC STYLES ========== */
+    
+    /* Welcome Section */
+    .welcome-section {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .welcome-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .welcome-title span {
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      max-width: 800px;
+    }
+
+    /* Summary Card */
+    .summary-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(0, 255, 255, 0.15));
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 20px;
+      padding: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      align-items: center;
+    }
+
+    .summary-item {
+      text-align: center;
+      padding: 15px;
+    }
+
+    .summary-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .summary-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 5px;
+    }
+
+    .summary-sub {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+    }
+
+    .summary-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .summary-btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-btn.withdraw {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+    }
+
+    .summary-btn.purchase {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .summary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Active Bot Card */
+    .active-bot-card {
+      background: rgba(15, 25, 35, 0.8);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 15px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .bot-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .status-active {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .status-pending {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ff9800;
+    }
+
+    .status-confirmed {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196f3;
+    }
+
+    .bot-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .bot-detail-item {
+      text-align: center;
+    }
+
+    .bot-detail-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+    }
+
+    .bot-detail-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #ffd700;
+    }
+
+    /* Available Bots Grid */
+    .bots-section {
+      margin-top: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: #ffd700;
+    }
+
+    .bots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .bot-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bot-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .bot-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .bot-card:hover {
+      transform: translateY(-5px);
+      border-color: #ffd700;
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .bot-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .bot-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .bot-price {
+      background: rgba(255, 215, 0, 0.15);
+      padding: 8px 15px;
+      border-radius: 30px;
+      color: #ffd700;
+      font-weight: 600;
+    }
+
+    .bot-stats {
+      margin-bottom: 20px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .stat-value {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stat-value.highlight {
+      color: #4caf50;
+    }
+
+    .bot-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .badge-pending {
+      background: rgba(255, 152, 0, 0.15);
+      color: #ff9800;
+    }
+
+    .badge-confirmed {
+      background: rgba(33, 150, 243, 0.15);
+      color: #2196f3;
+    }
+
+    .badge-active {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4caf50;
+    }
+
+    .bot-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 15px;
+      color: #0a1a2f;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .bot-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .bot-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(15, 25, 35, 0.98);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      padding: 35px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .modal-header h2 {
+      color: #ffd700;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+
+    .modal-header p {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .bot-summary {
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-row .label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .summary-row .value {
+      font-weight: 600;
+      color: #ffd700;
+    }
+
+    .blockchain-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .blockchain-option {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .blockchain-option:hover {
+      background: rgba(255, 215, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .blockchain-option.selected {
+      background: rgba(255, 215, 0, 0.2);
+      border-color: #ffd700;
+    }
+
+    .blockchain-option i {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .blockchain-option .btc { color: #f7931a; }
+    .blockchain-option .eth { color: #627eea; }
+    .blockchain-option .usdt { color: #26a17b; }
+
+    .blockchain-option span {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .wallet-address {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .address-text {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #ffd700;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      background: rgba(255, 215, 0, 0.1);
+      border: none;
+      color: #ffd700;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 215, 0, 0.2);
+    }
+
+    .file-upload {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px dashed rgba(255, 215, 0, 0.3);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .file-upload:hover {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .file-upload i {
+      font-size: 2.5rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .file-upload p {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .file-upload small {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .modal-btn.cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .modal-btn.proceed {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .modal-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Withdraw Modal */
+    .withdraw-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-input label {
+      display: block;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 8px;
+    }
+
+    .withdraw-input input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      outline: none;
+    }
+
+    .withdraw-input input:focus {
+      color: #ffd700;
+    }
+
+    .available-balance {
+      text-align: right;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 280px !important;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .summary-card {
+        grid-template-columns: 1fr;
+      }
+
+      .blockchain-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .bots-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 25px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .summary-actions {
+        flex-direction: column;
+      }
+
+      .wallet-address {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar - Exactly the same as original -->
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <img src="./img/Gemini_Generated_Image_5zfllq5zfllq5zfl-removebg-preview.png" alt="Bytetrade">
+          <h2>Bytetrade</h2>
+        </div>
+      </div>
+
+      <div class="user-info">
+        <div class="user-avatar">JD</div>
+        <div class="user-details">
+          <h4>John Davidson</h4>
+          <p><i class="fas fa-circle" style="font-size: 0.5rem; color: #4caf50;"></i> Premium Trader</p>
+        </div>
+      </div>
+
+      <div class="balance-card">
+        <div class="balance-label">
+          <i class="fas fa-wallet"></i>
+          <span>Total Balance</span>
+        </div>
+        <div class="balance-amount">$124,567.89</div>
+        <div class="balance-change">
+          <span class="change-positive"><i class="fas fa-arrow-up"></i> +12.5%</span>
+          <span style="color: rgba(255,255,255,0.5);">vs last month</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-heading">Main</div>
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="market.html" class="sidebar-link">
+          <i class="fas fa-chart-line"></i>
+          <span>Market</span>
+          <span class="badge">LIVE</span>
+        </a>
+        <a href="deposit.html" class="sidebar-link">
+          <i class="fas fa-credit-card"></i>
+          <span>Deposit</span>
+        </a>
+        <a href="fund-transfer.html" class="sidebar-link">
+          <span>Fund Transfer</span>
+        </a>
+        <a href="withdraw.html" class="sidebar-link">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Withdrawal</span>
+        </a>
+        <a href="trade-bot.html" class="sidebar-link active">
+          <i class="fas fa-robot"></i>
+          <span>Trade Bot</span>
+          <span class="badge">NEW</span>
+        </a>
+        <a href="trade-bot.html" class="sidebar-link">
+          <i class="fas fa-robot"></i>
+          <span>Trade Bot</span>
+        </a>
+        <a href="packages.html" class="sidebar-link">
+          <i class="fas fa-cubes"></i>
+          <span>Packages</span>
+        </a>
+
+        <div class="sidebar-heading" style="margin-top: 20px;">Account</div>
+        <a href="aml-kyc.html" class="sidebar-link">
+          <i class="fas fa-shield-alt"></i>
+          <span>AML / KYC</span>
+          <span class="badge">Pending</span>
+        </a>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="logout.html" class="sidebar-link" style="color: #f44336;">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <!-- Top Bar - Exactly the same as original -->
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <div class="page-title">
+            <h1><i class="fas fa-robot"></i> Trade Bot Management</h1>
+            <p>Automate your trading with AI-powered bots</p>
+          </div>
+        </div>
+
+        <div class="top-bar-actions">
+          <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </div>
+          <div class="date-time">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="currentDateTime"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <h2 class="welcome-title">Welcome back, <span>John Davidson</span>! 👋</h2>
+        <p class="welcome-text">
+          Supercharge your portfolio with our AI-powered trading bots. These sophisticated algorithms work 24/7, 
+          analyzing market trends and executing trades automatically to maximize your returns while minimizing risks. 
+          Start with as little as $100 and let our bots do the heavy lifting.
+        </p>
+
+        <!-- Summary Card -->
+        <div class="summary-card">
+          <div class="summary-item">
+            <div class="summary-label">
+              <i class="fas fa-shopping-cart"></i>
+              <span>Total Bot Purchase</span>
+            </div>
+            <div class="summary-value" id="totalPurchase">$2,450</div>
+            <div class="summary-sub">3 bots purchased</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="summary-label">
+              <i class="fas fa-chart-line"></i>
+              <span>Total Returns</span>
+            </div>
+            <div class="summary-value" id="totalReturns">$385.50</div>
+            <div class="summary-sub">+15.7% overall</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="summary-label">
+              <i class="fas fa-robot"></i>
+              <span>Active Bot</span>
+            </div>
+            <div class="summary-value" id="activeBotName">Quantum Scalper</div>
+            <div class="summary-sub" id="activeBotStatus">Active • 2 days running</div>
+          </div>
+
+          <div class="summary-actions">
+            <button class="summary-btn withdraw" onclick="openWithdrawModal()">
+              <i class="fas fa-wallet"></i> Withdraw Profit
+            </button>
+            <button class="summary-btn purchase" onclick="scrollToBots()">
+              <i class="fas fa-cart-plus"></i> Purchase Bot
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Bot Details Card -->
+        <div class="active-bot-card" id="activeBotCard">
+          <div class="bot-status status-active">
+            <i class="fas fa-circle"></i> Active Bot
+          </div>
+          <div class="bot-details">
+            <div class="bot-detail-item">
+              <div class="bot-detail-label">Bot Name</div>
+              <div class="bot-detail-value" id="activeBotNameDetail">Quantum Scalper</div>
+            </div>
+            <div class="bot-detail-item">
+              <div class="bot-detail-label">Purchase Price</div>
+              <div class="bot-detail-value" id="activeBotPrice">$1,200</div>
+            </div>
+            <div class="bot-detail-item">
+              <div class="bot-detail-label">Daily Return</div>
+              <div class="bot-detail-value" id="activeBotReturn">$18.50</div>
+            </div>
+            <div class="bot-detail-item">
+              <div class="bot-detail-label">Total Earned</div>
+              <div class="bot-detail-value" id="activeBotEarned">$129.50</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Bots Section -->
+      <div class="bots-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-robot"></i>
+            Available Trading Bots
+          </h3>
+          <p style="color: rgba(255,255,255,0.5);">Click on any bot to purchase</p>
+        </div>
+
+        <div class="bots-grid">
+          <!-- Bot Card 1 - Quantum Scalper -->
+          <div class="bot-card" onclick="openPurchaseModal('quantum')">
+            <div class="bot-card-header">
+              <span class="bot-name">Quantum Scalper</span>
+              <span class="bot-price">$1,200</span>
+            </div>
+            <div class="bot-stats">
+              <div class="stat-row">
+                <span class="stat-label">Minimum Earnings</span>
+                <span class="stat-value">$15/day</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Total Return (30d)</span>
+                <span class="stat-value highlight">$450</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Success Rate</span>
+                <span class="stat-value">94.2%</span>
+              </div>
+            </div>
+            <div class="bot-status-badge badge-active">
+              <i class="fas fa-check-circle"></i> Active
+            </div>
+            <button class="bot-btn">
+              <i class="fas fa-shopping-cart"></i> Purchase Bot Now
+            </button>
+          </div>
+
+          <!-- Bot Card 2 - MoonShot AI -->
+          <div class="bot-card" onclick="openPurchaseModal('moonshot')">
+            <div class="bot-card-header">
+              <span class="bot-name">MoonShot AI</span>
+              <span class="bot-price">$2,500</span>
+            </div>
+            <div class="bot-stats">
+              <div class="stat-row">
+                <span class="stat-label">Minimum Earnings</span>
+                <span class="stat-value">$35/day</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Total Return (30d)</span>
+                <span class="stat-value highlight">$1,050</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Success Rate</span>
+                <span class="stat-value">96.8%</span>
+              </div>
+            </div>
+            <div class="bot-status-badge badge-pending">
+              <i class="fas fa-clock"></i> Pending
+            </div>
+            <button class="bot-btn">
+              <i class="fas fa-shopping-cart"></i> Purchase Bot Now
+            </button>
+          </div>
+
+          <!-- Bot Card 3 - Crypto Whale -->
+          <div class="bot-card" onclick="openPurchaseModal('whale')">
+            <div class="bot-card-header">
+              <span class="bot-name">Crypto Whale</span>
+              <span class="bot-price">$750</span>
+            </div>
+            <div class="bot-stats">
+              <div class="stat-row">
+                <span class="stat-label">Minimum Earnings</span>
+                <span class="stat-value">$8/day</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Total Return (30d)</span>
+                <span class="stat-value highlight">$240</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Success Rate</span>
+                <span class="stat-value">91.5%</span>
+              </div>
+            </div>
+            <div class="bot-status-badge badge-confirmed">
+              <i class="fas fa-check-double"></i> Confirmed
+            </div>
+            <button class="bot-btn">
+              <i class="fas fa-shopping-cart"></i> Purchase Bot Now
+            </button>
+          </div>
+
+          <!-- Bot Card 4 - Arbitrage Master -->
+          <div class="bot-card" onclick="openPurchaseModal('arbitrage')">
+            <div class="bot-card-header">
+              <span class="bot-name">Arbitrage Master</span>
+              <span class="bot-price">$3,500</span>
+            </div>
+            <div class="bot-stats">
+              <div class="stat-row">
+                <span class="stat-label">Minimum Earnings</span>
+                <span class="stat-value">$50/day</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Total Return (30d)</span>
+                <span class="stat-value highlight">$1,500</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Success Rate</span>
+                <span class="stat-value">97.3%</span>
+              </div>
+            </div>
+            <div class="bot-status-badge badge-pending">
+              <i class="fas fa-clock"></i> Pending
+            </div>
+            <button class="bot-btn">
+              <i class="fas fa-shopping-cart"></i> Purchase Bot Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Purchase Bot Modal -->
+  <div class="modal" id="purchaseModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-robot" style="font-size: 3rem; color: #ffd700; margin-bottom: 15px;"></i>
+        <h2>Purchase Trading Bot</h2>
+        <p>Complete your purchase to activate the bot</p>
+      </div>
+
+      <div class="bot-summary" id="purchaseSummary">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+
+      <div class="blockchain-options">
+        <div class="blockchain-option selected" onclick="selectBlockchain('btc')" id="btcOption">
+          <i class="fab fa-bitcoin btc"></i>
+          <span>Bitcoin</span>
+        </div>
+        <div class="blockchain-option" onclick="selectBlockchain('eth')" id="ethOption">
+          <i class="fab fa-ethereum eth"></i>
+          <span>Ethereum</span>
+        </div>
+        <div class="blockchain-option" onclick="selectBlockchain('usdt')" id="usdtOption">
+          <i class="fas fa-dollar-sign usdt"></i>
+          <span>USDT</span>
+        </div>
+      </div>
+
+      <div class="wallet-address" id="walletAddress">
+        <span class="address-text" id="addressText">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
+        <button class="copy-btn" onclick="copyAddress()">
+          <i class="fas fa-copy"></i> Copy
+        </button>
+      </div>
+
+      <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Click to upload proof of payment</p>
+        <small>Supports: JPG, PNG, PDF (Max 5MB)</small>
+        <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFileUpload(this)">
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closePurchaseModal()">Cancel</button>
+        <button class="modal-btn proceed" onclick="submitPayment()" id="proceedBtn" disabled>Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw Profit Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-wallet" style="font-size: 3rem; color: #ffd700; margin-bottom: 15px;"></i>
+        <h2>Withdraw Profits</h2>
+        <p>Withdraw your earnings from trading bots</p>
+      </div>
+
+      <div class="withdraw-input">
+        <label>Available Profit</label>
+        <div style="font-size: 2rem; color: #ffd700; margin-bottom: 10px;">$385.50</div>
+      </div>
+
+      <div class="withdraw-input">
+        <label>Withdrawal Amount (USD)</label>
+        <input type="number" id="withdrawAmount" placeholder="Enter amount" value="100" min="10" step="10">
+        <div class="available-balance">Minimum withdrawal: $10</div>
+      </div>
+
+      <div class="blockchain-options">
+        <div class="blockchain-option selected" onclick="selectWithdrawMethod('btc')" id="withdrawBtc">
+          <i class="fab fa-bitcoin btc"></i>
+          <span>Bitcoin</span>
+        </div>
+        <div class="blockchain-option" onclick="selectWithdrawMethod('eth')" id="withdrawEth">
+          <i class="fab fa-ethereum eth"></i>
+          <span>Ethereum</span>
+        </div>
+        <div class="blockchain-option" onclick="selectWithdrawMethod('usdt')" id="withdrawUsdt">
+          <i class="fas fa-dollar-sign usdt"></i>
+          <span>USDT</span>
+        </div>
+      </div>
+
+      <div class="wallet-address">
+        <span class="address-text" id="withdrawAddress">Your wallet will be displayed here</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeWithdrawModal()">Cancel</button>
+        <button class="modal-btn proceed" onclick="processWithdrawal()">Confirm Withdrawal</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // User Data
+    const userData = {
+      name: 'John Davidson',
+      totalPurchase: 2450,
+      totalReturns: 385.50,
+      activeBot: {
+        name: 'Quantum Scalper',
+        price: 1200,
+        dailyReturn: 18.50,
+        earned: 129.50,
+        status: 'active'
+      }
+    };
+
+    // Bot Data
+    const botData = {
+      quantum: {
+        name: 'Quantum Scalper',
+        price: 1200,
+        minEarnings: 15,
+        totalReturn: 450,
+        status: 'active'
+      },
+      moonshot: {
+        name: 'MoonShot AI',
+        price: 2500,
+        minEarnings: 35,
+        totalReturn: 1050,
+        status: 'pending'
+      },
+      whale: {
+        name: 'Crypto Whale',
+        price: 750,
+        minEarnings: 8,
+        totalReturn: 240,
+        status: 'confirmed'
+      },
+      arbitrage: {
+        name: 'Arbitrage Master',
+        price: 3500,
+        minEarnings: 50,
+        totalReturn: 1500,
+        status: 'pending'
+      }
+    };
+
+    // Blockchain Addresses
+    const addresses = {
+      btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+      eth: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+      usdt: 'TXm1n2p3tL5k9jH7fG4dS8aR2wQ6yU9eK'
+    };
+
+    let currentBot = null;
+    let selectedBlockchain = 'btc';
+    let uploadedFile = null;
+    let withdrawMethod = 'btc';
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+      updateSummaryDisplay();
+    });
+
+    // Update Summary Display
+    function updateSummaryDisplay() {
+      document.getElementById('totalPurchase').textContent = `$${userData.totalPurchase.toLocaleString()}`;
+      document.getElementById('totalReturns').textContent = `$${userData.totalReturns.toLocaleString()}`;
+      document.getElementById('activeBotName').textContent = userData.activeBot.name;
+      document.getElementById('activeBotStatus').textContent = 'Active • 2 days running';
+      document.getElementById('activeBotNameDetail').textContent = userData.activeBot.name;
+      document.getElementById('activeBotPrice').textContent = `$${userData.activeBot.price}`;
+      document.getElementById('activeBotReturn').textContent = `$${userData.activeBot.dailyReturn}/day`;
+      document.getElementById('activeBotEarned').textContent = `$${userData.activeBot.earned}`;
+    }
+
+    // Open Purchase Modal
+    window.openPurchaseModal = function(botId) {
+      currentBot = botData[botId];
+      selectedBlockchain = 'btc';
+      uploadedFile = null;
+      
+      const summary = document.getElementById('purchaseSummary');
+      summary.innerHTML = `
+        <div class="summary-row">
+          <span class="label">Bot Name:</span>
+          <span class="value">${currentBot.name}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Price:</span>
+          <span class="value">$${currentBot.price}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Min. Daily Earnings:</span>
+          <span class="value">$${currentBot.minEarnings}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">30-Day Return:</span>
+          <span class="value">$${currentBot.totalReturn}</span>
+        </div>
+      `;
+      
+      // Reset blockchain selection
+      document.querySelectorAll('.blockchain-option').forEach(opt => opt.classList.remove('selected'));
+      document.getElementById('btcOption').classList.add('selected');
+      
+      // Update wallet address
+      document.getElementById('addressText').textContent = addresses.btc;
+      
+      // Disable proceed button
+      document.getElementById('proceedBtn').disabled = true;
+      
+      document.getElementById('purchaseModal').classList.add('active');
+    };
+
+    // Close Purchase Modal
+    window.closePurchaseModal = function() {
+      document.getElementById('purchaseModal').classList.remove('active');
+    };
+
+    // Select Blockchain
+    window.selectBlockchain = function(blockchain) {
+      selectedBlockchain = blockchain;
+      
+      // Update UI
+      document.querySelectorAll('.blockchain-option').forEach(opt => opt.classList.remove('selected'));
+      document.getElementById(`${blockchain}Option`).classList.add('selected');
+      
+      // Update address
+      document.getElementById('addressText').textContent = addresses[blockchain];
+    };
+
+    // Copy Address
+    window.copyAddress = function() {
+      const address = document.getElementById('addressText').textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        alert('Address copied to clipboard!');
+      });
+    };
+
+    // Handle File Upload
+    window.handleFileUpload = function(input) {
+      if (input.files && input.files[0]) {
+        uploadedFile = input.files[0];
+        
+        // Check file size (5MB limit)
+        if (uploadedFile.size > 5 * 1024 * 1024) {
+          alert('File is too large. Maximum size is 5MB.');
+          input.value = '';
+          uploadedFile = null;
+          document.getElementById('proceedBtn').disabled = true;
+          return;
+        }
+        
+        // Update upload area
+        const uploadArea = input.parentElement;
+        uploadArea.innerHTML = `
+          <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+          <p>File uploaded: ${uploadedFile.name}</p>
+          <small>Click to change file</small>
+          <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFileUpload(this)">
+        `;
+        
+        // Enable proceed button
+        document.getElementById('proceedBtn').disabled = false;
+      }
+    };
+
+    // Submit Payment
+    window.submitPayment = function() {
+      if (!uploadedFile) {
+        alert('Please upload proof of payment');
+        return;
+      }
+      
+      // Simulate payment processing
+      alert('Payment submitted successfully! Your bot will be activated soon.');
+      
+      // Update bot status in UI
+      updateBotStatus(currentBot.name, 'pending');
+      
+      // Update summary if this is a new bot
+      userData.totalPurchase += currentBot.price;
+      document.getElementById('totalPurchase').textContent = `$${userData.totalPurchase.toLocaleString()}`;
+      
+      closePurchaseModal();
+    };
+
+    // Update Bot Status
+    function updateBotStatus(botName, status) {
+      // Find the bot card with this name and update its status badge
+      const botCards = document.querySelectorAll('.bot-card');
+      botCards.forEach(card => {
+        const nameElement = card.querySelector('.bot-name');
+        if (nameElement && nameElement.textContent === botName) {
+          const badge = card.querySelector('.bot-status-badge');
+          if (badge) {
+            badge.className = `bot-status-badge badge-${status}`;
+            badge.innerHTML = `<i class="fas fa-${status === 'pending' ? 'clock' : status === 'confirmed' ? 'check-double' : 'check-circle'}"></i> ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+          }
+        }
+      });
+    }
+
+    // Simulate status progression (for demo)
+    setInterval(() => {
+      // Randomly update a bot status for demonstration
+      const random = Math.random();
+      if (random < 0.3) {
+        updateBotStatus('MoonShot AI', 'confirmed');
+      } else if (random < 0.6) {
+        updateBotStatus('Crypto Whale', 'active');
+      }
+    }, 10000);
+
+    // Scroll to Bots Section
+    window.scrollToBots = function() {
+      document.querySelector('.bots-section').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Open Withdraw Modal
+    window.openWithdrawModal = function() {
+      document.getElementById('withdrawModal').classList.add('active');
+    };
+
+    // Close Withdraw Modal
+    window.closeWithdrawModal = function() {
+      document.getElementById('withdrawModal').classList.remove('active');
+    };
+
+    // Select Withdraw Method
+    window.selectWithdrawMethod = function(method) {
+      withdrawMethod = method;
+      
+      // Update UI
+      document.querySelectorAll('#withdrawModal .blockchain-option').forEach(opt => opt.classList.remove('selected'));
+      document.getElementById(`withdraw${method.toUpperCase()}`).classList.add('selected');
+      
+      // Update address display
+      document.getElementById('withdrawAddress').textContent = addresses[method];
+    };
+
+    // Process Withdrawal
+    window.processWithdrawal = function() {
+      const amount = document.getElementById('withdrawAmount').value;
+      
+      if (!amount || amount < 10) {
+        alert('Please enter a valid withdrawal amount (minimum $10)');
+        return;
+      }
+      
+      if (amount > userData.totalReturns) {
+        alert('Insufficient profits');
+        return;
+      }
+      
+      alert(`Withdrawal of $${amount} requested successfully! It will be sent to your ${withdrawMethod.toUpperCase()} wallet.`);
+      
+      // Update total returns
+      userData.totalReturns -= parseFloat(amount);
+      document.getElementById('totalReturns').textContent = `$${userData.totalReturns.toLocaleString()}`;
+      
+      closeWithdrawModal();
+    };
+
+    // Sidebar Toggle (Original)
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      });
+    }
+
+    // Mobile Menu Toggle (Original)
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+    }
+
+    // Close sidebar when clicking outside (Original)
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992) {
+        if (!sidebar.contains(e.target) && !mobileMenuToggle?.contains(e.target)) {
+          sidebar.classList.remove('active');
+        }
+      }
+    });
+
+    // Update Date/Time (Original)
+    function updateDateTime() {
+      const now = new Date();
+      const options = { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      };
+      const dateTimeElement = document.getElementById('currentDateTime');
+      if (dateTimeElement) {
+        dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+      }
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const purchaseModal = document.getElementById('purchaseModal');
+      const withdrawModal = document.getElementById('withdrawModal');
+      
+      if (event.target === purchaseModal) {
+        closePurchaseModal();
+      }
+      if (event.target === withdrawModal) {
+        closeWithdrawModal();
+      }
+    };
+  </script>
+</body>
+</html>

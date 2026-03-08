@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Bytetrade • Secure Logout</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- CRITICAL: Session destruction script runs immediately before any rendering -->
+  <script>
+    // =============================================
+    // IMMEDIATE SESSION DESTRUCTION
+    // This runs before the page renders to ensure
+    // all authentication data is cleared
+    // =============================================
+    (function() {
+      console.log('🔒 Secure logout initiated - clearing session data');
+      
+      // 1. Clear all localStorage
+      try {
+        localStorage.clear();
+        console.log('✅ localStorage cleared');
+      } catch(e) {
+        console.error('Error clearing localStorage:', e);
+      }
+      
+      // 2. Clear all sessionStorage
+      try {
+        sessionStorage.clear();
+        console.log('✅ sessionStorage cleared');
+      } catch(e) {
+        console.error('Error clearing sessionStorage:', e);
+      }
+      
+      // 3. Delete all cookies
+      try {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i];
+          const eqPos = cookie.indexOf('=');
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          // Delete cookie by setting expired date and all possible paths
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
+        }
+        console.log('✅ Cookies cleared');
+      } catch(e) {
+        console.error('Error clearing cookies:', e);
+      }
+      
+      // 4. Clear any authentication variables in memory
+      window.isAuthenticated = false;
+      window.userData = null;
+      
+      // 5. Prevent back button to cached dashboard pages
+      // This tells the browser not to cache protected pages
+      // and will force a reload to login if user tries to go back
+      
+      // Push a new state to prevent back navigation
+      if (window.history && window.history.pushState) {
+        // Add a dummy state to the history
+        window.history.pushState({ page: 'logout' }, 'Logout', window.location.href);
+        
+        // When user tries to go back, replace with login page
+        window.addEventListener('popstate', function(event) {
+          console.log('Back button detected - redirecting to login');
+          window.location.replace('login.html');
+        });
+        
+        // Also handle pageshow event to detect cached pages
+        window.addEventListener('pageshow', function(event) {
+          if (event.persisted) {
+            // Page was loaded from cache (back/forward cache)
+            console.log('Page loaded from bfcache - redirecting to login');
+            window.location.replace('login.html');
+          }
+        });
+      }
+      
+      console.log('🔒 Session destruction complete');
+    })();
+  </script>
+  
+  <!-- This script runs after DOM load to handle additional cleanup and redirect timer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 Logout page loaded, setting up redirect timer');
+      
+      // Double-check storage is cleared (in case something was added after initial clear)
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Start the 5-second redirect timer
+      let secondsRemaining = 5;
+      const timerElement = document.getElementById('redirectTimer');
+      
+      function updateTimerDisplay() {
+        if (timerElement) {
+          timerElement.textContent = `Redirecting to login page in ${secondsRemaining} second${secondsRemaining !== 1 ? 's' : ''}…`;
+        }
+      }
+      
+      updateTimerDisplay();
+      
+      const timerInterval = setInterval(() => {
+        secondsRemaining--;
+        updateTimerDisplay();
+        
+        if (secondsRemaining <= 0) {
+          clearInterval(timerInterval);
+          window.location.replace('login.html');
+        }
+      }, 1000);
+      
+      // Manual redirect function for buttons
+      window.redirectToLogin = function() {
+        clearInterval(timerInterval);
+        window.location.replace('login.html');
+      };
+      
+      window.redirectToHome = function() {
+        clearInterval(timerInterval);
+        window.location.replace('index.html');
+      };
+      
+      // Also check authentication status with server if needed
+      // (simulated here - in production, you'd call a logout API)
+      fetch('api/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+    });
+  </script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Animated background gradient */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Main logout card */
+    .logout-container {
+      width: 100%;
+      max-width: 500px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logout-card {
+      background: rgba(15, 25, 35, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 40px;
+      padding: 50px 40px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 215, 0, 0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(255, 215, 0, 0.1), transparent 30%);
+      animation: rotate 10s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success icon */
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 255, 255, 0.2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      animation: pulseGlow 2s infinite;
+    }
+
+    .success-icon i {
+      font-size: 48px;
+      color: #ffd700;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+        transform: scale(1.05);
+      }
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .subtext {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 20px;
+    }
+
+    .security-message {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 30px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .security-message i {
+      color: #ffd700;
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .security-message p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .security-message strong {
+      color: #ffd700;
+    }
+
+    /* Timer display */
+    .timer-text {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 25px;
+      padding: 8px 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      display: inline-block;
+    }
+
+    .timer-text i {
+      margin-right: 8px;
+      color: #ffd700;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 160px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #0a1a2f;
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: #ffd700;
+      transform: translateY(-3px);
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Additional info */
+    .device-info {
+      margin-top: 25px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .device-info i {
+      color: rgba(255, 215, 0, 0.3);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .logout-card {
+        padding: 40px 25px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subtext {
+        font-size: 1rem;
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+      }
+
+      .success-icon i {
+        font-size: 40px;
+      }
+
+      .btn {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .security-message {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logout-card {
+        padding: 30px 20px;
+        border-radius: 30px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .security-message {
+        padding: 15px;
+      }
+    }
+
+    /* Security badge animation */
+    .security-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      padding: 5px 15px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .security-badge i {
+      color: #4caf50;
+      font-size: 0.7rem;
+    }
+
+    /* Session cleared indicators */
+    .cleared-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .indicator {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid #4caf50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4caf50;
+      font-size: 0.9rem;
+    }
+
+    .indicator i {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="logout-container">
+    <div class="logout-card">
+      <!-- Security badge -->
+      <div class="security-badge">
+        <i class="fas fa-circle"></i>
+        <span>Secure Session</span>
+      </div>
+
+      <!-- Success Icon -->
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+
+      <!-- Main Message -->
+      <h1>Successfully Logged Out</h1>
+      <p class="subtext">Your session has been securely terminated.</p>
+
+      <!-- Session cleared indicators (visual feedback) -->
+      <div class="cleared-indicators">
+        <div class="indicator" title="Local Storage Cleared">
+          <i class="fas fa-database"></i>
+        </div>
+        <div class="indicator" title="Session Storage Cleared">
+          <i class="fas fa-memory"></i>
+        </div>
+        <div class="indicator" title="Cookies Cleared">
+          <i class="fas fa-cookie-bite"></i>
+        </div>
+      </div>
+
+      <!-- Security Message -->
+      <div class="security-message">
+        <i class="fas fa-shield-alt"></i>
+        <p>
+          <strong>Your safety is our priority.</strong><br>
+          For your protection, your session data has been completely cleared from this device. 
+          If you were using a shared or public computer, your account is now fully protected 
+          from unauthorized access.
+        </p>
+      </div>
+
+      <!-- Auto-redirect timer -->
+      <div class="timer-text">
+        <i class="fas fa-clock"></i>
+        <span id="redirectTimer">Redirecting to login page in 5 seconds…</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <a href="login.html" class="btn btn-primary" onclick="window.redirectToLogin(); return false;">
+          <i class="fas fa-sign-in-alt"></i> Log In Again
+        </a>
+        <a href="index.html" class="btn btn-secondary" onclick="window.redirectToHome(); return false;">
+          <i class="fas fa-home"></i> Go to Homepage
+        </a>
+      </div>
+
+      <!-- Additional device info -->
+      <div class="device-info">
+        <i class="fas fa-laptop"></i>
+        <span>Session cleared for this device only</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional security script for redundancy -->
+  <script>
+    // This runs after DOM but we already cleared storage in the immediate script
+    // It serves as a backup to ensure nothing was missed
+    (function() {
+      // Double-check storage is empty
+      if (localStorage.length > 0 || sessionStorage.length > 0) {
+        console.warn('⚠️ Storage not fully cleared, forcing cleanup');
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+      
+      // Prevent any form of page caching
+      if (window.performance && window.performance.navigation) {
+        if (window.performance.navigation.type === 2) {
+          // Page accessed via back/forward
+          window.location.replace('login.html');
+        }
+      }
+      
+      // Also prevent context menu (optional, for security theater)
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      });
+      
+      // Prevent any accidental form resubmission
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.href);
+      }
+    })();
+  </script>
+
+  <!-- Noindex meta tag to prevent search engine caching -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+</body>
+</html>

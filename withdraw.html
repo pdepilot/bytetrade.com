@@ -431,9 +431,86 @@
       color: #ffd700;
     }
 
-    /* ========== WITHDRAW PAGE SPECIFIC STYLES ========== */
+    /* ========== WITHDRAW PAGE ENHANCED STYLES ========== */
     
-    /* Asset Selection Cards */
+    /* Withdrawal Method Selector */
+    .method-selector {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .selector-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      color: #ffd700;
+      font-weight: 500;
+    }
+
+    .selector-label i {
+      font-size: 1.2rem;
+    }
+
+    .withdrawal-method-select {
+      width: 100%;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 20px center;
+      background-size: 16px;
+    }
+
+    .withdrawal-method-select option {
+      background: #1a2535;
+      color: #fff;
+      padding: 10px;
+    }
+
+    .withdrawal-method-select:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Withdrawal Forms Container */
+    .withdrawal-forms-container {
+      position: relative;
+      min-height: 400px;
+    }
+
+    .withdrawal-form {
+      display: none;
+      animation: fadeSlide 0.3s ease forwards;
+    }
+
+    .withdrawal-form.active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Asset Selection Cards (Keep Original) */
     .section-title {
       font-size: 1.3rem;
       margin-bottom: 20px;
@@ -655,6 +732,28 @@
       box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
     }
 
+    .withdraw-btn.paypal {
+      background: linear-gradient(135deg, #0070ba, #1546a0);
+    }
+
+    .withdraw-btn.bank {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+    }
+
+    .info-message {
+      background: rgba(255, 215, 0, 0.1);
+      border-left: 4px solid #ffd700;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .info-message i {
+      color: #ffd700;
+      margin-right: 10px;
+    }
+
     .security-notice {
       background: rgba(255, 255, 255, 0.02);
       border-left: 4px solid #ffd700;
@@ -666,6 +765,13 @@
     .security-notice i {
       color: #ffd700;
       margin-right: 10px;
+    }
+
+    /* Bank Form Specific */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
     }
 
     /* Withdrawal History Table */
@@ -682,7 +788,7 @@
     .history-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 800px;
+      min-width: 900px;
     }
 
     .history-table th {
@@ -729,6 +835,22 @@
     .status-rejected {
       background: rgba(244, 67, 54, 0.2);
       color: #f44336;
+    }
+
+    /* Method Badge in History */
+    .method-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .method-badge i {
+      color: #ffd700;
+      font-size: 0.7rem;
     }
 
     /* Modal */
@@ -827,6 +949,10 @@
       }
       
       .withdraw-container {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
         grid-template-columns: 1fr;
       }
     }
@@ -954,9 +1080,9 @@
           <i class="fas fa-money-bill-wave"></i>
           <span>Withdrawal</span>
         </a>
-        <a href="history.html" class="sidebar-link">
-          <i class="fas fa-history"></i>
-          <span>History</span>
+        <a href="trade-bot.html" class="sidebar-link">
+          <i class="fas fa-robot"></i>
+          <span>Trade Bot</span>
         </a>
         <a href="packages.html" class="sidebar-link">
           <i class="fas fa-cubes"></i>
@@ -990,8 +1116,8 @@
           </button>
           
           <div class="page-title">
-            <h1>Withdraw Cryptocurrency</h1>
-            <p>Transfer funds from your trading account to an external wallet</p>
+            <h1>Withdraw Funds</h1>
+            <p>Transfer funds using your preferred withdrawal method</p>
           </div>
         </div>
 
@@ -1007,112 +1133,486 @@
         </div>
       </div>
 
-      <!-- Asset Selection Cards -->
-      <h3 class="section-title"><i class="fas fa-coins"></i> Select Asset to Withdraw</h3>
-      <div class="asset-grid">
-        <div class="asset-card selected" onclick="selectAsset('btc')" id="asset-btc">
-          <div class="asset-icon"><i class="fab fa-bitcoin btc"></i></div>
-          <div class="asset-name">Bitcoin</div>
-          <div class="asset-label">Withdraw BTC</div>
+      <!-- Withdrawal Method Selector (NEW) -->
+      <div class="method-selector">
+        <div class="selector-label">
+          <i class="fas fa-credit-card"></i>
+          <span>Select Withdrawal Method</span>
         </div>
-        <div class="asset-card" onclick="selectAsset('eth')" id="asset-eth">
-          <div class="asset-icon"><i class="fab fa-ethereum eth"></i></div>
-          <div class="asset-name">Ethereum</div>
-          <div class="asset-label">Withdraw ETH</div>
-        </div>
-        <div class="asset-card" onclick="selectAsset('usdt')" id="asset-usdt">
-          <div class="asset-icon"><i class="fas fa-dollar-sign usdt"></i></div>
-          <div class="asset-name">USDT</div>
-          <div class="asset-label">Withdraw USDT</div>
-        </div>
-        <div class="asset-card" onclick="selectAsset('bnb')" id="asset-bnb">
-          <div class="asset-icon"><i class="fab fa-bnb bnb"></i></div>
-          <div class="asset-name">BNB</div>
-          <div class="asset-label">Withdraw BNB</div>
-        </div>
+        <select class="withdrawal-method-select" id="withdrawalMethod" onchange="switchWithdrawalMethod()">
+          <option value="bitcoin">💎 Bitcoin</option>
+          <option value="ethereum">⚡ Ethereum</option>
+          <option value="usdt">💵 USDT</option>
+          <option value="paypal">🅿️ PayPal</option>
+          <option value="bank">🏦 Bank Transfer</option>
+        </select>
       </div>
 
-      <!-- Withdrawal Form Container -->
-      <div class="withdraw-container">
-        <!-- Withdrawal Form -->
-        <div class="withdraw-form-card">
-          <div class="balance-info">
-            <span class="balance-label"><i class="fas fa-wallet" style="margin-right: 8px;"></i>Available Balance</span>
-            <span class="balance-value" id="availableBalance">0.284 BTC</span>
-          </div>
-
-          <div class="form-group">
-            <label>Wallet Address</label>
-            <input type="text" id="walletAddress" placeholder="Enter destination wallet address" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
-          </div>
-
-          <div class="form-group">
-            <label>Network</label>
-            <div class="network-options" id="networkOptions">
-              <!-- Networks will be populated by JavaScript -->
+      <!-- Dynamic Withdrawal Forms Container -->
+      <div class="withdrawal-forms-container">
+        <!-- Bitcoin Withdrawal Form (Original, now hidden by default) -->
+        <div class="withdrawal-form" id="form-bitcoin">
+          <!-- Asset Selection Cards -->
+          <h3 class="section-title"><i class="fas fa-coins"></i> Select Asset to Withdraw</h3>
+          <div class="asset-grid">
+            <div class="asset-card selected" onclick="selectAsset('btc')" id="asset-btc">
+              <div class="asset-icon"><i class="fab fa-bitcoin btc"></i></div>
+              <div class="asset-name">Bitcoin</div>
+              <div class="asset-label">Withdraw BTC</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('eth')" id="asset-eth">
+              <div class="asset-icon"><i class="fab fa-ethereum eth"></i></div>
+              <div class="asset-name">Ethereum</div>
+              <div class="asset-label">Withdraw ETH</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('usdt')" id="asset-usdt">
+              <div class="asset-icon"><i class="fas fa-dollar-sign usdt"></i></div>
+              <div class="asset-name">USDT</div>
+              <div class="asset-label">Withdraw USDT</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('bnb')" id="asset-bnb">
+              <div class="asset-icon"><i class="fab fa-bnb bnb"></i></div>
+              <div class="asset-name">BNB</div>
+              <div class="asset-label">Withdraw BNB</div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Withdrawal Amount</label>
-            <input type="number" id="withdrawAmount" placeholder="0.00" value="0.05" step="0.001" oninput="updateFee()">
-          </div>
+          <!-- Withdrawal Form Container (Original Structure) -->
+          <div class="withdraw-container">
+            <!-- Withdrawal Form -->
+            <div class="withdraw-form-card">
+              <div class="balance-info">
+                <span class="balance-label"><i class="fas fa-wallet" style="margin-right: 8px;"></i>Available Balance</span>
+                <span class="balance-value" id="availableBalance">0.284 BTC</span>
+              </div>
 
-          <div class="fee-info">
-            <span class="fee-label"><i class="fas fa-gas-pump" style="margin-right: 8px;"></i>Network Fee</span>
-            <span class="fee-value" id="networkFee">0.0005 BTC</span>
-          </div>
+              <div class="form-group">
+                <label>Wallet Address</label>
+                <input type="text" id="walletAddress" placeholder="Enter destination wallet address" value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+              </div>
 
-          <div class="form-group">
-            <label>Transaction Note (Optional)</label>
-            <textarea id="txNote" placeholder="Add a note for this withdrawal" rows="3"></textarea>
-          </div>
+              <div class="form-group">
+                <label>Network</label>
+                <div class="network-options" id="networkOptions">
+                  <!-- Networks will be populated by JavaScript -->
+                </div>
+              </div>
 
-          <button class="withdraw-btn" onclick="showConfirmation()">
-            <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Withdraw Funds
-          </button>
+              <div class="form-group">
+                <label>Withdrawal Amount</label>
+                <input type="number" id="withdrawAmount" placeholder="0.00" value="0.05" step="0.001" oninput="updateFee()">
+              </div>
 
-          <div class="security-notice">
-            <i class="fas fa-shield-alt"></i>
-            For your security, withdrawal requests may take a few minutes to process. All withdrawals are subject to security review.
+              <div class="fee-info">
+                <span class="fee-label"><i class="fas fa-gas-pump" style="margin-right: 8px;"></i>Network Fee</span>
+                <span class="fee-value" id="networkFee">0.0005 BTC</span>
+              </div>
+
+              <div class="form-group">
+                <label>Transaction Note (Optional)</label>
+                <textarea id="txNote" placeholder="Add a note for this withdrawal" rows="3"></textarea>
+              </div>
+
+              <button class="withdraw-btn" onclick="showCryptoConfirmation('bitcoin')">
+                <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Withdraw Funds
+              </button>
+            </div>
+
+            <!-- Quick Info Panel (Right Side) -->
+            <div class="withdraw-form-card">
+              <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle" style="color: #ffd700;"></i>
+                Withdrawal Information
+              </h3>
+              
+              <div style="margin-bottom: 25px;">
+                <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
+                    <span style="font-weight: 600;" id="minWithdrawal">0.001 BTC</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Processing Time</span>
+                    <span style="font-weight: 600;">≈ 10-30 minutes</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.6);">Daily Limit</span>
+                    <span style="font-weight: 600;">10 BTC</span>
+                  </div>
+                </div>
+              </div>
+
+              <h4 style="margin-bottom: 15px; color: #ffd700;">Important Notes:</h4>
+              <ul style="list-style: none; color: rgba(255,255,255,0.7);">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Always verify the wallet address</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Select the correct network</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Minimum withdrawal applies</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Network fees are non-refundable</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <!-- Quick Info Panel (Right Side) -->
-        <div class="withdraw-form-card">
-          <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-info-circle" style="color: #ffd700;"></i>
-            Withdrawal Information
-          </h3>
-          
-          <div style="margin-bottom: 25px;">
-            <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
-                <span style="font-weight: 600;" id="minWithdrawal">0.001 BTC</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: rgba(255,255,255,0.6);">Processing Time</span>
-                <span style="font-weight: 600;">≈ 10-30 minutes</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: rgba(255,255,255,0.6);">Daily Limit</span>
-                <span style="font-weight: 600;">10 BTC</span>
-              </div>
+        <!-- Ethereum Withdrawal Form (Reuses Bitcoin structure with different data) -->
+        <div class="withdrawal-form" id="form-ethereum">
+          <!-- Asset Selection Cards (Same as Bitcoin) -->
+          <h3 class="section-title"><i class="fas fa-coins"></i> Select Asset to Withdraw</h3>
+          <div class="asset-grid">
+            <div class="asset-card" onclick="selectAsset('btc')" id="asset-btc-eth">
+              <div class="asset-icon"><i class="fab fa-bitcoin btc"></i></div>
+              <div class="asset-name">Bitcoin</div>
+              <div class="asset-label">Withdraw BTC</div>
+            </div>
+            <div class="asset-card selected" onclick="selectAsset('eth')" id="asset-eth-eth">
+              <div class="asset-icon"><i class="fab fa-ethereum eth"></i></div>
+              <div class="asset-name">Ethereum</div>
+              <div class="asset-label">Withdraw ETH</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('usdt')" id="asset-usdt-eth">
+              <div class="asset-icon"><i class="fas fa-dollar-sign usdt"></i></div>
+              <div class="asset-name">USDT</div>
+              <div class="asset-label">Withdraw USDT</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('bnb')" id="asset-bnb-eth">
+              <div class="asset-icon"><i class="fab fa-bnb bnb"></i></div>
+              <div class="asset-name">BNB</div>
+              <div class="asset-label">Withdraw BNB</div>
             </div>
           </div>
 
-          <h4 style="margin-bottom: 15px; color: #ffd700;">Important Notes:</h4>
-          <ul style="list-style: none; color: rgba(255,255,255,0.7);">
-            <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Always verify the wallet address</li>
-            <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Select the correct network</li>
-            <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Minimum withdrawal applies</li>
-            <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Network fees are non-refundable</li>
-          </ul>
+          <div class="withdraw-container">
+            <div class="withdraw-form-card">
+              <div class="balance-info">
+                <span class="balance-label"><i class="fas fa-wallet"></i>Available Balance</span>
+                <span class="balance-value" id="availableBalanceEth">4.2 ETH</span>
+              </div>
+
+              <div class="form-group">
+                <label>Wallet Address</label>
+                <input type="text" id="walletAddressEth" placeholder="Enter Ethereum wallet address (0x...)" value="0x742d35Cc6634C0532925a3b844Bc454e4438f44e">
+              </div>
+
+              <div class="form-group">
+                <label>Network</label>
+                <div class="network-options" id="networkOptionsEth">
+                  <div class="network-option selected" onclick="selectNetworkEth('ERC20')">ERC20</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Withdrawal Amount</label>
+                <input type="number" id="withdrawAmountEth" placeholder="0.00" value="1.5" step="0.01" oninput="updateFeeEth()">
+              </div>
+
+              <div class="fee-info">
+                <span class="fee-label"><i class="fas fa-gas-pump"></i>Network Fee</span>
+                <span class="fee-value" id="networkFeeEth">0.005 ETH</span>
+              </div>
+
+              <div class="form-group">
+                <label>Transaction Note (Optional)</label>
+                <textarea id="txNoteEth" placeholder="Add a note for this withdrawal" rows="3"></textarea>
+              </div>
+
+              <button class="withdraw-btn" onclick="showCryptoConfirmation('ethereum')">
+                <i class="fas fa-paper-plane"></i>Withdraw Funds
+              </button>
+            </div>
+
+            <div class="withdraw-form-card">
+              <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle" style="color: #ffd700;"></i>
+                Ethereum Information
+              </h3>
+              
+              <div style="margin-bottom: 25px;">
+                <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
+                    <span style="font-weight: 600;">0.01 ETH</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Gas Price</span>
+                    <span style="font-weight: 600;">≈ 25 Gwei</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.6);">Processing Time</span>
+                    <span style="font-weight: 600;">≈ 5-15 minutes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USDT Withdrawal Form -->
+        <div class="withdrawal-form" id="form-usdt">
+          <h3 class="section-title"><i class="fas fa-coins"></i> Select Asset to Withdraw</h3>
+          <div class="asset-grid">
+            <div class="asset-card" onclick="selectAsset('btc')" id="asset-btc-usdt">
+              <div class="asset-icon"><i class="fab fa-bitcoin btc"></i></div>
+              <div class="asset-name">Bitcoin</div>
+              <div class="asset-label">Withdraw BTC</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('eth')" id="asset-eth-usdt">
+              <div class="asset-icon"><i class="fab fa-ethereum eth"></i></div>
+              <div class="asset-name">Ethereum</div>
+              <div class="asset-label">Withdraw ETH</div>
+            </div>
+            <div class="asset-card selected" onclick="selectAsset('usdt')" id="asset-usdt-usdt">
+              <div class="asset-icon"><i class="fas fa-dollar-sign usdt"></i></div>
+              <div class="asset-name">USDT</div>
+              <div class="asset-label">Withdraw USDT</div>
+            </div>
+            <div class="asset-card" onclick="selectAsset('bnb')" id="asset-bnb-usdt">
+              <div class="asset-icon"><i class="fab fa-bnb bnb"></i></div>
+              <div class="asset-name">BNB</div>
+              <div class="asset-label">Withdraw BNB</div>
+            </div>
+          </div>
+
+          <div class="withdraw-container">
+            <div class="withdraw-form-card">
+              <div class="balance-info">
+                <span class="balance-label"><i class="fas fa-wallet"></i>Available Balance</span>
+                <span class="balance-value" id="availableBalanceUsdt">12,500 USDT</span>
+              </div>
+
+              <div class="form-group">
+                <label>Wallet Address</label>
+                <input type="text" id="walletAddressUsdt" placeholder="Enter USDT wallet address" value="TXm1n2p3tL5k9jH7fG4dS8aR2wQ6yU9eK">
+              </div>
+
+              <div class="form-group">
+                <label>Network</label>
+                <div class="network-options" id="networkOptionsUsdt">
+                  <div class="network-option selected" onclick="selectNetworkUsdt('TRC20')">TRC20</div>
+                  <div class="network-option" onclick="selectNetworkUsdt('ERC20')">ERC20</div>
+                  <div class="network-option" onclick="selectNetworkUsdt('BEP20')">BEP20</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Withdrawal Amount</label>
+                <input type="number" id="withdrawAmountUsdt" placeholder="0.00" value="500" step="1" oninput="updateFeeUsdt()">
+              </div>
+
+              <div class="fee-info">
+                <span class="fee-label"><i class="fas fa-gas-pump"></i>Network Fee</span>
+                <span class="fee-value" id="networkFeeUsdt">2.5 USDT</span>
+              </div>
+
+              <div class="form-group">
+                <label>Transaction Note (Optional)</label>
+                <textarea id="txNoteUsdt" placeholder="Add a note for this withdrawal" rows="3"></textarea>
+              </div>
+
+              <button class="withdraw-btn" onclick="showCryptoConfirmation('usdt')">
+                <i class="fas fa-paper-plane"></i>Withdraw Funds
+              </button>
+            </div>
+
+            <div class="withdraw-form-card">
+              <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle" style="color: #ffd700;"></i>
+                USDT Information
+              </h3>
+              
+              <div style="margin-bottom: 25px;">
+                <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
+                    <span style="font-weight: 600;">10 USDT</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Available Networks</span>
+                    <span style="font-weight: 600;">TRC20, ERC20, BEP20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PayPal Withdrawal Form (NEW) -->
+        <div class="withdrawal-form" id="form-paypal">
+          <div class="withdraw-container">
+            <div class="withdraw-form-card">
+              <div class="balance-info">
+                <span class="balance-label"><i class="fas fa-wallet"></i>Available Balance</span>
+                <span class="balance-value">$124,567.89</span>
+              </div>
+
+              <div class="form-group">
+                <label>PayPal Email Address</label>
+                <input type="email" id="paypalEmail" placeholder="Enter your PayPal email" value="john.davidson@example.com">
+              </div>
+
+              <div class="form-group">
+                <label>Withdrawal Amount (USD)</label>
+                <input type="number" id="paypalAmount" placeholder="Enter amount" value="500" min="10" step="10">
+              </div>
+
+              <div class="info-message">
+                <i class="fas fa-info-circle"></i>
+                Funds will be transferred to your PayPal account within 24 hours after processing.
+              </div>
+
+              <div class="fee-info">
+                <span class="fee-label"><i class="fas fa-percent"></i>PayPal Fee</span>
+                <span class="fee-value">2.9% + $0.30</span>
+              </div>
+
+              <button class="withdraw-btn paypal" onclick="showPayPalConfirmation()">
+                <i class="fab fa-paypal" style="margin-right: 8px;"></i>Withdraw via PayPal
+              </button>
+            </div>
+
+            <div class="withdraw-form-card">
+              <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle" style="color: #ffd700;"></i>
+                PayPal Information
+              </h3>
+              
+              <div style="margin-bottom: 25px;">
+                <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
+                    <span style="font-weight: 600;">$10</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Maximum Withdrawal</span>
+                    <span style="font-weight: 600;">$10,000 per day</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.6);">Processing Time</span>
+                    <span style="font-weight: 600;">≈ 24 hours</span>
+                  </div>
+                </div>
+              </div>
+
+              <h4 style="margin-bottom: 15px; color: #ffd700;">Requirements:</h4>
+              <ul style="list-style: none; color: rgba(255,255,255,0.7);">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Verified PayPal account</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Email must match KYC records</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Daily withdrawal limits apply</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Transfer Withdrawal Form (NEW) -->
+        <div class="withdrawal-form" id="form-bank">
+          <div class="withdraw-container">
+            <div class="withdraw-form-card">
+              <div class="balance-info">
+                <span class="balance-label"><i class="fas fa-wallet"></i>Available Balance</span>
+                <span class="balance-value">$124,567.89</span>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Account Holder Name</label>
+                  <input type="text" id="accountHolder" placeholder="Full name on account" value="John Davidson">
+                </div>
+                <div class="form-group">
+                  <label>Bank Name</label>
+                  <input type="text" id="bankName" placeholder="Enter bank name" value="Chase Bank">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Account Number</label>
+                  <input type="text" id="accountNumber" placeholder="Enter account number" value="****1234">
+                </div>
+                <div class="form-group">
+                  <label>Swift Code</label>
+                  <input type="text" id="swiftCode" placeholder="Enter SWIFT/BIC" value="CHASUS33">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Bank Country</label>
+                  <select id="bankCountry">
+                    <option value="US" selected>United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="JP">Japan</option>
+                    <option value="SG">Singapore</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Withdrawal Amount (USD)</label>
+                  <input type="number" id="bankAmount" placeholder="Enter amount" value="2000" min="50" step="50">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Reference Note (Optional)</label>
+                <textarea id="bankReference" placeholder="Add a reference for this transfer" rows="2"></textarea>
+              </div>
+
+              <div class="fee-info">
+                <span class="fee-label"><i class="fas fa-percent"></i>Bank Transfer Fee</span>
+                <span class="fee-value">$25 flat fee</span>
+              </div>
+
+              <div class="info-message">
+                <i class="fas fa-clock"></i>
+                Bank transfers typically take 1-3 business days to process.
+              </div>
+
+              <button class="withdraw-btn bank" onclick="showBankConfirmation()">
+                <i class="fas fa-university" style="margin-right: 8px;"></i>Withdraw via Bank Transfer
+              </button>
+            </div>
+
+            <div class="withdraw-form-card">
+              <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle" style="color: #ffd700;"></i>
+                Bank Transfer Information
+              </h3>
+              
+              <div style="margin-bottom: 25px;">
+                <div style="background: rgba(255,215,0,0.1); border-radius: 12px; padding: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Minimum Withdrawal</span>
+                    <span style="font-weight: 600;">$50</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: rgba(255,255,255,0.6);">Maximum Withdrawal</span>
+                    <span style="font-weight: 600;">$50,000 per day</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.6);">Processing Time</span>
+                    <span style="font-weight: 600;">1-3 business days</span>
+                  </div>
+                </div>
+              </div>
+
+              <h4 style="margin-bottom: 15px; color: #ffd700;">Important Notes:</h4>
+              <ul style="list-style: none; color: rgba(255,255,255,0.7);">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Bank name must match KYC records</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>SWIFT code is required for international transfers</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #4caf50; margin-right: 8px;"></i>Additional verification may be required</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Withdrawal History -->
+      <!-- Enhanced Security Notice -->
+      <div class="security-notice" style="margin-bottom: 30px;">
+        <i class="fas fa-shield-alt"></i>
+        Withdrawal requests are reviewed by our security system before processing. Processing time may vary depending on the selected withdrawal method.
+      </div>
+
+      <!-- Withdrawal History (Enhanced with Method Column) -->
       <div class="history-section">
         <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
           <i class="fas fa-history" style="color: #ffd700;"></i>
@@ -1123,9 +1623,10 @@
           <thead>
             <tr>
               <th>Date</th>
+              <th>Method</th>
               <th>Asset</th>
               <th>Amount</th>
-              <th>Destination Address</th>
+              <th>Destination</th>
               <th>Transaction ID</th>
               <th>Status</th>
             </tr>
@@ -1133,6 +1634,7 @@
           <tbody>
             <tr>
               <td>2024-01-15 14:32</td>
+              <td><span class="method-badge"><i class="fab fa-bitcoin"></i> Bitcoin</span></td>
               <td><i class="fab fa-bitcoin" style="color: #f7931a; margin-right: 5px;"></i> BTC</td>
               <td>0.15 BTC</td>
               <td>bc1qxy...0wlh</td>
@@ -1141,6 +1643,7 @@
             </tr>
             <tr>
               <td>2024-01-14 09:17</td>
+              <td><span class="method-badge"><i class="fab fa-ethereum"></i> Ethereum</span></td>
               <td><i class="fab fa-ethereum" style="color: #627eea; margin-right: 5px;"></i> ETH</td>
               <td>2.5 ETH</td>
               <td>0x742d...3f5a</td>
@@ -1149,6 +1652,7 @@
             </tr>
             <tr>
               <td>2024-01-13 22:45</td>
+              <td><span class="method-badge"><i class="fas fa-dollar-sign"></i> USDT</span></td>
               <td><i class="fas fa-dollar-sign" style="color: #26a17b; margin-right: 5px;"></i> USDT</td>
               <td>5,000 USDT</td>
               <td>TXm1n...9kL2</td>
@@ -1157,19 +1661,21 @@
             </tr>
             <tr>
               <td>2024-01-12 11:03</td>
-              <td><i class="fab fa-bnb" style="color: #f3ba2f; margin-right: 5px;"></i> BNB</td>
-              <td>12.5 BNB</td>
-              <td>bnb1x7q...h8j3</td>
-              <td>0x2c5b...e94f</td>
+              <td><span class="method-badge"><i class="fab fa-paypal"></i> PayPal</span></td>
+              <td><i class="fas fa-dollar-sign"></i> USD</td>
+              <td>$450.00</td>
+              <td>john.d...@email.com</td>
+              <td>PAY-123...ABC</td>
               <td><span class="status-badge status-pending">Pending</span></td>
             </tr>
             <tr>
               <td>2024-01-11 16:28</td>
-              <td><i class="fab fa-bitcoin" style="color: #f7931a; margin-right: 5px;"></i> BTC</td>
-              <td>0.03 BTC</td>
-              <td>bc1qd4...9rT2</td>
-              <td>0x7a3e...b42c</td>
-              <td><span class="status-badge status-rejected">Rejected</span></td>
+              <td><span class="method-badge"><i class="fas fa-university"></i> Bank</span></td>
+              <td><i class="fas fa-dollar-sign"></i> USD</td>
+              <td>$2,500.00</td>
+              <td>Chase Bank ****1234</td>
+              <td>TR-789...XYZ</td>
+              <td><span class="status-badge status-completed">Completed</span></td>
             </tr>
           </tbody>
         </table>
@@ -1177,7 +1683,7 @@
     </main>
   </div>
 
-  <!-- Confirmation Modal -->
+  <!-- Confirmation Modal (Enhanced) -->
   <div class="modal" id="confirmationModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1196,7 +1702,7 @@
   </div>
 
   <script>
-    // Asset data
+    // Asset data (Original)
     const assetData = {
       btc: {
         name: 'Bitcoin',
@@ -1236,44 +1742,102 @@
       }
     };
 
+    // Original variables
     let currentAsset = 'btc';
     let currentNetwork = 'BTC Network';
+    
+    // New variables for enhanced forms
+    let currentMethod = 'bitcoin';
+    let currentNetworkEth = 'ERC20';
+    let currentNetworkUsdt = 'TRC20';
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
+      // Set Bitcoin form as active by default
+      document.getElementById('form-bitcoin').classList.add('active');
+      
+      // Initialize original functions
       updateNetworkOptions();
       updateDateTime();
+      
+      // Initialize enhanced forms
+      updateNetworkOptionsEth();
+      updateNetworkOptionsUsdt();
+      
       setInterval(updateDateTime, 1000);
     });
 
-    // Select asset
-    window.selectAsset = function(asset) {
-      currentAsset = asset;
+    // Switch withdrawal method (NEW)
+    window.switchWithdrawalMethod = function() {
+      const method = document.getElementById('withdrawalMethod').value;
+      currentMethod = method;
       
-      // Update selected state
-      document.querySelectorAll('.asset-card').forEach(card => {
-        card.classList.remove('selected');
+      // Hide all forms
+      document.querySelectorAll('.withdrawal-form').forEach(form => {
+        form.classList.remove('active');
       });
-      document.getElementById(`asset-${asset}`).classList.add('selected');
       
-      // Update balance display
-      const assetInfo = assetData[asset];
-      document.getElementById('availableBalance').innerHTML = `${assetInfo.balance} ${assetInfo.symbol}`;
-      
-      // Update network options
-      updateNetworkOptions();
-      
-      // Update fee
-      updateFee();
-      
-      // Update min withdrawal
-      document.getElementById('minWithdrawal').innerHTML = `${assetInfo.minWithdrawal} ${assetInfo.symbol}`;
+      // Show selected form
+      document.getElementById(`form-${method}`).classList.add('active');
     };
 
-    // Update network options
+    // Original selectAsset function (enhanced for different forms)
+    window.selectAsset = function(asset, formId = '') {
+      currentAsset = asset;
+      
+      // Update selected state for the active form's asset cards
+      const activeForm = document.querySelector('.withdrawal-form.active');
+      if (activeForm) {
+        activeForm.querySelectorAll('.asset-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        const targetId = `asset-${asset}${formId}`;
+        const targetCard = document.getElementById(targetId) || activeForm.querySelector(`[onclick*="'${asset}'"]`)?.closest('.asset-card');
+        if (targetCard) {
+          targetCard.classList.add('selected');
+        }
+      }
+      
+      // Update balance display based on which form is active
+      if (activeForm.id === 'form-bitcoin' || activeForm.id === 'form-ethereum' || activeForm.id === 'form-usdt') {
+        const assetInfo = assetData[asset];
+        const balanceElement = activeForm.querySelector('[id^="availableBalance"]');
+        if (balanceElement) {
+          balanceElement.innerHTML = `${assetInfo.balance} ${assetInfo.symbol}`;
+        }
+        
+        // Update min withdrawal
+        const minElement = activeForm.querySelector('[id^="minWithdrawal"]');
+        if (minElement) {
+          minElement.innerHTML = `${assetInfo.minWithdrawal} ${assetInfo.symbol}`;
+        }
+      }
+      
+      // Update network options based on form
+      if (activeForm.id === 'form-bitcoin') {
+        updateNetworkOptions();
+      } else if (activeForm.id === 'form-ethereum') {
+        updateNetworkOptionsEth();
+      } else if (activeForm.id === 'form-usdt') {
+        updateNetworkOptionsUsdt();
+      }
+      
+      // Update fee
+      if (activeForm.id === 'form-bitcoin') {
+        updateFee();
+      } else if (activeForm.id === 'form-ethereum') {
+        updateFeeEth();
+      } else if (activeForm.id === 'form-usdt') {
+        updateFeeUsdt();
+      }
+    };
+
+    // Original network functions for Bitcoin form
     function updateNetworkOptions() {
       const networks = assetData[currentAsset].networks;
       const networkContainer = document.getElementById('networkOptions');
+      
+      if (!networkContainer) return;
       
       let html = '';
       networks.forEach((network, index) => {
@@ -1285,10 +1849,9 @@
       currentNetwork = networks[0];
     }
 
-    // Select network
     window.selectNetwork = function(network) {
       currentNetwork = network;
-      document.querySelectorAll('.network-option').forEach(opt => {
+      document.querySelectorAll('#form-bitcoin .network-option').forEach(opt => {
         opt.classList.remove('selected');
         if (opt.textContent === network) {
           opt.classList.add('selected');
@@ -1297,62 +1860,227 @@
       updateFee();
     };
 
-    // Update fee based on asset and amount
-    window.updateFee = function() {
-      const assetInfo = assetData[currentAsset];
-      const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
-      const fee = assetInfo.fee;
+    // Ethereum network functions
+    function updateNetworkOptionsEth() {
+      const networkContainer = document.getElementById('networkOptionsEth');
+      if (!networkContainer) return;
       
-      document.getElementById('networkFee').innerHTML = `${fee} ${assetInfo.symbol}`;
+      const networks = ['ERC20'];
+      let html = '';
+      networks.forEach((network, index) => {
+        const selected = index === 0 ? 'selected' : '';
+        html += `<div class="network-option ${selected}" onclick="selectNetworkEth('${network}')">${network}</div>`;
+      });
+      
+      networkContainer.innerHTML = html;
+      currentNetworkEth = networks[0];
+    }
+
+    window.selectNetworkEth = function(network) {
+      currentNetworkEth = network;
+      document.querySelectorAll('#form-ethereum .network-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.textContent === network) {
+          opt.classList.add('selected');
+        }
+      });
+      updateFeeEth();
     };
 
-    // Show confirmation modal
-    window.showConfirmation = function() {
-      const address = document.getElementById('walletAddress').value;
-      const amount = document.getElementById('withdrawAmount').value;
-      const note = document.getElementById('txNote').value;
+    // USDT network functions
+    function updateNetworkOptionsUsdt() {
+      const networkContainer = document.getElementById('networkOptionsUsdt');
+      if (!networkContainer) return;
+      
+      const networks = ['TRC20', 'ERC20', 'BEP20'];
+      let html = '';
+      networks.forEach((network, index) => {
+        const selected = network === 'TRC20' ? 'selected' : '';
+        html += `<div class="network-option ${selected}" onclick="selectNetworkUsdt('${network}')">${network}</div>`;
+      });
+      
+      networkContainer.innerHTML = html;
+      currentNetworkUsdt = 'TRC20';
+    }
+
+    window.selectNetworkUsdt = function(network) {
+      currentNetworkUsdt = network;
+      document.querySelectorAll('#form-usdt .network-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.textContent === network) {
+          opt.classList.add('selected');
+        }
+      });
+      updateFeeUsdt();
+    };
+
+    // Original updateFee function
+    window.updateFee = function() {
       const assetInfo = assetData[currentAsset];
+      const amount = parseFloat(document.getElementById('withdrawAmount')?.value) || 0;
+      const fee = assetInfo.fee;
       
-      if (!address) {
-        alert('Please enter a wallet address');
+      const feeElement = document.getElementById('networkFee');
+      if (feeElement) {
+        feeElement.innerHTML = `${fee} ${assetInfo.symbol}`;
+      }
+    };
+
+    // Ethereum fee update
+    window.updateFeeEth = function() {
+      const feeElement = document.getElementById('networkFeeEth');
+      if (feeElement) {
+        feeElement.innerHTML = `0.005 ETH`;
+      }
+    };
+
+    // USDT fee update
+    window.updateFeeUsdt = function() {
+      const feeElement = document.getElementById('networkFeeUsdt');
+      if (feeElement) {
+        feeElement.innerHTML = `2.5 USDT`;
+      }
+    };
+
+    // Show crypto confirmation
+    window.showCryptoConfirmation = function(method) {
+      let address, amount, assetSymbol, fee;
+      
+      if (method === 'bitcoin') {
+        address = document.getElementById('walletAddress')?.value;
+        amount = document.getElementById('withdrawAmount')?.value;
+        assetSymbol = assetData[currentAsset].symbol;
+        fee = assetData[currentAsset].fee;
+      } else if (method === 'ethereum') {
+        address = document.getElementById('walletAddressEth')?.value;
+        amount = document.getElementById('withdrawAmountEth')?.value;
+        assetSymbol = 'ETH';
+        fee = 0.005;
+      } else if (method === 'usdt') {
+        address = document.getElementById('walletAddressUsdt')?.value;
+        amount = document.getElementById('withdrawAmountUsdt')?.value;
+        assetSymbol = 'USDT';
+        fee = 2.5;
+      }
+      
+      if (!address || !amount || amount <= 0) {
+        alert('Please enter valid withdrawal details');
         return;
       }
       
-      if (!amount || amount <= 0) {
-        alert('Please enter a valid amount');
-        return;
-      }
-      
-      if (amount > assetInfo.balance) {
-        alert('Insufficient balance');
-        return;
-      }
+      const methodNames = {
+        bitcoin: 'Bitcoin',
+        ethereum: 'Ethereum',
+        usdt: 'USDT'
+      };
       
       const modalDetails = document.getElementById('modalDetails');
       modalDetails.innerHTML = `
         <div class="detail-row">
-          <span class="detail-label">Asset</span>
-          <span class="detail-value">${assetInfo.name} (${assetInfo.symbol})</span>
+          <span class="detail-label">Withdrawal Method</span>
+          <span class="detail-value">${methodNames[method]}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Amount</span>
-          <span class="detail-value">${amount} ${assetInfo.symbol}</span>
+          <span class="detail-value">${amount} ${assetSymbol}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Network</span>
-          <span class="detail-value">${currentNetwork}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Destination Address</span>
-          <span class="detail-value" style="font-size: 0.9rem;">${address.substring(0, 15)}...${address.substring(address.length - 8)}</span>
+          <span class="detail-label">Destination</span>
+          <span class="detail-value" style="font-size: 0.9rem;">${address.substring(0, 15)}...</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Network Fee</span>
-          <span class="detail-value">${assetInfo.fee} ${assetInfo.symbol}</span>
+          <span class="detail-value">${fee} ${assetSymbol}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Total Debit</span>
-          <span class="detail-value">${(parseFloat(amount) + assetInfo.fee).toFixed(4)} ${assetInfo.symbol}</span>
+          <span class="detail-value">${(parseFloat(amount) + fee).toFixed(4)} ${assetSymbol}</span>
+        </div>
+      `;
+      
+      document.getElementById('confirmationModal').classList.add('active');
+    };
+
+    // Show PayPal confirmation
+    window.showPayPalConfirmation = function() {
+      const email = document.getElementById('paypalEmail')?.value;
+      const amount = document.getElementById('paypalAmount')?.value;
+      
+      if (!email || !amount || amount <= 0) {
+        alert('Please enter valid PayPal details');
+        return;
+      }
+      
+      const fee = (amount * 0.029) + 0.30;
+      const total = parseFloat(amount) - fee;
+      
+      const modalDetails = document.getElementById('modalDetails');
+      modalDetails.innerHTML = `
+        <div class="detail-row">
+          <span class="detail-label">Withdrawal Method</span>
+          <span class="detail-value">PayPal</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Amount</span>
+          <span class="detail-value">$${amount} USD</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">PayPal Email</span>
+          <span class="detail-value">${email}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">PayPal Fee</span>
+          <span class="detail-value">$${fee.toFixed(2)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">You'll Receive</span>
+          <span class="detail-value">$${total.toFixed(2)}</span>
+        </div>
+      `;
+      
+      document.getElementById('confirmationModal').classList.add('active');
+    };
+
+    // Show bank confirmation
+    window.showBankConfirmation = function() {
+      const accountHolder = document.getElementById('accountHolder')?.value;
+      const bankName = document.getElementById('bankName')?.value;
+      const amount = document.getElementById('bankAmount')?.value;
+      const accountNumber = document.getElementById('accountNumber')?.value;
+      
+      if (!accountHolder || !bankName || !amount || amount <= 0) {
+        alert('Please fill in all required bank details');
+        return;
+      }
+      
+      const fee = 25;
+      const total = parseFloat(amount) - fee;
+      
+      const modalDetails = document.getElementById('modalDetails');
+      modalDetails.innerHTML = `
+        <div class="detail-row">
+          <span class="detail-label">Withdrawal Method</span>
+          <span class="detail-value">Bank Transfer</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Amount</span>
+          <span class="detail-value">$${amount} USD</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Account Holder</span>
+          <span class="detail-value">${accountHolder}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Bank</span>
+          <span class="detail-value">${bankName} (${accountNumber.substring(0, 4)}...)</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Bank Fee</span>
+          <span class="detail-value">$${fee}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">You'll Receive</span>
+          <span class="detail-value">$${total.toFixed(2)}</span>
         </div>
       `;
       
@@ -1367,47 +2095,64 @@
     // Process withdrawal
     window.processWithdrawal = function() {
       closeModal();
-      alert('Withdrawal request submitted successfully! It will be processed shortly.');
+      
+      // Show different messages based on method
+      const method = document.getElementById('withdrawalMethod').value;
+      let message = 'Withdrawal request submitted successfully!';
+      
+      if (method === 'paypal') {
+        message = 'PayPal withdrawal request submitted! Funds will be sent within 24 hours.';
+      } else if (method === 'bank') {
+        message = 'Bank transfer request submitted! Processing will take 1-3 business days.';
+      } else {
+        message = 'Crypto withdrawal request submitted! It will be processed shortly.';
+      }
+      
+      alert(message);
       
       // In production, this would submit to backend
     };
 
-    // Sidebar Toggle (Desktop)
+    // Sidebar Toggle (Original)
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const sidebarToggle = document.getElementById('sidebarToggle');
 
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded');
-      
-      const icon = sidebarToggle.querySelector('i');
-      if (sidebar.classList.contains('collapsed')) {
-        icon.classList.remove('fa-chevron-left');
-        icon.classList.add('fa-chevron-right');
-      } else {
-        icon.classList.remove('fa-chevron-right');
-        icon.classList.add('fa-chevron-left');
-      }
-    });
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      });
+    }
 
-    // Mobile Menu Toggle
+    // Mobile Menu Toggle (Original)
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     
-    mobileMenuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+    }
 
-    // Close sidebar when clicking outside
+    // Close sidebar when clicking outside (Original)
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 992) {
-        if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        if (!sidebar.contains(e.target) && !mobileMenuToggle?.contains(e.target)) {
           sidebar.classList.remove('active');
         }
       }
     });
 
-    // Update Date/Time
+    // Update Date/Time (Original)
     function updateDateTime() {
       const now = new Date();
       const options = { 
@@ -1420,7 +2165,10 @@
         second: '2-digit',
         hour12: true
       };
-      document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+      const dateTimeElement = document.getElementById('currentDateTime');
+      if (dateTimeElement) {
+        dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+      }
     }
   </script>
 </body>
