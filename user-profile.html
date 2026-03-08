@@ -59,13 +59,15 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-right: 1px solid rgba(255, 215, 0, 0.1);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: fixed;
       height: 100vh;
       z-index: 1000;
       overflow-y: auto;
       overflow-x: hidden;
       box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+      left: 0;
+      top: 0;
     }
 
     .sidebar.collapsed {
@@ -322,7 +324,7 @@
       flex-shrink: 0;
     }
 
-    /* Toggle Button */
+    /* Toggle Button - Desktop */
     .sidebar-toggle {
       position: absolute;
       top: 20px;
@@ -350,6 +352,30 @@
 
     .sidebar.collapsed .sidebar-toggle i {
       transform: rotate(180deg);
+    }
+
+    /* Mobile Menu Toggle Button */
+    .mobile-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 1002;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      margin-right: 10px;
+    }
+
+    .mobile-menu-toggle:hover {
+      transform: scale(1.1);
+      background: #00ffff;
     }
 
     /* Main Content */
@@ -382,6 +408,13 @@
       flex-wrap: wrap;
       gap: 15px;
       width: 100%;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1 1 auto;
     }
 
     .page-title {
@@ -1348,14 +1381,21 @@
       .sidebar {
         transform: translateX(-100%);
         width: 280px !important;
+        box-shadow: none;
       }
 
       .sidebar.active {
         transform: translateX(0);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
       }
 
       .sidebar.collapsed {
         transform: translateX(-100%);
+        width: 280px !important;
+      }
+
+      .sidebar.collapsed.active {
+        transform: translateX(0);
       }
 
       .main-content {
@@ -1368,7 +1408,17 @@
       }
 
       .sidebar-toggle {
-        display: none;
+        display: none; /* Hide desktop toggle on mobile */
+      }
+
+      .mobile-menu-toggle {
+        display: flex !important;
+      }
+
+      .top-bar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
     }
 
@@ -1433,6 +1483,11 @@
         padding: 12px;
       }
 
+      .top-bar-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+
       .page-title h1 {
         font-size: 1.2rem;
       }
@@ -1441,6 +1496,7 @@
         flex-direction: column;
         align-items: flex-start;
         padding: 12px;
+        width: 100%;
       }
 
       .live-indicator {
@@ -1623,15 +1679,22 @@
     <main class="main-content" id="mainContent">
       <!-- Top Bar with verified badge and live account panel -->
       <div class="top-bar">
-        <div class="page-title">
-          <h1>
-            Welcome back, John
-            <span class="verified-badge" data-tooltip="Verified Account">
-              <i class="fas fa-check-circle"></i>
-              <span class="tooltip-text">Verified Account</span>
-            </span>
-          </h1>
-          <p>Here's what's happening with your portfolio today</p>
+        <div class="top-bar-left">
+          <!-- Mobile Menu Toggle Button (visible only on mobile) -->
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <div class="page-title">
+            <h1>
+              Welcome back, John
+              <span class="verified-badge" data-tooltip="Verified Account">
+                <i class="fas fa-check-circle"></i>
+                <span class="tooltip-text">Verified Account</span>
+              </span>
+            </h1>
+            <p>Here's what's happening with your portfolio today</p>
+          </div>
         </div>
 
         <!-- LIVE ACCOUNT PANEL -->
@@ -2044,41 +2107,57 @@
       return "Thank you for your message. One of our support representatives will assist you shortly. For immediate help, please contact our 24/7 live chat support.";
     }
 
-    // Sidebar Toggle
+    // Sidebar Toggle (Desktop)
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const sidebarToggle = document.getElementById('sidebarToggle');
 
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded');
-      
-      const icon = sidebarToggle.querySelector('i');
-      if (sidebar.classList.contains('collapsed')) {
-        icon.classList.remove('fa-chevron-left');
-        icon.classList.add('fa-chevron-right');
-      } else {
-        icon.classList.remove('fa-chevron-right');
-        icon.classList.add('fa-chevron-left');
-      }
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      });
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        // Remove collapsed class on mobile when opening
+        if (sidebar.classList.contains('collapsed')) {
+          sidebar.classList.remove('collapsed');
+        }
+      });
+    }
+
+    // Close sidebar when clicking on a link (mobile)
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 992) {
+          sidebar.classList.remove('active');
+        }
+      });
     });
 
-    // Mobile Menu
-    if (window.innerWidth <= 992) {
-      // Create mobile menu button
-      const mobileMenuBtn = document.createElement('button');
-      mobileMenuBtn.className = 'sidebar-toggle';
-      mobileMenuBtn.style.left = '10px';
-      mobileMenuBtn.style.right = 'auto';
-      mobileMenuBtn.style.display = 'flex';
-      mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-      
-      mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-      });
-      
-      document.querySelector('.top-bar').appendChild(mobileMenuBtn);
-    }
+    // Close sidebar when clicking outside (mobile)
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth <= 992) {
+        if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+          sidebar.classList.remove('active');
+        }
+      }
+    });
 
     // Update Date/Time
     function updateDateTime() {
@@ -2131,10 +2210,6 @@
         
         document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
         this.classList.add('active');
-        
-        if (window.innerWidth <= 992) {
-          sidebar.classList.remove('active');
-        }
       });
     });
 
@@ -2182,8 +2257,8 @@
       });
     }
 
-    document.querySelectorAll('.btn-buy, .btn-sell, .sidebar-toggle, .chart-control-btn').forEach(btn => {
-      addRippleEffect(btn);
+    document.querySelectorAll('.btn-buy, .btn-sell, .sidebar-toggle, .chart-control-btn, .mobile-menu-toggle').forEach(btn => {
+      if (btn) addRippleEffect(btn);
     });
 
     // Define ripple animation
