@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Profit Management • Bytetrade Admin</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    /* === GLOBAL & LAYOUT (identical to existing system) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Admin Layout */
+    .admin {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      width: 100%;
+    }
+
+    /* ===== Sidebar (exact same as other pages) ===== */
+    .admin-sidebar {
+      width: 320px;
+      background: rgba(10, 20, 30, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 215, 0, 0.15);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      left: 0;
+      top: 0;
+    }
+
+    .admin-sidebar.collapsed {
+      width: 90px;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link span,
+    .admin-sidebar.collapsed .sidebar-heading,
+    .admin-sidebar.collapsed .admin-info span,
+    .admin-sidebar.collapsed .stats-mini {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area h2 {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area {
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link i {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .admin-sidebar.collapsed .admin-avatar {
+      margin: 0 auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .logo-area h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .admin-info {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .admin-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .admin-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid #0a1a2f;
+      animation: pulse 2s infinite;
+    }
+
+    .admin-details h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .admin-details p {
+      font-size: 0.85rem;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .admin-badge {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .stats-mini {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      gap: 10px;
+    }
+
+    .stat-mini-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-mini-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stat-mini-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-heading {
+      padding: 15px 20px 5px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(180deg, #ffd700, #00ffff);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+      transform: translateX(5px);
+    }
+
+    .sidebar-link i {
+      width: 24px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffd700;
+      flex-shrink: 0;
+    }
+
+    .sidebar-link span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .sidebar-link .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 5px;
+    }
+
+    .sidebar-link .badge-danger {
+      background: #f44336;
+      color: white;
+    }
+
+    .sidebar-link .badge-success {
+      background: #4caf50;
+      color: white;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1001;
+      transition: 0.3s;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      background: #00ffff;
+    }
+
+    .admin-sidebar.collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-left: 320px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      background: #0a0f1e;
+      min-height: 100vh;
+      width: calc(100% - 320px);
+      max-width: 100%;
+    }
+
+    .admin-main.expanded {
+      margin-left: 90px;
+      width: calc(100% - 90px);
+    }
+
+    /* Top Bar */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .welcome h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .welcome p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 300px;
+    }
+
+    .search-box input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      padding: 12px 20px 12px 45px;
+      color: #fff;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification-icon i {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      transition: 0.3s;
+    }
+
+    .notification-icon:hover i {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #ffd700, #f44336);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    .date-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 8px 15px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+
+    .date-time i {
+      color: #ffd700;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 10px;
+      color: #0a1a2f;
+      font-size: 1.2rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.5);
+    }
+
+    /* === Page Specific Styles (Profit Management) === */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .page-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h2 i {
+      color: #ffd700;
+      font-size: 2rem;
+    }
+
+    .page-header p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-item {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: transform 0.3s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon i {
+      font-size: 1.5rem;
+      color: #ffd700;
+    }
+
+    .stat-content h4 {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 5px;
+    }
+
+    .stat-content .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    /* Profit Cards */
+    .profit-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      width: 100%;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .card-header-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-header-icon i {
+      font-size: 1.5rem;
+      color: #ffd700;
+    }
+
+    .card-header-title h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .card-header-title p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+    }
+
+    /* Form Elements */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-label i {
+      color: #ffd700;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      padding-right: 45px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .input-group .form-control {
+      flex: 1;
+    }
+
+    .input-group-text {
+      padding: 0 15px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #ffd700;
+      height: 45px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* User Search */
+    .user-search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .search-btn {
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 12px;
+      color: #0a1a2f;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .user-card {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0a1a2f;
+    }
+
+    .user-info p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    /* Profit Preview */
+    .profit-preview {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .preview-item {
+      flex: 1;
+    }
+
+    .preview-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+    }
+
+    .preview-value {
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-switch input {
+      display: none;
+    }
+
+    .toggle-switch label {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-switch label::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ffd700;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: 0.3s;
+    }
+
+    .toggle-switch input:checked + label {
+      background: #ffd700;
+    }
+
+    .toggle-switch input:checked + label::after {
+      left: 28px;
+      background: #0a1a2f;
+    }
+
+    .toggle-label {
+      color: #fff;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      padding: 14px 30px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 12px;
+      color: #0a1a2f;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-secondary {
+      padding: 14px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .btn-save {
+      padding: 14px 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 12px;
+      color: #0a1a2f;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 20px;
+      border-radius: 15px;
+    }
+
+    .profit-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .profit-table th {
+      text-align: left;
+      padding: 18px 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .profit-table td {
+      padding: 18px 15px;
+      color: #fff;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .profit-table tbody tr {
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .profit-table tbody tr:hover {
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .status-badge {
+      padding: 6px 15px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .status-active { background: rgba(76, 175, 80, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+    .status-paused { background: rgba(255, 152, 0, 0.15); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+    .status-completed { background: rgba(76, 175, 80, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+    .status-pending { background: rgba(255, 152, 0, 0.15); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+    .status-failed { background: rgba(244, 67, 54, 0.15); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.3s;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 215, 0, 0.2);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(15, 25, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      width: 100%;
+      max-width: 500px;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .modal-header h3 {
+      color: #ffd700;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-confirm {
+      background: #ffd700;
+      color: #0a1a2f;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* User Summary Modal */
+    .user-summary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .summary-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0a1a2f;
+    }
+
+    .summary-details {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .summary-item {
+      text-align: left;
+    }
+
+    .summary-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+    }
+
+    .summary-value {
+      color: #ffd700;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 1199px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 991px) {
+      .mobile-menu-btn { display: flex; }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        width: 280px !important;
+      }
+      .admin-sidebar.active { transform: translateX(0); }
+      .admin-main { 
+        margin-left: 0 !important; 
+        width: 100% !important;
+      }
+      .sidebar-toggle { display: none; }
+      
+      .admin-topbar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .topbar-actions { 
+        justify-content: space-between; 
+        width: 100%;
+      }
+      .search-box { 
+        min-width: 200px;
+        flex: 1;
+      }
+      
+      .user-search {
+        flex-direction: column;
+      }
+      
+      .summary-details {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .admin-main { padding: 15px; }
+      .profit-card { padding: 20px; }
+      
+      .page-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+      }
+      
+      .profit-preview {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn-icon {
+        width: 100%;
+      }
+    }
+
+    .ripple-effect {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
+      transform: scale(0); animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="admin">
+    <!-- Sidebar (identical structure) -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon"><i class="fas fa-crown"></i></div>
+          <div><h2>Bytetrade</h2><span>Admin Panel v2.0</span></div>
+        </div>
+      </div>
+      <div class="admin-info">
+        <div class="admin-avatar">SA</div>
+        <div class="admin-details">
+          <h4>Super Admin</h4>
+          <p><i class="fas fa-circle" style="font-size: 0.5rem; color: #4caf50;"></i> Online</p>
+          <span class="admin-badge">Master Administrator</span>
+        </div>
+      </div>
+      <div class="stats-mini">
+        <div class="stat-mini-item"><div class="stat-mini-value">2,847</div><div class="stat-mini-label">Users</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">$2.4M</div><div class="stat-mini-label">Volume</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">156</div><div class="stat-mini-label">Pending</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-heading">Financial Management</div>
+        <a href="admin-dashboard.html" class="sidebar-link"><i class="fas fa-wallet"></i><span>Dashboard</span><span class="badge">12</span></a>
+        <a href="admin-fund-account.html" class="sidebar-link"><i class="fas fa-wallet"></i><span>Fund Account</span><span class="badge">12</span></a>
+        <a href="admin-profit.html" class="sidebar-link active"><i class="fas fa-chart-line"></i><span>Profit Management</span></a>
+        <a href="admin-approve-deposit.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Approve Deposit</span><span class="badge badge-danger">23</span></a>
+        <a href="admin-withdrawal-approval.html" class="sidebar-link"><i class="fas fa-history"></i><span>Withdrawal Approval</span><span class="badge badge-warning">15</span></a>
+        <div class="sidebar-heading">Trading & Packages</div>
+        <a href="admin-approve-packages.html" class="sidebar-link"><i class="fas fa-cubes"></i><span>Approve Packages</span><span class="badge badge-success">8</span></a>
+        <a href="admin-package-panel.html" class="sidebar-link"><i class="fas fa-layer-group"></i><span>Packages Panel</span></a>
+        <a href="admin-profit.html" class="sidebar-link"><i class="fas fa-percentage"></i><span>Profit</span></a>
+        <div class="sidebar-heading">NFT & Verification</div>
+        <!-- <a href="#" class="sidebar-link"><i class="fas fa-paint-brush"></i><span>Create NFTs</span></a> -->
+        <a href="admin-kyc.html" class="sidebar-link"><i class="fas fa-shield-alt"></i><span>KYC</span><span class="badge badge-danger">15</span></a>
+        <div class="sidebar-heading">Communication</div>
+        <a href="admin-send-mail.html" class="sidebar-link"><i class="fas fa-envelope"></i><span>Send Mail</span></a>
+        <a href="admin-contact-us.html" class="sidebar-link"><i class="fas fa-headset"></i><span>Contact Inbox</span><span class="badge badge-danger">5</span></a>
+        <div class="sidebar-heading">Account Management</div>
+        <a href="admin-account-status.html" class="sidebar-link"><i class="fas fa-toggle-on"></i><span>Account Status</span><span class="badge">3</span></a>
+        <a href="admin-login-activity.html" class="sidebar-link"><i class="fas fa-chart-line"></i><span>Login Activity</span><span class="badge">12</span></a>
+        <div class="sidebar-heading">Settings</div>
+        <a href="admin-website-settings.html" class="sidebar-link"><i class="fas fa-cog"></i><span>Website Settings</span></a>
+        <a href="#" class="sidebar-link" id="logoutLink"><i class="fas fa-sign-out-alt" style="color: #f44336;"></i><span style="color: #f44336;">Logout</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" id="adminMain">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <div class="welcome">
+          <h1>Profit Distribution</h1>
+          <p><i class="fas fa-chart-line"></i> Manage and distribute investment profits to users</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search users..."></div>
+          <div class="notification-icon"><i class="fas fa-bell"></i><span class="notification-badge">8</span></div>
+          <div class="date-time" id="currentDateTime"><i class="fas fa-calendar-alt"></i><span></span></div>
+        </div>
+      </div>
+
+      <!-- Alert Container (for toasts) -->
+      <div id="toastContainer" class="toast-container"></div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-hand-holding-usd"></i> Profit Distribution Management</h2>
+          <p>Credit profits to user investment accounts and configure automated profit payouts.</p>
+        </div>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-content">
+            <h4>Total Profits Distributed</h4>
+            <div class="stat-value">$1.2M</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+          <div class="stat-content">
+            <h4>Profits Distributed Today</h4>
+            <div class="stat-value">$45,678</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-clock"></i></div>
+          <div class="stat-content">
+            <h4>Pending Profit Payments</h4>
+            <div class="stat-value">23</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="stat-content">
+            <h4>Active Profit Schedules</h4>
+            <div class="stat-value">5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Profit Distribution -->
+      <div class="profit-card" data-aos="fade-up">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-hand-holding-heart"></i></div>
+          <div class="card-header-title">
+            <h3>Manual Profit Credit</h3>
+            <p>Credit profits to individual user accounts</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <div class="form-label"><i class="fas fa-user"></i> User ID / Username</div>
+            <div class="user-search">
+              <input type="text" class="form-control" id="manualUserSearch" placeholder="Enter username or user ID">
+              <button class="search-btn" onclick="searchManualUser()"><i class="fas fa-search"></i> Find User</button>
+            </div>
+            <div id="manualUserCard" class="user-card" style="display: none;">
+              <div class="user-avatar">JD</div>
+              <div class="user-info">
+                <h4>John Doe</h4>
+                <p>john.doe@email.com • Investment: $5,000</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-cube"></i> Investment Package</div>
+            <select class="form-control" id="manualPackage" onchange="updateManualPreview()">
+              <option value="silver">Silver (10% weekly)</option>
+              <option value="gold">Gold (15% weekly)</option>
+              <option value="diamond">Diamond (20% weekly)</option>
+              <option value="elite">Elite (25% weekly)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-tag"></i> Profit Type</div>
+            <select class="form-control" id="manualProfitType">
+              <option value="weekly">Weekly Profit</option>
+              <option value="daily">Daily Profit</option>
+              <option value="bonus">Bonus Profit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-dollar-sign"></i> Profit Amount</div>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" id="manualAmount" value="500" oninput="updateManualPreview()">
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <div class="form-label"><i class="fas fa-edit"></i> Admin Note</div>
+            <input type="text" class="form-control" id="manualNote" placeholder="Optional note about this profit distribution">
+          </div>
+        </div>
+
+        <!-- Profit Preview -->
+        <div class="profit-preview" id="manualPreview">
+          <div class="preview-item">
+            <div class="preview-label">Investment Amount</div>
+            <div class="preview-value">$5,000</div>
+          </div>
+          <div class="preview-item">
+            <div class="preview-label">Profit Rate</div>
+            <div class="preview-value">10%</div>
+          </div>
+          <div class="preview-item">
+            <div class="preview-label">Calculated Profit</div>
+            <div class="preview-value">$500</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="showCreditConfirmModal()"><i class="fas fa-coins"></i> Credit Profit</button>
+      </div>
+
+      <!-- Auto Profit Scheduler -->
+      <div class="profit-card" data-aos="fade-up" data-aos-delay="50">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-clock"></i></div>
+          <div class="card-header-title">
+            <h3>Auto Profit Scheduler</h3>
+            <p>Configure automatic profit distribution</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-calendar"></i> Distribution Frequency</div>
+            <select class="form-control" id="autoFrequency">
+              <option value="daily">Daily</option>
+              <option value="weekly" selected>Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-cube"></i> Package</div>
+            <select class="form-control" id="autoPackage" onchange="updateAutoPreview()">
+              <option value="silver">Silver (10%)</option>
+              <option value="gold">Gold (15%)</option>
+              <option value="diamond">Diamond (20%)</option>
+              <option value="elite">Elite (25%)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-percent"></i> Profit Percentage</div>
+            <div class="input-group">
+              <input type="number" class="form-control" id="autoPercentage" value="15" readonly>
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label"><i class="fas fa-clock"></i> Execution Time</div>
+            <input type="time" class="form-control" id="autoTime" value="00:00">
+          </div>
+
+          <div class="form-group full-width">
+            <div class="form-label"><i class="fas fa-power-off"></i> Status</div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="autoEnable" checked>
+              <label for="autoEnable"></label>
+              <span class="toggle-label">Enable automatic profit distribution</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="showToast('Auto profit schedule saved', 'success')"><i class="fas fa-save"></i> Save Schedule</button>
+      </div>
+
+      <!-- Active Schedules Table -->
+      <div class="profit-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-calendar-check"></i></div>
+          <div class="card-header-title">
+            <h3>Active Profit Schedules</h3>
+            <p>Currently running automatic profit distributions</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="profit-table">
+            <thead>
+              <tr>
+                <th>Schedule ID</th>
+                <th>Package</th>
+                <th>Profit Rate</th>
+                <th>Frequency</th>
+                <th>Next Execution</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SCH-001</td>
+                <td>Silver</td>
+                <td>10%</td>
+                <td>Weekly</td>
+                <td>2024-01-22 00:00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon"><i class="fas fa-pause"></i></button>
+                    <button class="btn-icon"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>SCH-002</td>
+                <td>Gold</td>
+                <td>15%</td>
+                <td>Daily</td>
+                <td>2024-01-16 12:00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon"><i class="fas fa-pause"></i></button>
+                    <button class="btn-icon"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>SCH-003</td>
+                <td>Diamond</td>
+                <td>20%</td>
+                <td>Monthly</td>
+                <td>2024-02-01 00:00</td>
+                <td><span class="status-badge status-paused">Paused</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon"><i class="fas fa-play"></i></button>
+                    <button class="btn-icon"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Profit Distribution History -->
+      <div class="profit-card" data-aos="fade-up" data-aos-delay="150">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-history"></i></div>
+          <div class="card-header-title">
+            <h3>Profit Distribution History</h3>
+            <p>Recent profit credit transactions</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="profit-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Package</th>
+                <th>Profit Amount</th>
+                <th>Distribution Type</th>
+                <th>Admin</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="showUserSummaryModal('John Doe')">
+                <td>2024-01-15 10:30</td>
+                <td><strong>John Doe</strong></td>
+                <td>Gold</td>
+                <td>$750.00</td>
+                <td>Automatic</td>
+                <td>System</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+              </tr>
+              <tr onclick="showUserSummaryModal('Sarah Smith')">
+                <td>2024-01-15 09:15</td>
+                <td><strong>Sarah Smith</strong></td>
+                <td>Silver</td>
+                <td>$250.00</td>
+                <td>Manual</td>
+                <td>admin@bytetrade.com</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+              </tr>
+              <tr onclick="showUserSummaryModal('Mike Wilson')">
+                <td>2024-01-14 16:45</td>
+                <td><strong>Mike Wilson</strong></td>
+                <td>Elite</td>
+                <td>$2,500.00</td>
+                <td>Automatic</td>
+                <td>System</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+              </tr>
+              <tr onclick="showUserSummaryModal('Emma Davis')">
+                <td>2024-01-14 14:20</td>
+                <td><strong>Emma Davis</strong></td>
+                <td>Diamond</td>
+                <td>$1,000.00</td>
+                <td>Manual</td>
+                <td>admin@bytetrade.com</td>
+                <td><span class="status-badge status-failed">Failed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Credit Confirmation Modal -->
+  <div class="modal" id="creditConfirmModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-coins"></i> Confirm Profit Credit</h3>
+        <button class="close-modal" onclick="closeModal('creditConfirmModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">You are about to credit $500 profit to user JohnDoe.</p>
+        <div class="modal-actions">
+          <button class="btn btn-cancel" onclick="closeModal('creditConfirmModal')">Cancel</button>
+          <button class="btn btn-confirm" onclick="confirmProfitCredit()">Confirm Credit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Summary Modal -->
+  <div class="modal" id="userSummaryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-circle"></i> User Profit Summary</h3>
+        <button class="close-modal" onclick="closeModal('userSummaryModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="user-summary">
+          <div class="summary-avatar">JD</div>
+          <h3 id="summaryUserName">John Doe</h3>
+          <div class="summary-details">
+            <div class="summary-item">
+              <div class="summary-label">User ID</div>
+              <div class="summary-value" id="summaryUserId">USR-001</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Total Investment</div>
+              <div class="summary-value" id="summaryInvestment">$5,000</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Total Profits Earned</div>
+              <div class="summary-value" id="summaryProfits">$1,250</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Active Package</div>
+              <div class="summary-value" id="summaryPackage">Gold</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Last Profit Date</div>
+              <div class="summary-value" id="summaryLastProfit">2024-01-15</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Account Status</div>
+              <div class="summary-value" style="color: #4caf50;" id="summaryStatus">Active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal" id="logoutConfirmModal">
+    <div class="modal-content logout-confirm-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-sign-out-alt"></i> Confirm Logout</h3>
+        <button class="close-modal" id="closeLogoutModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="text-align:center; padding:20px 0;">
+        <i class="fas fa-door-open" style="font-size:4rem; color:#f44336; margin-bottom:20px;"></i>
+        <p style="color:#fff; font-size:1.1rem;">Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" id="cancelLogout">Cancel</button>
+        <button class="btn btn-confirm" id="confirmLogout">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 100 });
+
+    // Sidebar functionality
+    const sidebar = document.getElementById('adminSidebar');
+    const mainContent = document.getElementById('adminMain');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    sidebarToggle.addEventListener('click', () => {
+      if (window.innerWidth > 992) {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      }
+    });
+
+    // Mobile menu
+    function toggleMobileSidebar() { sidebar.classList.toggle('active'); }
+    function createMobileMenuButton() {
+      if (document.querySelector('.mobile-menu-btn')) return;
+      const topbar = document.querySelector('.admin-topbar');
+      if (topbar && window.innerWidth <= 992) {
+        const btn = document.createElement('button');
+        btn.className = 'mobile-menu-btn';
+        btn.innerHTML = '<i class="fas fa-bars"></i>';
+        btn.setAttribute('aria-label', 'Toggle Menu');
+        topbar.insertBefore(btn, topbar.firstChild);
+        btn.addEventListener('click', toggleMobileSidebar);
+      }
+    }
+    function handleMobileLayout() {
+      if (window.innerWidth <= 992) {
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('expanded');
+        createMobileMenuButton();
+      } else {
+        sidebar.classList.remove('active');
+        document.querySelector('.mobile-menu-btn')?.remove();
+      }
+    }
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992 && !sidebar.contains(e.target) && !e.target.closest('.mobile-menu-btn') && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+      }
+    });
+    handleMobileLayout();
+    window.addEventListener('resize', handleMobileLayout);
+
+    // Date/time
+    function updateDateTime() {
+      const now = new Date();
+      document.querySelector('#currentDateTime span').textContent = now.toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
+    }
+    updateDateTime(); setInterval(updateDateTime, 1000);
+
+    // Toast notifications
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span class="toast-message">${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Manual profit preview
+    function updateManualPreview() {
+      const package = document.getElementById('manualPackage').value;
+      const amount = document.getElementById('manualAmount').value;
+      const previewValues = document.querySelectorAll('#manualPreview .preview-value');
+      
+      let rate = '10%';
+      if (package === 'gold') rate = '15%';
+      else if (package === 'diamond') rate = '20%';
+      else if (package === 'elite') rate = '25%';
+      
+      previewValues[1].textContent = rate;
+      previewValues[2].textContent = '$' + amount;
+    }
+
+    // Auto profit preview
+    function updateAutoPreview() {
+      const package = document.getElementById('autoPackage').value;
+      const percentageInput = document.getElementById('autoPercentage');
+      
+      if (package === 'silver') percentageInput.value = 10;
+      else if (package === 'gold') percentageInput.value = 15;
+      else if (package === 'diamond') percentageInput.value = 20;
+      else if (package === 'elite') percentageInput.value = 25;
+    }
+
+    // Search user
+    function searchManualUser() {
+      document.getElementById('manualUserCard').style.display = 'flex';
+      showToast('User found', 'success');
+    }
+
+    // Show credit confirmation modal
+    function showCreditConfirmModal() {
+      const modal = document.getElementById('creditConfirmModal');
+      const message = document.getElementById('confirmMessage');
+      message.textContent = 'You are about to credit $500 profit to user JohnDoe.';
+      modal.classList.add('active');
+    }
+
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Confirm profit credit
+    function confirmProfitCredit() {
+      closeModal('creditConfirmModal');
+      showToast('Profit credited successfully', 'success');
+      
+      // Reset form
+      document.getElementById('manualUserCard').style.display = 'none';
+      document.getElementById('manualAmount').value = '500';
+      document.getElementById('manualNote').value = '';
+    }
+
+    // Show user summary modal
+    function showUserSummaryModal(userName) {
+      const modal = document.getElementById('userSummaryModal');
+      document.getElementById('summaryUserName').textContent = userName;
+      modal.classList.add('active');
+    }
+
+    // Logout
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutConfirmModal');
+    const closeLogout = document.getElementById('closeLogoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutModal.classList.add('active');
+    });
+
+    closeLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    cancelLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    confirmLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-logout.html';
+    });
+    logoutModal.addEventListener('click', (e) => {
+      if (e.target === logoutModal) logoutModal.classList.remove('active');
+    });
+
+    // Initialize
+    updateManualPreview();
+    updateAutoPreview();
+  </script>
+</body>
+</html>

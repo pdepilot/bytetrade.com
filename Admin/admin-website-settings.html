@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Website Settings • Bytetrade Admin</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Color Picker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.min.css" />
+  <style>
+    /* === GLOBAL & LAYOUT (identical to existing system) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Admin Layout */
+    .admin {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      width: 100%;
+    }
+
+    /* ===== Sidebar (exact same as other pages) ===== */
+    .admin-sidebar {
+      width: 320px;
+      background: rgba(10, 20, 30, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 215, 0, 0.15);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      left: 0;
+      top: 0;
+    }
+
+    .admin-sidebar.collapsed {
+      width: 90px;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link span,
+    .admin-sidebar.collapsed .sidebar-heading,
+    .admin-sidebar.collapsed .admin-info span,
+    .admin-sidebar.collapsed .stats-mini {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area h2 {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area {
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link i {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .admin-sidebar.collapsed .admin-avatar {
+      margin: 0 auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .logo-area h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .admin-info {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .admin-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .admin-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid #0a1a2f;
+      animation: pulse 2s infinite;
+    }
+
+    .admin-details h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .admin-details p {
+      font-size: 0.85rem;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .admin-badge {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .stats-mini {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      gap: 10px;
+    }
+
+    .stat-mini-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-mini-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stat-mini-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-heading {
+      padding: 15px 20px 5px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(180deg, #ffd700, #00ffff);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+      transform: translateX(5px);
+    }
+
+    .sidebar-link i {
+      width: 24px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffd700;
+      flex-shrink: 0;
+    }
+
+    .sidebar-link span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .sidebar-link .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 5px;
+    }
+
+    .sidebar-link .badge-danger {
+      background: #f44336;
+      color: white;
+    }
+
+    .sidebar-link .badge-success {
+      background: #4caf50;
+      color: white;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1001;
+      transition: 0.3s;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      background: #00ffff;
+    }
+
+    .admin-sidebar.collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-left: 320px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      background: #0a0f1e;
+      min-height: 100vh;
+      width: calc(100% - 320px);
+      max-width: 100%;
+    }
+
+    .admin-main.expanded {
+      margin-left: 90px;
+      width: calc(100% - 90px);
+    }
+
+    /* Top Bar */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .welcome h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .welcome p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 300px;
+    }
+
+    .search-box input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      padding: 12px 20px 12px 45px;
+      color: #fff;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification-icon i {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      transition: 0.3s;
+    }
+
+    .notification-icon:hover i {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #ffd700, #f44336);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    .date-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 8px 15px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+
+    .date-time i {
+      color: #ffd700;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 10px;
+      color: #0a1a2f;
+      font-size: 1.2rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.5);
+    }
+
+    /* === Page Specific Styles (Website Settings) === */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .page-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h2 i {
+      color: #ffd700;
+      font-size: 2rem;
+    }
+
+    .page-header p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    /* Settings Layout */
+    .settings-layout {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .settings-left {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .settings-right {
+      width: 380px;
+      position: sticky;
+      top: 90px;
+      align-self: flex-start;
+    }
+
+    /* Settings Card */
+    .settings-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      width: 100%;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+      cursor: pointer;
+    }
+
+    .card-header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-header-icon i {
+      font-size: 1.2rem;
+      color: #ffd700;
+    }
+
+    .card-header-title {
+      flex: 1;
+    }
+
+    .card-header-title h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .card-header-title p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+    }
+
+    .card-header i.fa-chevron-down {
+      transition: transform 0.3s;
+    }
+
+    .card-header.collapsed i.fa-chevron-down {
+      transform: rotate(-90deg);
+    }
+
+    .card-content {
+      transition: max-height 0.3s ease-out;
+      overflow: hidden;
+    }
+
+    .card-content.collapsed {
+      max-height: 0;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-label i {
+      color: #ffd700;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      padding-right: 45px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .input-group .form-control {
+      flex: 1;
+    }
+
+    .input-group-text {
+      padding: 0 15px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #ffd700;
+      height: 45px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* File Upload */
+    .file-upload {
+      border: 2px dashed rgba(255, 215, 0, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 15px;
+    }
+
+    .file-upload:hover {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .file-upload i {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .file-upload p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    .file-upload input {
+      display: none;
+    }
+
+    .image-preview {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .image-preview i {
+      font-size: 2rem;
+      color: rgba(255, 215, 0, 0.3);
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-switch input {
+      display: none;
+    }
+
+    .toggle-switch label {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-switch label::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ffd700;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: 0.3s;
+    }
+
+    .toggle-switch input:checked + label {
+      background: #ffd700;
+    }
+
+    .toggle-switch input:checked + label::after {
+      left: 28px;
+      background: #0a1a2f;
+    }
+
+    .toggle-label {
+      color: #fff;
+    }
+
+    /* Payment Method Item */
+    .payment-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .payment-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .payment-info i {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+
+    /* Color Picker */
+    .color-picker-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .color-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-save {
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 12px;
+      color: #0a1a2f;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 10px;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-section-save {
+      padding: 8px 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      color: #ffd700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 15px;
+    }
+
+    .btn-section-save:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+    }
+
+    .global-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* Preview Panel */
+    .preview-card {
+      background: rgba(15, 25, 35, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 25px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .preview-header h4 {
+      color: #ffd700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .preview-badge {
+      background: rgba(255, 215, 0, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      color: #ffd700;
+    }
+
+    .preview-content {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .preview-site-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .preview-logo {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #ffd700;
+    }
+
+    .preview-site-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .preview-banner {
+      height: 100px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.5);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .preview-footer {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .preview-announcement {
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 10px;
+      padding: 10px;
+      margin: 15px 0;
+      color: #ffd700;
+      font-size: 0.9rem;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: rgba(15, 25, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-left: 4px solid #ffd700;
+      border-radius: 12px;
+      padding: 15px 25px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: slideInRight 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .toast.success {
+      border-left-color: #4caf50;
+    }
+
+    .toast.error {
+      border-left-color: #f44336;
+    }
+
+    .toast i {
+      font-size: 1.2rem;
+    }
+
+    .toast.success i {
+      color: #4caf50;
+    }
+
+    .toast.error i {
+      color: #f44336;
+    }
+
+    .toast-message {
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(15, 25, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      width: 100%;
+      max-width: 400px;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      color: #ffd700;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .close-modal:hover {
+      color: #ffd700;
+    }
+
+    .modal-body {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-confirm {
+      background: #ffd700;
+      color: #0a1a2f;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 1199px) {
+      .settings-right {
+        width: 100%;
+        position: static;
+        margin-top: 20px;
+      }
+    }
+
+    @media (max-width: 991px) {
+      .mobile-menu-btn { display: flex; }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        width: 280px !important;
+      }
+      .admin-sidebar.active { transform: translateX(0); }
+      .admin-main { 
+        margin-left: 0 !important; 
+        width: 100% !important;
+      }
+      .sidebar-toggle { display: none; }
+      
+      .admin-topbar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .topbar-actions { 
+        justify-content: space-between; 
+        width: 100%;
+      }
+      .search-box { 
+        min-width: 200px;
+        flex: 1;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .admin-main { padding: 15px; }
+      .settings-card { padding: 20px; }
+      
+      .page-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+      }
+      
+      .global-actions {
+        flex-direction: column;
+      }
+      
+      .btn-save {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .ripple-effect {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
+      transform: scale(0); animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="admin">
+    <!-- Sidebar (identical structure) -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon"><i class="fas fa-crown"></i></div>
+          <div><h2>Bytetrade</h2><span>Admin Panel v2.0</span></div>
+        </div>
+      </div>
+      <div class="admin-info">
+        <div class="admin-avatar">SA</div>
+        <div class="admin-details">
+          <h4>Super Admin</h4>
+          <p><i class="fas fa-circle" style="font-size: 0.5rem; color: #4caf50;"></i> Online</p>
+          <span class="admin-badge">Master Administrator</span>
+        </div>
+      </div>
+      <div class="stats-mini">
+        <div class="stat-mini-item"><div class="stat-mini-value">2,847</div><div class="stat-mini-label">Users</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">$2.4M</div><div class="stat-mini-label">Volume</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">156</div><div class="stat-mini-label">Pending</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-heading">Financial Management</div>
+        <a href="admin-dashboard.html" class="sidebar-link"><i class="fas fa-wallet"></i><span>Dashboard</span><span class="badge">12</span></a>
+        <a href="admin-fund-account.html" class="sidebar-link"><i class="fas fa-wallet"></i><span>Fund Account</span><span class="badge">12</span></a>
+        <a href="admin-fund-profit.html" class="sidebar-link"><i class="fas fa-chart-line"></i><span>Fund Profit</span></a>
+        <a href="admin-approve-deposit.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Approve Deposit</span><span class="badge badge-danger">23</span></a>
+        <a href="admin-withdrawal-approval.html" class="sidebar-link"><i class="fas fa-history"></i><span>Withdrawal Approval</span><span class="badge badge-warning">15</span></a>
+        <div class="sidebar-heading">Trading & Packages</div>
+        <a href="admin-approve-packages.html" class="sidebar-link"><i class="fas fa-cubes"></i><span>Approve Packages</span><span class="badge badge-success">8</span></a>
+        <a href="admin-package-panel.html" class="sidebar-link"><i class="fas fa-layer-group"></i><span>Packages Panel</span></a>
+        <a href="admin-profit.html" class="sidebar-link"><i class="fas fa-percentage"></i><span>Profit</span></a>
+        <div class="sidebar-heading">NFT & Verification</div>
+        <!-- <a href="#" class="sidebar-link"><i class="fas fa-paint-brush"></i><span>Create NFTs</span></a> -->
+        <a href="admin-kyc.html" class="sidebar-link"><i class="fas fa-shield-alt"></i><span>KYC</span><span class="badge badge-danger">15</span></a>
+        <div class="sidebar-heading">Communication</div>
+        <a href="admin-send-mail.html" class="sidebar-link"><i class="fas fa-envelope"></i><span>Send Mail</span></a>
+        <a href="admin-contact-us.html" class="sidebar-link"><i class="fas fa-headset"></i><span>Contact Inbox</span><span class="badge badge-danger">5</span></a>
+        <div class="sidebar-heading">Account Management</div>
+        <a href="admin-account-status.html" class="sidebar-link"><i class="fas fa-toggle-on"></i><span>Account Status</span><span class="badge">3</span></a>
+        <a href="admin-login-activity.html" class="sidebar-link"><i class="fas fa-chart-line"></i><span>Login Activity</span><span class="badge">12</span></a>
+        <div class="sidebar-heading">Settings</div>
+        <a href="admin-website-settings.html" class="sidebar-link active"><i class="fas fa-cog"></i><span>Website Settings</span></a>
+        <a href="admin-logout.html" class="sidebar-link" id="logoutLink"><i class="fas fa-sign-out-alt" style="color: #f44336;"></i><span style="color: #f44336;">Logout</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" id="adminMain">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <div class="welcome">
+          <h1>Configuration</h1>
+          <p><i class="fas fa-cog"></i> Manage all platform settings with live preview</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search settings..."></div>
+          <div class="notification-icon"><i class="fas fa-bell"></i><span class="notification-badge">8</span></div>
+          <div class="date-time" id="currentDateTime"><i class="fas fa-calendar-alt"></i><span></span></div>
+        </div>
+      </div>
+
+      <!-- Alert Container for toasts -->
+      <div id="toastContainer" class="toast-container"></div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h2><i class="fas fa-sliders-h"></i> Website Settings</h2>
+          <p>Manage general, financial, security, and UI settings for the platform, with instant previews.</p>
+        </div>
+      </div>
+
+      <!-- Settings Layout -->
+      <div class="settings-layout">
+        <!-- Left Column - Settings Forms -->
+        <div class="settings-left">
+          <!-- General Settings Card -->
+          <div class="settings-card" data-aos="fade-up">
+            <div class="card-header" onclick="toggleSection('general')">
+              <div class="card-header-icon"><i class="fas fa-globe"></i></div>
+              <div class="card-header-title">
+                <h3>General Settings</h3>
+                <p>Basic website information and maintenance</p>
+              </div>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content" id="generalSection">
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-font"></i> Website Name</div>
+                <input type="text" class="form-control" id="siteName" value="Bytetrade" oninput="updatePreview()">
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-image"></i> Logo Upload</div>
+                <div class="file-upload" onclick="document.getElementById('logoUpload').click()">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Click to upload logo (PNG, JPG, SVG)</p>
+                  <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
+                </div>
+                <div class="image-preview" id="logoPreview">
+                  <i class="fas fa-image"></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-star"></i> Favicon Upload</div>
+                <div class="file-upload" onclick="document.getElementById('faviconUpload').click()">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Click to upload favicon (ICO, PNG)</p>
+                  <input type="file" id="faviconUpload" accept="image/*" onchange="handleFaviconUpload(event)">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-envelope"></i> Website Email</div>
+                <input type="email" class="form-control" id="siteEmail" value="support@bytetrade.com" oninput="updatePreview()">
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-phone"></i> Contact Phone</div>
+                <input type="text" class="form-control" id="sitePhone" value="+1 (888) 123-4567" oninput="updatePreview()">
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-align-left"></i> Website Description</div>
+                <textarea class="form-control" id="siteDescription" rows="3" oninput="updatePreview()">Leading crypto trading platform with advanced features and security.</textarea>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-tools"></i> Maintenance Mode</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="maintenanceMode" onchange="updatePreview()">
+                  <label for="maintenanceMode"></label>
+                  <span class="toggle-label">Enable maintenance mode</span>
+                </div>
+              </div>
+              <button class="btn-section-save" onclick="showToast('General settings saved successfully', 'success')"><i class="fas fa-save"></i> Save General Settings</button>
+            </div>
+          </div>
+
+          <!-- Financial Settings Card -->
+          <div class="settings-card" data-aos="fade-up" data-aos-delay="50">
+            <div class="card-header" onclick="toggleSection('financial')">
+              <div class="card-header-icon"><i class="fas fa-coins"></i></div>
+              <div class="card-header-title">
+                <h3>Financial Settings</h3>
+                <p>Currency, fees, limits, and payment methods</p>
+              </div>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content" id="financialSection">
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-dollar-sign"></i> Default Currency</div>
+                <select class="form-control" id="defaultCurrency" onchange="updatePreview()">
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="BTC">BTC - Bitcoin</option>
+                  <option value="ETH">ETH - Ethereum</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-percent"></i> Deposit Fee</div>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="depositFee" value="2.5" min="0" max="100" step="0.1" oninput="updatePreview()">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-percent"></i> Withdrawal Fee</div>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="withdrawalFee" value="1.5" min="0" max="100" step="0.1" oninput="updatePreview()">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-arrow-down"></i> Minimum Deposit</div>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="minDeposit" value="50" min="0" oninput="updatePreview()">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-arrow-up"></i> Maximum Withdrawal</div>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="maxWithdrawal" value="10000" min="0" oninput="updatePreview()">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-credit-card"></i> Payment Methods</div>
+                <div class="payment-item">
+                  <div class="payment-info">
+                    <i class="fab fa-paypal"></i>
+                    <span>PayPal</span>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="paypalEnabled" checked>
+                    <label for="paypalEnabled"></label>
+                  </div>
+                </div>
+                <div class="payment-item">
+                  <div class="payment-info">
+                    <i class="fas fa-university"></i>
+                    <span>Bank Transfer</span>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="bankEnabled" checked>
+                    <label for="bankEnabled"></label>
+                  </div>
+                </div>
+                <div class="payment-item">
+                  <div class="payment-info">
+                    <i class="fab fa-bitcoin"></i>
+                    <span>Crypto Wallets</span>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="cryptoEnabled" checked>
+                    <label for="cryptoEnabled"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-gift"></i> Referral Bonus</div>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="referralBonus" value="10" min="0" max="100" step="0.1" oninput="updatePreview()">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <button class="btn-section-save" onclick="showToast('Financial settings saved successfully', 'success')"><i class="fas fa-save"></i> Save Financial Settings</button>
+            </div>
+          </div>
+
+          <!-- Security Settings Card -->
+          <div class="settings-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-header" onclick="toggleSection('security')">
+              <div class="card-header-icon"><i class="fas fa-shield-alt"></i></div>
+              <div class="card-header-title">
+                <h3>Security Settings</h3>
+                <p>Authentication and security preferences</p>
+              </div>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content" id="securitySection">
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-lock"></i> Two-Factor Authentication</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="twoFactor" checked onchange="updatePreview()">
+                  <label for="twoFactor"></label>
+                  <span class="toggle-label">Enable 2FA for all users</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-bell"></i> Login Alerts</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="loginAlerts" checked onchange="updatePreview()">
+                  <label for="loginAlerts"></label>
+                  <span class="toggle-label">Email alerts on new logins</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-key"></i> Force Password Reset</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="forcePasswordReset" onchange="updatePreview()">
+                  <label for="forcePasswordReset"></label>
+                  <span class="toggle-label">Require password reset for all users</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-code"></i> Captcha</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="captcha" checked onchange="updatePreview()">
+                  <label for="captcha"></label>
+                  <span class="toggle-label">Enable captcha on login/register forms</span>
+                </div>
+              </div>
+              <button class="btn-section-save" onclick="showToast('Security settings saved successfully', 'success')"><i class="fas fa-save"></i> Save Security Settings</button>
+            </div>
+          </div>
+
+          <!-- UI & Branding Card -->
+          <div class="settings-card" data-aos="fade-up" data-aos-delay="150">
+            <div class="card-header" onclick="toggleSection('ui')">
+              <div class="card-header-icon"><i class="fas fa-paint-brush"></i></div>
+              <div class="card-header-title">
+                <h3>UI & Branding</h3>
+                <p>Theme colors, banners, and footer customization</p>
+              </div>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content" id="uiSection">
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-palette"></i> Primary Theme Color</div>
+                <div class="color-picker-group">
+                  <input type="color" id="primaryColor" class="form-control" value="#ffd700" style="width: 100px;" oninput="updatePreview()">
+                  <div class="color-preview" id="primaryColorPreview" style="background-color: #ffd700;"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-palette"></i> Secondary Theme Color</div>
+                <div class="color-picker-group">
+                  <input type="color" id="secondaryColor" class="form-control" value="#00ffff" style="width: 100px;" oninput="updatePreview()">
+                  <div class="color-preview" id="secondaryColorPreview" style="background-color: #00ffff;"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-image"></i> Homepage Banner</div>
+                <div class="file-upload" onclick="document.getElementById('bannerUpload').click()">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Click to upload banner image</p>
+                  <input type="file" id="bannerUpload" accept="image/*" onchange="handleBannerUpload(event)">
+                </div>
+                <div class="image-preview" id="bannerPreview" style="width: 100%; height: 80px;">
+                  <i class="fas fa-image"></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-copyright"></i> Footer Text</div>
+                <input type="text" class="form-control" id="footerText" value="© 2024 Bytetrade. All rights reserved." oninput="updatePreview()">
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-bullhorn"></i> Announcement Bar</div>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="announcementBar" checked onchange="updatePreview()">
+                  <label for="announcementBar"></label>
+                  <span class="toggle-label">Enable announcement bar</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label"><i class="fas fa-message"></i> Announcement Text</div>
+                <input type="text" class="form-control" id="announcementText" value="🚀 New features launched! Check out our advanced trading tools." oninput="updatePreview()">
+              </div>
+              <button class="btn-section-save" onclick="showToast('UI settings saved successfully', 'success')"><i class="fas fa-save"></i> Save UI Settings</button>
+            </div>
+          </div>
+
+          <!-- Global Save Actions -->
+          <div class="global-actions">
+            <button class="btn-save" onclick="showToast('All settings saved successfully', 'success')"><i class="fas fa-save"></i> Save All Changes</button>
+            <button class="btn-save" onclick="resetToDefaults()" style="background: rgba(255,255,255,0.1); color: #fff;"><i class="fas fa-undo-alt"></i> Reset to Defaults</button>
+          </div>
+        </div>
+
+        <!-- Right Column - Live Preview -->
+        <div class="settings-right">
+          <div class="preview-card" id="livePreview">
+            <div class="preview-header">
+              <h4><i class="fas fa-eye"></i> Live Preview</h4>
+              <span class="preview-badge">Updates Instantly</span>
+            </div>
+            <div class="preview-content">
+              <div class="preview-site-header">
+                <div class="preview-logo" id="previewLogo">
+                  <i class="fas fa-crown"></i>
+                </div>
+                <div class="preview-site-name" id="previewSiteName">Bytetrade</div>
+              </div>
+              
+              <div class="preview-announcement" id="previewAnnouncement" style="display: block;">
+                🚀 New features launched! Check out our advanced trading tools.
+              </div>
+
+              <div class="preview-banner" id="previewBanner">
+                <i class="fas fa-image"></i> Banner Preview
+              </div>
+
+              <div style="margin: 15px 0;">
+                <span class="status-badge status-active" style="background: rgba(255,215,0,0.15); color: #ffd700;" id="previewCurrency">USD</span>
+                <span class="status-badge status-active" style="margin-left: 8px;" id="previewFees">Fees: 2.5%</span>
+              </div>
+
+              <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin: 10px 0;" id="previewDescription">
+                Leading crypto trading platform with advanced features and security.
+              </div>
+
+              <div class="preview-footer" id="previewFooter">
+                © 2024 Bytetrade. All rights reserved. | Support: support@bytetrade.com
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-exclamation-triangle"></i> Confirm Action</h3>
+        <button class="close-modal" id="closeConfirmModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">Are you sure you want to enable maintenance mode? Users will not be able to access the platform.</p>
+        <div class="modal-actions">
+          <button class="btn btn-cancel" id="cancelConfirmBtn">Cancel</button>
+          <button class="btn btn-confirm" id="confirmActionBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal" id="logoutConfirmModal">
+    <div class="modal-content logout-confirm-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-sign-out-alt"></i> Confirm Logout</h3>
+        <button class="close-modal" id="closeLogoutModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="text-align:center; padding:20px 0;">
+        <i class="fas fa-door-open" style="font-size:4rem; color:#f44336; margin-bottom:20px;"></i>
+        <p style="color:#fff; font-size:1.1rem;">Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" id="cancelLogout">Cancel</button>
+        <button class="btn btn-confirm" id="confirmLogout">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 100 });
+
+    // ===== Sidebar & Responsive =====
+    const sidebar = document.getElementById('adminSidebar');
+    const mainContent = document.getElementById('adminMain');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    sidebarToggle.addEventListener('click', () => {
+      if (window.innerWidth > 992) {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      }
+    });
+
+    function toggleMobileSidebar() { sidebar.classList.toggle('active'); }
+    function createMobileMenuButton() {
+      if (document.querySelector('.mobile-menu-btn')) return;
+      const topbar = document.querySelector('.admin-topbar');
+      if (topbar && window.innerWidth <= 992) {
+        const btn = document.createElement('button');
+        btn.className = 'mobile-menu-btn';
+        btn.innerHTML = '<i class="fas fa-bars"></i>';
+        btn.setAttribute('aria-label', 'Toggle Menu');
+        topbar.insertBefore(btn, topbar.firstChild);
+        btn.addEventListener('click', toggleMobileSidebar);
+      }
+    }
+    function handleMobileLayout() {
+      if (window.innerWidth <= 992) {
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('expanded');
+        createMobileMenuButton();
+      } else {
+        sidebar.classList.remove('active');
+        document.querySelector('.mobile-menu-btn')?.remove();
+      }
+    }
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992 && !sidebar.contains(e.target) && !e.target.closest('.mobile-menu-btn') && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+      }
+    });
+    handleMobileLayout();
+    window.addEventListener('resize', handleMobileLayout);
+
+    // Update date/time
+    function updateDateTime() {
+      const now = new Date();
+      document.querySelector('#currentDateTime span').textContent = now.toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
+    }
+    updateDateTime(); setInterval(updateDateTime, 1000);
+
+    // ===== Settings Functionality =====
+    // Toggle sections
+    function toggleSection(section) {
+      const content = document.getElementById(section + 'Section');
+      const header = content.previousElementSibling;
+      content.classList.toggle('collapsed');
+      header.classList.toggle('collapsed');
+    }
+
+    // Toast notifications
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span class="toast-message">${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Live preview update
+    function updatePreview() {
+      // Website name
+      const siteName = document.getElementById('siteName').value;
+      document.getElementById('previewSiteName').textContent = siteName || 'Bytetrade';
+
+      // Currency
+      const currency = document.getElementById('defaultCurrency').value;
+      document.getElementById('previewCurrency').textContent = currency;
+
+      // Fees
+      const depositFee = document.getElementById('depositFee').value;
+      document.getElementById('previewFees').textContent = `Fees: ${depositFee}%`;
+
+      // Description
+      const description = document.getElementById('siteDescription').value;
+      document.getElementById('previewDescription').textContent = description || 'Leading crypto trading platform with advanced features and security.';
+
+      // Footer
+      const footer = document.getElementById('footerText').value;
+      const email = document.getElementById('siteEmail').value;
+      document.getElementById('previewFooter').textContent = `${footer} | Support: ${email}`;
+
+      // Announcement bar
+      const announcementEnabled = document.getElementById('announcementBar').checked;
+      const announcementText = document.getElementById('announcementText').value;
+      const previewAnnouncement = document.getElementById('previewAnnouncement');
+      if (announcementEnabled) {
+        previewAnnouncement.style.display = 'block';
+        previewAnnouncement.textContent = announcementText;
+      } else {
+        previewAnnouncement.style.display = 'none';
+      }
+
+      // Colors
+      const primaryColor = document.getElementById('primaryColor').value;
+      const secondaryColor = document.getElementById('secondaryColor').value;
+      document.getElementById('primaryColorPreview').style.backgroundColor = primaryColor;
+      document.getElementById('secondaryColorPreview').style.backgroundColor = secondaryColor;
+      
+      // Apply colors to preview elements
+      document.getElementById('previewLogo').style.background = `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
+      document.getElementById('previewCurrency').style.color = primaryColor;
+      document.getElementById('previewCurrency').style.borderColor = primaryColor;
+    }
+
+    // File upload handlers
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('logoPreview');
+          preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%;">`;
+          // Update preview logo
+          document.getElementById('previewLogo').innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleFaviconUpload(event) {
+      showToast('Favicon uploaded successfully', 'success');
+    }
+
+    function handleBannerUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('bannerPreview');
+          preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+          // Update preview banner
+          document.getElementById('previewBanner').innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;">`;
+          document.getElementById('previewBanner').style.background = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Reset to defaults
+    function resetToDefaults() {
+      if (confirm('Are you sure you want to reset all settings to default values?')) {
+        document.getElementById('siteName').value = 'Bytetrade';
+        document.getElementById('siteEmail').value = 'support@bytetrade.com';
+        document.getElementById('sitePhone').value = '+1 (888) 123-4567';
+        document.getElementById('siteDescription').value = 'Leading crypto trading platform with advanced features and security.';
+        document.getElementById('maintenanceMode').checked = false;
+        document.getElementById('defaultCurrency').value = 'USD';
+        document.getElementById('depositFee').value = '2.5';
+        document.getElementById('withdrawalFee').value = '1.5';
+        document.getElementById('minDeposit').value = '50';
+        document.getElementById('maxWithdrawal').value = '10000';
+        document.getElementById('referralBonus').value = '10';
+        document.getElementById('twoFactor').checked = true;
+        document.getElementById('loginAlerts').checked = true;
+        document.getElementById('forcePasswordReset').checked = false;
+        document.getElementById('captcha').checked = true;
+        document.getElementById('primaryColor').value = '#ffd700';
+        document.getElementById('secondaryColor').value = '#00ffff';
+        document.getElementById('footerText').value = '© 2024 Bytetrade. All rights reserved.';
+        document.getElementById('announcementBar').checked = true;
+        document.getElementById('announcementText').value = '🚀 New features launched! Check out our advanced trading tools.';
+        
+        // Reset preview
+        document.getElementById('previewLogo').innerHTML = '<i class="fas fa-crown"></i>';
+        document.getElementById('previewLogo').style.background = '';
+        document.getElementById('previewBanner').innerHTML = '<i class="fas fa-image"></i> Banner Preview';
+        document.getElementById('previewBanner').style.background = '';
+        document.getElementById('logoPreview').innerHTML = '<i class="fas fa-image"></i>';
+        document.getElementById('bannerPreview').innerHTML = '<i class="fas fa-image"></i>';
+        
+        updatePreview();
+        showToast('Settings reset to defaults', 'success');
+      }
+    }
+
+    // Maintenance mode confirmation
+    document.getElementById('maintenanceMode').addEventListener('change', function(e) {
+      if (this.checked) {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('confirmMessage').textContent = 'Are you sure you want to enable maintenance mode? Users will not be able to access the platform.';
+        modal.classList.add('active');
+        
+        document.getElementById('confirmActionBtn').onclick = function() {
+          showToast('Maintenance mode enabled', 'success');
+          modal.classList.remove('active');
+        };
+      }
+    });
+
+    // Close modal
+    document.getElementById('closeConfirmModal').addEventListener('click', function() {
+      document.getElementById('confirmModal').classList.remove('active');
+      document.getElementById('maintenanceMode').checked = false;
+    });
+
+    document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
+      document.getElementById('confirmModal').classList.remove('active');
+      document.getElementById('maintenanceMode').checked = false;
+    });
+
+    // Logout
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutConfirmModal');
+    const closeLogout = document.getElementById('closeLogoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutModal.classList.add('active');
+    });
+
+    closeLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    cancelLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    confirmLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-logout.html';
+    });
+    logoutModal.addEventListener('click', (e) => {
+      if (e.target === logoutModal) logoutModal.classList.remove('active');
+    });
+
+    // Initial preview update
+    updatePreview();
+
+    // Ripple effect
+    document.querySelectorAll('.btn-save, .btn-section-save, .btn-cancel, .btn-confirm').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size/2;
+        const y = e.clientY - rect.top - size/2;
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.className = 'ripple-effect';
+        this.style.position = 'relative'; this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+  </script>
+</body>
+</html>

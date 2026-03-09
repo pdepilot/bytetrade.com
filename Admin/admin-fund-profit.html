@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Fund Profit • Bytetrade Admin</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts: Inter + Space Grotesk -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    /* ===== admin-fund-profit.css ===== */
+    /* === Shared Dashboard Layout (identical to existing system) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0f1e;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Premium Gradients (preserved) */
+    .bg-gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .bg-gradient-success { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+    .bg-gradient-warning { background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%); }
+    .bg-gradient-info { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+    .bg-gradient-danger { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .bg-gradient-dark { background: linear-gradient(135deg, #434343 0%, #000000 100%); }
+
+    /* Admin Layout */
+    .admin {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      width: 100%;
+    }
+
+    /* ===== Sidebar (exact same as admin-fund-account) ===== */
+    .admin-sidebar {
+      width: 320px;
+      background: rgba(10, 20, 30, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 215, 0, 0.15);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      left: 0;
+      top: 0;
+    }
+
+    .admin-sidebar.collapsed {
+      width: 90px;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link span,
+    .admin-sidebar.collapsed .sidebar-heading,
+    .admin-sidebar.collapsed .admin-info span,
+    .admin-sidebar.collapsed .stats-mini {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area h2 {
+      display: none;
+    }
+
+    .admin-sidebar.collapsed .logo-area {
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .admin-sidebar.collapsed .sidebar-link i {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .admin-sidebar.collapsed .admin-avatar {
+      margin: 0 auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .logo-area h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .admin-info {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .admin-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .admin-avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 50%;
+      border: 2px solid #0a1a2f;
+      animation: pulse 2s infinite;
+    }
+
+    .admin-details h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .admin-details p {
+      font-size: 0.85rem;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .admin-badge {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .stats-mini {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+      gap: 10px;
+    }
+
+    .stat-mini-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-mini-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stat-mini-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-heading {
+      padding: 15px 20px 5px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .sidebar-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(180deg, #ffd700, #00ffff);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-link:hover::before,
+    .sidebar-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+      transform: translateX(5px);
+    }
+
+    .sidebar-link i {
+      width: 24px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffd700;
+      flex-shrink: 0;
+    }
+
+    .sidebar-link span {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .sidebar-link .badge {
+      background: #ffd700;
+      color: #0a1a2f;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 5px;
+    }
+
+    .sidebar-link .badge-danger {
+      background: #f44336;
+      color: white;
+    }
+
+    .sidebar-link .badge-success {
+      background: #4caf50;
+      color: white;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      color: #0a1a2f;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1001;
+      transition: 0.3s;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      background: #00ffff;
+    }
+
+    .admin-sidebar.collapsed .sidebar-toggle i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content - FIXED DESKTOP RESPONSIVENESS */
+    .admin-main {
+      flex: 1;
+      margin-left: 320px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      background: #0a0f1e;
+      min-height: 100vh;
+      width: calc(100% - 320px);
+      max-width: 100%;
+    }
+
+    .admin-main.expanded {
+      margin-left: 90px;
+      width: calc(100% - 90px);
+    }
+
+    /* Container for better content width control */
+    .container-fluid {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .welcome h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .welcome p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 300px;
+    }
+
+    .search-box input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      padding: 12px 20px 12px 45px;
+      color: #fff;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification-icon i {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      transition: 0.3s;
+    }
+
+    .notification-icon:hover i {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #ffd700, #f44336);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    .date-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 8px 15px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+
+    .date-time i {
+      color: #ffd700;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 10px;
+      color: #0a1a2f;
+      font-size: 1.2rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.5);
+    }
+
+    /* === Page Specific Styles (Fund Profit) === */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .page-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h2 i {
+      color: #ffd700;
+      font-size: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .header-btn {
+      padding: 10px 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-btn:hover {
+      background: #ffd700;
+      color: #0a1a2f;
+      transform: translateY(-2px);
+    }
+
+    /* Alert Notifications */
+    .alert {
+      padding: 16px 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: slideIn 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .alert::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+    }
+
+    .alert-success {
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    .alert-success::before { background: #4caf50; }
+    .alert-success i { color: #4caf50; }
+
+    .alert-error {
+      background: rgba(244, 67, 54, 0.15);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+    .alert-error::before { background: #f44336; }
+    .alert-error i { color: #f44336; }
+
+    .alert-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .alert-content { flex: 1; min-width: 200px; }
+    .alert-title { font-weight: 600; margin-bottom: 5px; }
+    .alert-message { color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; word-break: break-word; }
+    .alert-close {
+      background: none; border: none; color: rgba(255, 255, 255, 0.5);
+      cursor: pointer; font-size: 1.2rem; transition: 0.3s; flex-shrink: 0;
+    }
+    .alert-close:hover { color: #fff; transform: scale(1.1); }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Fund Profit Card */
+    .fund-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      width: 100%;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .card-header-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-header-icon i {
+      font-size: 2rem;
+      color: #ffd700;
+    }
+
+    .card-header-title h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .card-header-title p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+    }
+
+    /* Form Grid - IMPROVED FOR DESKTOP */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      width: 100%;
+    }
+
+    .form-group { 
+      margin-bottom: 5px;
+      width: 100%;
+    }
+    .form-group.full-width { grid-column: span 2; }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .form-label i { color: #ffd700; font-size: 1rem; }
+
+    .input-wrapper { 
+      position: relative;
+      width: 100%;
+    }
+    .input-wrapper i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffd700;
+      font-size: 1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 15px 14px 45px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    .form-control[readonly] {
+      background: rgba(255, 215, 0, 0.05);
+      cursor: not-allowed;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      padding-right: 45px;
+    }
+
+    textarea.form-control {
+      padding-top: 14px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* User search */
+    .user-search {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .user-search .input-wrapper {
+      flex: 1;
+      min-width: 250px;
+    }
+    .user-search .form-control { padding-left: 45px; }
+
+    .search-btn {
+      padding: 0 25px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 15px;
+      color: #0a1a2f;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      min-width: 120px;
+      justify-content: center;
+    }
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    /* User info display */
+    .user-info-display {
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 15px;
+      display: none;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      animation: fadeIn 0.3s ease;
+      width: 100%;
+    }
+    .user-info-display.active { display: grid; }
+
+    .user-avatar-large {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0a1a2f;
+      flex-shrink: 0;
+    }
+
+    .user-details-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      flex: 1;
+    }
+    .user-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .user-detail-label { color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; }
+    .user-detail-value { color: #ffd700; font-weight: 600; font-size: 1rem; word-break: break-word; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form actions */
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 14px 35px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none;
+      border-radius: 15px;
+      color: #0a1a2f;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-secondary {
+      padding: 14px 35px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 15px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: #ffd700;
+    }
+
+    /* Profit History Table */
+    .funding-history-card {
+      background: rgba(15, 25, 35, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 25px;
+      padding: 30px;
+      width: 100%;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 20px;
+      border-radius: 15px;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+    }
+
+    .funding-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+    }
+
+    .funding-table th {
+      text-align: left;
+      padding: 18px 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+      white-space: nowrap;
+    }
+
+    .funding-table td {
+      padding: 18px 15px;
+      color: #fff;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+    }
+
+    .funding-table tbody tr:hover {
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-avatar-small {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 215, 0, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #ffd700;
+    }
+
+    .status-badge {
+      padding: 6px 15px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .status-completed { background: rgba(76, 175, 80, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+    .status-pending { background: rgba(255, 152, 0, 0.15); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+    .status-failed { background: rgba(244, 67, 54, 0.15); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+
+    /* ===== RESPONSIVE BREAKPOINTS ===== */
+
+    /* Large Desktops (1200px - 1600px) */
+    @media (min-width: 1400px) {
+      .container-fluid {
+        max-width: 1400px;
+      }
+    }
+
+    /* Standard Desktops (992px - 1199px) */
+    @media (max-width: 1199px) {
+      .admin-sidebar:not(.collapsed) { width: 280px; }
+      .admin-main { margin-left: 280px; width: calc(100% - 280px); }
+      .admin-main.expanded { margin-left: 90px; width: calc(100% - 90px); }
+      
+      .welcome h1 { font-size: 1.6rem; }
+      .search-box { min-width: 250px; }
+    }
+
+    /* Tablets (768px - 991px) */
+    @media (max-width: 991px) {
+      .mobile-menu-btn { display: flex; }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        width: 280px !important;
+      }
+      .admin-sidebar.active { transform: translateX(0); }
+      .admin-main { 
+        margin-left: 0 !important; 
+        width: 100% !important;
+      }
+      .sidebar-toggle { display: none; }
+      
+      .admin-topbar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .topbar-actions { 
+        justify-content: space-between; 
+        width: 100%;
+      }
+      .search-box { 
+        min-width: 200px;
+        flex: 1;
+      }
+    }
+
+    /* Mobile Landscape (576px - 767px) */
+    @media (max-width: 767px) {
+      .admin-main { padding: 15px; }
+      .fund-card, .funding-history-card { padding: 20px; }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .form-group.full-width { grid-column: span 1; }
+      
+      .card-header { flex-direction: column; text-align: center; }
+      .user-search { flex-direction: column; }
+      .user-search .input-wrapper { min-width: 100%; }
+      .search-btn { width: 100%; }
+      
+      .user-details-list { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+      
+      .page-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+      }
+      .header-actions { width: 100%; }
+      .header-btn { flex: 1; justify-content: center; }
+      
+      .welcome h1 { 
+        font-size: 1.4rem;
+        white-space: normal;
+      }
+    }
+
+    /* Mobile Portrait (575px and below) */
+    @media (max-width: 575px) {
+      .admin-main { padding: 10px; }
+      .fund-card, .funding-history-card { padding: 15px; }
+      .card-header-title h3 { font-size: 1.2rem; }
+      
+      .topbar-actions { 
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .search-box { 
+        min-width: 100%;
+        order: 3;
+      }
+      .date-time span { display: none; }
+      .date-time { padding: 8px 12px; }
+      .notification-icon i { font-size: 1.2rem; }
+      
+      .user-info-display {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .user-avatar-large { margin: 0 auto; }
+    }
+
+    /* Modal styles (logout) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: rgba(15, 25, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 30px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .modal-header h3 { font-size: 1.5rem; color: #ffd700; }
+    .close-modal {
+      background: none; border: none; color: rgba(255,255,255,0.6);
+      font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+    }
+    .close-modal:hover { color: #ffd700; transform: rotate(90deg); }
+    .logout-confirm-modal { background: rgba(244, 67, 54, 0.1); border-left: 4px solid #f44336; }
+    .logout-confirm-modal .modal-header h3 { color: #f44336; }
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .modal-actions .btn {
+      flex: 1; padding: 12px; border: none; border-radius: 10px;
+      font-weight: 600; cursor: pointer; transition: 0.3s; min-width: 120px;
+    }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+    .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+    .btn-confirm { background: #f44336; color: white; }
+    .btn-confirm:hover { background: #d32f2f; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(244,67,54,0.3); }
+
+    .ripple-effect {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
+      transform: scale(0); animation: ripple-animation 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="admin">
+    <!-- Sidebar (identical structure) -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon"><i class="fas fa-crown"></i></div>
+          <div><h2>Bytetrade</h2><span>Admin Panel v2.0</span></div>
+        </div>
+      </div>
+      <div class="admin-info">
+        <div class="admin-avatar">SA</div>
+        <div class="admin-details">
+          <h4>Super Admin</h4>
+          <p><i class="fas fa-circle" style="font-size: 0.5rem; color: #4caf50;"></i> Online</p>
+          <span class="admin-badge">Master Administrator</span>
+        </div>
+      </div>
+      <div class="stats-mini">
+        <div class="stat-mini-item"><div class="stat-mini-value">2,847</div><div class="stat-mini-label">Users</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">$2.4M</div><div class="stat-mini-label">Volume</div></div>
+        <div class="stat-mini-item"><div class="stat-mini-value">156</div><div class="stat-mini-label">Pending</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <!-- Financial Management -->
+        <div class="sidebar-heading">Financial Management</div>
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="fas fa-wallet"></i>
+          <span>Dashboard</span>
+          <span class="badge">12</span>
+        </a>
+        <a href="../Admin/admin-fund-account.html" class="sidebar-link active">
+          <i class="fas fa-wallet"></i>
+          <span>Fund Account</span>
+          <span class="badge">12</span>
+        </a>
+        <a href="../Admin/admin-fund-profit.html" class="sidebar-link">
+          <i class="fas fa-chart-line"></i>
+          <span>Fund Profit</span>
+        </a>
+        <a href="../Admin/admin-approve-deposit.html" class="sidebar-link">
+          <i class="fas fa-check-circle"></i>
+          <span>Approve Deposit</span>
+          <span class="badge badge-danger">23</span>
+        </a>
+        <a href="../Admin/admin-withdraw-history.html" class="sidebar-link">
+          <i class="fas fa-history"></i>
+          <span>Approve Withdrawal</span>
+        </a>
+        <a href="../Admin/admin-profit-history.html" class="sidebar-link">
+          <i class="fas fa-chart-bar"></i>
+          <span>Profit History</span>
+        </a>
+
+        <!-- Trading & Packages -->
+        <div class="sidebar-heading">Trading & Packages</div>
+        <a href="../Admin/admin-trade-account.html" class="sidebar-link">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Trade Account</span>
+        </a>
+        <a href="../Admin/admin-approve-package.html" class="sidebar-link">
+          <i class="fas fa-cubes"></i>
+          <span>Approve Packages</span>
+          <span class="badge badge-success">8</span>
+        </a>
+        <a href="../Admin/admin-packages-panel.html" class="sidebar-link">
+          <i class="fas fa-layer-group"></i>
+          <span>Packages Panel</span>
+        </a>
+        <a href="../Admin/admin-profit.html" class="sidebar-link">
+          <i class="fas fa-percentage"></i>
+          <span>Profit</span>
+        </a>
+
+        <!-- NFT & KYC -->
+        <div class="sidebar-heading">NFT & Verification</div>
+        <!-- <a href="../Admin/admin-create-nfts.html" class="sidebar-link">
+          <i class="fas fa-paint-brush"></i>
+          <span>Create NFTs</span>
+        </a> -->
+        <a href="../Admin/admin-kyc.html" class="sidebar-link">
+          <i class="fas fa-shield-alt"></i>
+          <span>KYC</span>
+          <span class="badge badge-danger">15</span>
+        </a>
+
+        <!-- Communication -->
+        <div class="sidebar-heading">Communication</div>
+        <a href="../Admin/admin-send-mail.html" class="sidebar-link">
+          <i class="fas fa-envelope"></i>
+          <span>Send Mail</span>
+        </a>
+        <a href="../Admin/admin-contact.html" class="sidebar-link">
+          <i class="fas fa-phone"></i>
+          <span>Contact</span>
+        </a>
+
+        <!-- Account Management -->
+        <div class="sidebar-heading">Account Management</div>
+        <a href="../Admin/admin-account-status.html" class="sidebar-link">
+          <i class="fas fa-toggle-on"></i>
+          <span>Account Status</span>
+        </a>
+        <a href="admin-login-activity.html" class="sidebar-link"
+            ><i class="fas fa-chart-line"></i><span>Login Activity</span
+            ><span class="badge">12</span></a
+          >
+        <a href="../Admin/admin-suspend-activate.html" class="sidebar-link">
+          <i class="fas fa-ban"></i>
+          <span>Suspend/Activate</span>
+          <span class="badge">3</span>
+        </a>
+
+        <!-- Settings -->
+        <div class="sidebar-heading">Settings</div>
+        <a href="../Admin/admin-website-settings.html" class="sidebar-link">
+          <i class="fas fa-cog"></i>
+          <span>Website Settings</span>
+        </a>
+        
+        <!-- Logout Link -->
+        <a href="../admin/admin-login.html" class="sidebar-link" id="logoutLink">
+          <i class="fas fa-sign-out-alt" style="color: #f44336;"></i>
+          <span style="color: #f44336;">Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" id="adminMain">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <div class="welcome">
+          <h1>Profit Funding</h1>
+          <p><i class="fas fa-coins"></i> Credit profit earnings to user trading accounts</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search users..."></div>
+          <div class="notification-icon"><i class="fas fa-bell"></i><span class="notification-badge">8</span></div>
+          <div class="date-time" id="currentDateTime"><i class="fas fa-calendar-alt"></i><span></span></div>
+        </div>
+      </div>
+
+      <!-- Alert Container -->
+      <div id="alertContainer"></div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h2><i class="fas fa-hand-holding-usd"></i> Fund User Profit</h2>
+        <div class="header-actions">
+          <button class="header-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+          <button class="header-btn" id="exportBtn"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+
+      <!-- Profit Form Card -->
+      <div class="fund-card" data-aos="fade-up">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="card-header-title"><h3>Credit Profit to Trading Account</h3><p>Fill details to add profit earnings</p></div>
+        </div>
+
+        <form id="profitForm">
+          <div class="form-grid">
+            <!-- User search -->
+            <div class="form-group full-width">
+              <div class="form-label"><i class="fas fa-user"></i> User ID or Username</div>
+              <div class="user-search">
+                <div class="input-wrapper"><i class="fas fa-search"></i><input type="text" class="form-control" id="userSearch" placeholder="Enter username or ID"></div>
+                <button type="button" class="search-btn" id="searchUserBtn"><i class="fas fa-user-check"></i> Find User</button>
+              </div>
+              <!-- User info display -->
+              <div class="user-info-display" id="userInfoDisplay">
+                <div class="user-avatar-large">JD</div>
+                <div class="user-details-list">
+                  <div class="user-detail-item"><span class="user-detail-label">Username</span><span class="user-detail-value" id="displayUsername">john_doe</span></div>
+                  <div class="user-detail-item"><span class="user-detail-label">Email</span><span class="user-detail-value" id="displayEmail">john.doe@email.com</span></div>
+                  <div class="user-detail-item"><span class="user-detail-label">Trading Account</span><span class="user-detail-value" id="displayTradingAccount">TA-7890</span></div>
+                  <div class="user-detail-item"><span class="user-detail-label">Status</span><span class="user-detail-value" style="color:#4caf50;" id="displayStatus">Active</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email (auto) -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-envelope"></i> Email Address</div><div class="input-wrapper"><i class="fas fa-envelope"></i><input type="email" class="form-control" id="userEmail" readonly></div></div>
+            <!-- Trading Account ID -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-id-card"></i> Trading Account ID</div><div class="input-wrapper"><i class="fas fa-id-card"></i><input type="text" class="form-control" id="tradingAccount" readonly></div></div>
+            <!-- Current Account Balance (read-only) -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-wallet"></i> Current Account Balance</div><div class="input-wrapper"><i class="fas fa-dollar-sign"></i><input type="text" class="form-control" id="currentBalance" value="$5,200.00" readonly></div></div>
+            <!-- Current Profit Balance (read-only) -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-chart-pie"></i> Current Profit Balance</div><div class="input-wrapper"><i class="fas fa-dollar-sign"></i><input type="text" class="form-control" id="profitBalance" value="$1,230.50" readonly></div></div>
+            <!-- Profit Amount -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-coins"></i> Profit Amount to Credit</div><div class="input-wrapper"><i class="fas fa-dollar-sign"></i><input type="number" class="form-control" id="profitAmount" placeholder="Enter amount" min="0.01" step="0.01"></div></div>
+            <!-- Profit Source -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-tag"></i> Profit Source</div><select class="form-control" id="profitSource"><option value="Manual Profit">Manual Profit</option><option value="Trading Profit">Trading Profit</option><option value="Bonus Profit">Bonus Profit</option><option value="Referral Profit">Referral Profit</option></select></div>
+            <!-- Currency -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-money-bill-wave"></i> Currency</div><select class="form-control" id="currency"><option value="USD">USD</option><option value="BTC">BTC</option><option value="ETH">ETH</option><option value="USDT">USDT</option></select></div>
+            <!-- Transaction Reference ID -->
+            <div class="form-group"><div class="form-label"><i class="fas fa-hashtag"></i> Transaction Reference ID</div><div class="input-wrapper"><i class="fas fa-id-card"></i><input type="text" class="form-control" id="referenceId" placeholder="Auto-generated"></div></div>
+            <!-- Description -->
+            <div class="form-group full-width"><div class="form-label"><i class="fas fa-pen"></i> Description / Note</div><textarea class="form-control" id="description" rows="3" placeholder="Add notes..."></textarea></div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="creditProfitBtn"><i class="fas fa-check-circle"></i> Credit Profit</button>
+            <button type="button" class="btn-secondary" id="resetFormBtn"><i class="fas fa-undo-alt"></i> Reset Form</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Profit History Table -->
+      <div class="funding-history-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-header">
+          <div class="card-header-icon"><i class="fas fa-history"></i></div>
+          <div class="card-header-title"><h3>Profit Funding History</h3><p>Last 10 profit transactions</p></div>
+        </div>
+        <div class="table-responsive">
+          <table class="funding-table" id="profitTable">
+            <thead><tr><th>User</th><th>Trading Account</th><th>Profit Amount</th><th>Profit Source</th><th>Currency</th><th>Transaction ID</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="profitTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal" id="logoutConfirmModal"><div class="modal-content logout-confirm-modal"><div class="modal-header"><h3><i class="fas fa-sign-out-alt"></i> Confirm Logout</h3><button class="close-modal" id="closeLogoutModal"><i class="fas fa-times"></i></button></div><div style="text-align:center; padding:20px 0;"><i class="fas fa-door-open" style="font-size:4rem; color:#f44336; margin-bottom:20px;"></i><p style="color:#fff; font-size:1.1rem;">Are you sure you want to logout?</p></div><div class="modal-actions"><button class="btn btn-cancel" id="cancelLogout">Cancel</button><button class="btn btn-confirm" id="confirmLogout">Logout</button></div></div></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // admin-fund-profit.js
+    AOS.init({ duration: 800, once: true, offset: 100 });
+
+    // ===== Sidebar & Responsive (same as system) =====
+    const sidebar = document.getElementById('adminSidebar');
+    const mainContent = document.getElementById('adminMain');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    sidebarToggle.addEventListener('click', () => {
+      if (window.innerWidth > 992) {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('fa-chevron-left');
+          icon.classList.add('fa-chevron-right');
+        } else {
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-left');
+        }
+      }
+    });
+
+    function toggleMobileSidebar() { sidebar.classList.toggle('active'); }
+    function createMobileMenuButton() {
+      if (document.querySelector('.mobile-menu-btn')) return;
+      const topbar = document.querySelector('.admin-topbar');
+      if (topbar && window.innerWidth <= 992) {
+        const btn = document.createElement('button');
+        btn.className = 'mobile-menu-btn';
+        btn.innerHTML = '<i class="fas fa-bars"></i>';
+        btn.setAttribute('aria-label', 'Toggle Menu');
+        topbar.insertBefore(btn, topbar.firstChild);
+        btn.addEventListener('click', toggleMobileSidebar);
+      }
+    }
+    function handleMobileLayout() {
+      if (window.innerWidth <= 992) {
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('expanded');
+        createMobileMenuButton();
+      } else {
+        sidebar.classList.remove('active');
+        document.querySelector('.mobile-menu-btn')?.remove();
+        // Ensure proper width on desktop
+        if (sidebar.classList.contains('collapsed')) {
+          mainContent.classList.add('expanded');
+        } else {
+          mainContent.classList.remove('expanded');
+        }
+      }
+    }
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992 && !sidebar.contains(e.target) && !e.target.closest('.mobile-menu-btn') && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+      }
+    });
+    handleMobileLayout();
+    window.addEventListener('resize', handleMobileLayout);
+
+    // Update date/time
+    function updateDateTime() {
+      const now = new Date();
+      document.querySelector('#currentDateTime span').textContent = now.toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
+    }
+    updateDateTime(); setInterval(updateDateTime, 1000);
+
+    // ===== Profit Page Functionality =====
+    // Mock user database
+    const userDatabase = [
+      { id:'USR001', username:'john_doe', email:'john.doe@email.com', tradingAcc:'TA-7890', balance:5200.00, profitBalance:1230.50, status:'Active', avatar:'JD' },
+      { id:'USR002', username:'sarah_smith', email:'sarah.s@email.com', tradingAcc:'TA-2341', balance:8320.75, profitBalance:2450.00, status:'Active', avatar:'SS' },
+      { id:'USR003', username:'mike_wilson', email:'mike.w@email.com', tradingAcc:'TA-5647', balance:4120.00, profitBalance:870.25, status:'Active', avatar:'MW' },
+    ];
+
+    let profitHistory = [
+      { user:'john_doe', tradingAcc:'TA-7890', amount:350.00, source:'Trading Profit', currency:'USD', txId:'TXN-'+Math.random().toString(36).substr(2,9).toUpperCase(), date:'2025-02-10 11:20', status:'Completed' },
+      { user:'sarah_smith', tradingAcc:'TA-2341', amount:0.02, source:'Referral Profit', currency:'BTC', txId:'TXN-'+Math.random().toString(36).substr(2,9).toUpperCase(), date:'2025-02-09 09:45', status:'Pending' },
+      { user:'mike_wilson', tradingAcc:'TA-5647', amount:125.00, source:'Manual Profit', currency:'USD', txId:'TXN-'+Math.random().toString(36).substr(2,9).toUpperCase(), date:'2025-02-08 16:30', status:'Completed' },
+    ];
+
+    let selectedUser = null;
+
+    // DOM elements
+    const userSearch = document.getElementById('userSearch');
+    const searchBtn = document.getElementById('searchUserBtn');
+    const userInfoDisplay = document.getElementById('userInfoDisplay');
+    const displayUsername = document.getElementById('displayUsername');
+    const displayEmail = document.getElementById('displayEmail');
+    const displayTradingAccount = document.getElementById('displayTradingAccount');
+    const displayStatus = document.getElementById('displayStatus');
+    const userEmail = document.getElementById('userEmail');
+    const tradingAccount = document.getElementById('tradingAccount');
+    const currentBalance = document.getElementById('currentBalance');
+    const profitBalance = document.getElementById('profitBalance');
+    const profitAmount = document.getElementById('profitAmount');
+    const profitSource = document.getElementById('profitSource');
+    const currency = document.getElementById('currency');
+    const referenceId = document.getElementById('referenceId');
+    const description = document.getElementById('description');
+    const resetBtn = document.getElementById('resetFormBtn');
+    const profitTableBody = document.getElementById('profitTableBody');
+    const alertContainer = document.getElementById('alertContainer');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    function renderProfitTable() {
+      profitTableBody.innerHTML = '';
+      profitHistory.slice(0,10).forEach(tx => {
+        const user = userDatabase.find(u => u.username === tx.user) || { avatar: tx.user.substring(0,2).toUpperCase() };
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><div class="user-cell"><div class="user-avatar-small">${user.avatar}</div><span>${tx.user}</span></div></td>
+          <td>${tx.tradingAcc}</td>
+          <td>${tx.currency === 'USD' ? '$' : ''}${tx.amount} ${tx.currency !== 'USD' ? tx.currency : ''}</td>
+          <td>${tx.source}</td>
+          <td>${tx.currency}</td>
+          <td>${tx.txId}</td>
+          <td>${tx.date}</td>
+          <td><span class="status-badge status-${tx.status.toLowerCase()}">${tx.status}</span></td>
+        `;
+        profitTableBody.appendChild(row);
+      });
+    }
+    renderProfitTable();
+
+    function showAlert(type, title, message) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.innerHTML = `<div class="alert-icon"><i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i></div><div class="alert-content"><div class="alert-title">${title}</div><div class="alert-message">${message}</div></div><button class="alert-close"><i class="fas fa-times"></i></button>`;
+      alertContainer.appendChild(alertDiv);
+      setTimeout(() => alertDiv.remove(), 5000);
+      alertDiv.querySelector('.alert-close').addEventListener('click', () => alertDiv.remove());
+    }
+
+    function generateTxId() {
+      return 'TXN-' + Math.random().toString(36).substr(2,9).toUpperCase();
+    }
+    referenceId.value = generateTxId();
+
+    searchBtn.addEventListener('click', () => {
+      const term = userSearch.value.toLowerCase().trim();
+      if (!term) return showAlert('error','Search Error','Enter username or ID');
+      const found = userDatabase.find(u => u.username.toLowerCase().includes(term) || u.id.toLowerCase().includes(term) || u.email.toLowerCase().includes(term));
+      if (found) {
+        selectedUser = found;
+        userInfoDisplay.classList.add('active');
+        displayUsername.textContent = found.username;
+        displayEmail.textContent = found.email;
+        displayTradingAccount.textContent = found.tradingAcc;
+        displayStatus.textContent = found.status;
+        displayStatus.style.color = '#4caf50';
+        userEmail.value = found.email;
+        tradingAccount.value = found.tradingAcc;
+        currentBalance.value = `$${found.balance.toFixed(2)}`;
+        profitBalance.value = `$${found.profitBalance.toFixed(2)}`;
+        showAlert('success','User Found',`${found.username} loaded`);
+      } else {
+        showAlert('error','Not Found','No matching user');
+        userInfoDisplay.classList.remove('active');
+        selectedUser = null;
+      }
+    });
+
+    document.getElementById('profitForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!selectedUser) return showAlert('error','Validation','Search and select a user first');
+      const amount = parseFloat(profitAmount.value);
+      if (!amount || amount <= 0) return showAlert('error','Validation','Enter valid profit amount');
+      const newTx = {
+        user: selectedUser.username,
+        tradingAcc: selectedUser.tradingAcc,
+        amount: amount,
+        source: profitSource.options[profitSource.selectedIndex].text,
+        currency: currency.value,
+        txId: referenceId.value || generateTxId(),
+        date: new Date().toLocaleString('en-US', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }).replace(',',''),
+        status: 'Completed'
+      };
+      profitHistory.unshift(newTx);
+      // Update user profit balance (simulate)
+      selectedUser.profitBalance += amount;
+      profitBalance.value = `$${selectedUser.profitBalance.toFixed(2)}`;
+      renderProfitTable();
+      showAlert('success','Profit Credited',`${amount} ${currency.value} credited to ${selectedUser.username}`);
+      profitAmount.value = '';
+      referenceId.value = generateTxId();
+      description.value = '';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      userSearch.value = '';
+      userInfoDisplay.classList.remove('active');
+      userEmail.value = ''; tradingAccount.value = ''; currentBalance.value = '$0.00'; profitBalance.value = '$0.00';
+      profitAmount.value = ''; profitSource.value = 'Manual Profit'; currency.value = 'USD';
+      referenceId.value = generateTxId(); description.value = ''; selectedUser = null;
+      showAlert('success','Form Reset','All fields cleared');
+    });
+
+    refreshBtn.addEventListener('click', () => { renderProfitTable(); showAlert('success','Refreshed','History updated'); });
+    exportBtn.addEventListener('click', () => { showAlert('success','Export','Export started (simulated)'); });
+
+    // Logout
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutConfirmModal');
+    const closeLogout = document.getElementById('closeLogoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+    logoutLink.addEventListener('click', (e) => { e.preventDefault(); logoutModal.classList.add('active'); });
+    closeLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    cancelLogout.addEventListener('click', () => logoutModal.classList.remove('active'));
+    confirmLogout.addEventListener('click', () => { sessionStorage.removeItem('adminAuthenticated'); window.location.href = 'admin-logout.html'; });
+    logoutModal.addEventListener('click', (e) => { if (e.target === logoutModal) logoutModal.classList.remove('active'); });
+
+    // Ripple effect
+    document.querySelectorAll('.btn-primary, .btn-secondary, .header-btn, .search-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size/2;
+        const y = e.clientY - rect.top - size/2;
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.className = 'ripple-effect';
+        this.style.position = 'relative'; this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+  </script>
+</body>
+</html>
